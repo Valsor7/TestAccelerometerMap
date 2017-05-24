@@ -1,10 +1,9 @@
 package com.boost.testaccelerometermap.presentation.presenter;
 
-import com.boost.testaccelerometermap.data.repository.MapRepository;
 import com.boost.testaccelerometermap.data.repository.Repository;
 import com.boost.testaccelerometermap.data.repository.RepositoryCallback;
 import com.boost.testaccelerometermap.presentation.view.BaseView;
-import com.boost.testaccelerometermap.presentation.view.map.MapView;
+import com.boost.testaccelerometermap.presentation.view.map.GoogleMapView;
 
 import java.util.Collections;
 
@@ -17,7 +16,7 @@ import javax.inject.Inject;
 public class MapPresenterImpl implements MapPresenter {
 
     Repository mRepository;
-    private MapView mMapView;
+    private GoogleMapView mMapView;
 
     @Inject
     public MapPresenterImpl(Repository repository) {
@@ -41,7 +40,7 @@ public class MapPresenterImpl implements MapPresenter {
 
     @Override
     public void onAttachView(BaseView view) {
-        mMapView = (MapView) view;
+        mMapView = (GoogleMapView) view;
     }
 
     @Override

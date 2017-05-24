@@ -21,7 +21,7 @@ public class MapRepository extends Repository<String> {
 
     @Override
     public void get(Object id) {
-        
+
     }
 
     @Override

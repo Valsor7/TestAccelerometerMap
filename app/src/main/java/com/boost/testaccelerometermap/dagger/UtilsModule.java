@@ -18,5 +18,4 @@ public class UtilsModule {
     public Network provideNetworkChecker(MyApplication application){
         return new Network(application);
     }
-
 }

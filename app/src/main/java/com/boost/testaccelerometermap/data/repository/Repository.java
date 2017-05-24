@@ -1,31 +1,25 @@
 package com.boost.testaccelerometermap.data.repository;
 
-import com.boost.testaccelerometermap.data.Network;
-import com.boost.testaccelerometermap.data.db.DBDao;
-import com.boost.testaccelerometermap.data.db.RealmDao;
-
-import javax.inject.Inject;
+import javax.security.auth.callback.Callback;
 
 /**
  * Created by yaroslav on 23.05.17.
  */
 
-public class Repository {
+public abstract class Repository<T> {
 
-    private final Network mNetwork;
-    private final DBDao mDbDao;
-
-    @Inject
-    public Repository(Network network) {
-        this.mNetwork = network;
-        mDbDao = new RealmDao();
+    public void get(Object id) {
     }
 
-    public void getAllData(RepositoryCallback callback){
-        if (mNetwork.isNetwork()){
+    public void getAll(RepositoryCallback<T> callback) {
+    }
 
-        } else {
-            mDbDao.getAllData(callback);
-        }
+    public void add(Object item) {
+    }
+
+    public void remove(Object id) {
+    }
+
+    public void update(Object id) {
     }
 }

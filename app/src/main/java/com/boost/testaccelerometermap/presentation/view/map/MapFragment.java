@@ -5,27 +5,31 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.boost.testaccelerometermap.MyApplication;
 import com.boost.testaccelerometermap.R;
-import com.boost.testaccelerometermap.presentation.model.Marker;
+import com.boost.testaccelerometermap.dagger.DaggerMapComponent;
+import com.boost.testaccelerometermap.dagger.MapModule;
+import com.boost.testaccelerometermap.dagger.UtilsComponent;
 import com.boost.testaccelerometermap.presentation.presenter.MapPresenterImpl;
 
 import java.util.List;
 
 import javax.inject.Inject;
 
-public class MapFragment extends Fragment implements MapView{
-
+public class MapFragment extends Fragment implements MapView {
+    private static final String TAG = "MapFragment";
 
     private OnFragmentInteractionListener mListener;
 
     @Inject
     MapPresenterImpl mMapPresenter;
 
-    public static MapFragment newInstance(String param1, String param2) {
+    public static MapFragment newInstance() {
         MapFragment fragment = new MapFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
@@ -46,6 +50,10 @@ public class MapFragment extends Fragment implements MapView{
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // TODO: 24.05.17 refactor
+        UtilsComponent utilsComponent = ((MyApplication)getActivity().getApplication()).getAppComponent();
+        DaggerMapComponent.builder().utilsComponent(utilsComponent).mapModule(new MapModule(getActivity())).build().inject(this);
+
         if (getArguments() != null) {
         }
     }
@@ -59,8 +67,8 @@ public class MapFragment extends Fragment implements MapView{
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        mMapPresenter.a
-
+        mMapPresenter.onAttachView(this);
+        mMapPresenter.getAllData();
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -75,12 +83,13 @@ public class MapFragment extends Fragment implements MapView{
     @Override
     public void onDetach() {
         super.onDetach();
+        mMapPresenter.onDetachView();
         mListener = null;
     }
 
     @Override
-    public void showAll(List<Marker> markers) {
-
+    public void showAll(List<String> markers) {
+        Log.d(TAG, "showAll: " + markers.get(0));
     }
 
     public interface OnFragmentInteractionListener {

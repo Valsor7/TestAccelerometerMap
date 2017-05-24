@@ -1,12 +1,14 @@
 package com.boost.testaccelerometermap.presentation.presenter;
 
+import com.boost.testaccelerometermap.data.repository.MapRepository;
 import com.boost.testaccelerometermap.data.repository.Repository;
 import com.boost.testaccelerometermap.data.repository.RepositoryCallback;
-import com.boost.testaccelerometermap.presentation.model.Marker;
 import com.boost.testaccelerometermap.presentation.view.BaseView;
 import com.boost.testaccelerometermap.presentation.view.map.MapView;
 
-import java.util.List;
+import java.util.Collections;
+
+import javax.inject.Inject;
 
 /**
  * Created by yaroslav on 23.05.17.
@@ -14,15 +16,20 @@ import java.util.List;
 
 public class MapPresenterImpl implements MapPresenter {
 
-    Repository repository;
+    Repository mRepository;
     private MapView mMapView;
+
+    @Inject
+    public MapPresenterImpl(Repository repository) {
+        mRepository = repository;
+    }
 
     @Override
     public void getAllData(){
-        repository.getAllData(new RepositoryCallback<List<Marker>>() {
+        mRepository.getAll(new RepositoryCallback<String>() {
             @Override
-            public void onResult(List<Marker> data) {
-                
+            public void onResult(String data) {
+                mMapView.showAll(Collections.singletonList(data));
             }
 
             @Override

@@ -1,9 +1,12 @@
 package com.boost.testaccelerometermap.presentation.view;
 
+import android.net.Uri;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 
 import com.boost.testaccelerometermap.R;
+import com.boost.testaccelerometermap.presentation.view.map.MapFragment;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -11,7 +14,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public class HomeActivity extends FragmentActivity implements OnMapReadyCallback {
+public class HomeActivity extends AppCompatActivity implements MapFragment.OnFragmentInteractionListener, OnMapReadyCallback {
 
     private GoogleMap mMap;
 
@@ -19,9 +22,10 @@ public class HomeActivity extends FragmentActivity implements OnMapReadyCallback
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
+        getSupportFragmentManager()
+                .beginTransaction().add(R.id.fl_container, MapFragment.newInstance())
+                .commit();
+//        mapFragment.getMapAsync(this);
     }
 
 
@@ -42,5 +46,10 @@ public class HomeActivity extends FragmentActivity implements OnMapReadyCallback
         LatLng sydney = new LatLng(-34, 151);
         mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
     }
 }

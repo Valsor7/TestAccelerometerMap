@@ -2,7 +2,6 @@ package com.boost.testaccelerometermap.dagger;
 
 import com.boost.testaccelerometermap.MyApplication;
 import com.boost.testaccelerometermap.data.Network;
-import com.boost.testaccelerometermap.presentation.view.HomeActivity;
 
 import javax.inject.Singleton;
 

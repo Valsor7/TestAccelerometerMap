@@ -1,4 +1,4 @@
-package com.boost.testaccelerometermap.dagger;
+package com.boost.testaccelerometermap.dagger.map;
 
 import android.app.Activity;
 
@@ -9,7 +9,6 @@ import com.boost.testaccelerometermap.data.repository.Repository;
 
 import dagger.Module;
 import dagger.Provides;
-import dagger.Subcomponent;
 
 /**
  * Created by yaroslav on 24.05.17.

@@ -11,9 +11,8 @@ import android.view.ViewGroup;
 
 import com.boost.testaccelerometermap.MyApplication;
 import com.boost.testaccelerometermap.R;
-import com.boost.testaccelerometermap.dagger.DaggerMapComponent;
-import com.boost.testaccelerometermap.dagger.MapModule;
-import com.boost.testaccelerometermap.dagger.UtilsComponent;
+import com.boost.testaccelerometermap.dagger.map.DaggerMapComponent;
+import com.boost.testaccelerometermap.dagger.map.MapModule;
 import com.boost.testaccelerometermap.presentation.presenter.MapPresenterImpl;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -65,8 +64,8 @@ public class MapFragment extends Fragment implements
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // TODO: 24.05.17 refactor
-        UtilsComponent utilsComponent = ((MyApplication)getActivity().getApplication()).getAppComponent();
-        DaggerMapComponent.builder().utilsComponent(utilsComponent).mapModule(new MapModule(getActivity())).build().inject(this);
+
+        DaggerMapComponent.builder().utilsComponent(MyApplication.getApp().getAppComponent()).mapModule(new MapModule(getActivity())).build().inject(this);
 
         if (getArguments() != null) {
         }

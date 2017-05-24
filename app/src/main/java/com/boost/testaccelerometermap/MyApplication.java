@@ -14,11 +14,13 @@ import com.boost.testaccelerometermap.presentation.view.AccelerometerService;
  */
 
 public class MyApplication extends Application {
+    private static MyApplication mApp;
     private UtilsComponent mUtilsComponent;
 
     @Override
     public void onCreate() {
         super.onCreate();
+        mApp = this;
         initAppComponent();
         initAccelerometerService();
     }
@@ -36,5 +38,9 @@ public class MyApplication extends Application {
 
     public UtilsComponent getAppComponent() {
         return mUtilsComponent;
+    }
+
+    public static MyApplication getApp(){
+        return mApp;
     }
 }

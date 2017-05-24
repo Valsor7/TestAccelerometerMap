@@ -1,10 +1,12 @@
 package com.boost.testaccelerometermap.presentation.model;
 
+import io.realm.RealmObject;
+
 /**
  * Created by yaroslav on 24.05.17.
  */
 
-public class AccelerometerData {
+public class AccelerometerData extends RealmObject {
     private float x;
     private float y;
     private float z;

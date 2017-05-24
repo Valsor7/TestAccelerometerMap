@@ -1,5 +1,6 @@
-package com.boost.testaccelerometermap.dagger;
+package com.boost.testaccelerometermap.dagger.map;
 
+import com.boost.testaccelerometermap.dagger.UtilsComponent;
 import com.boost.testaccelerometermap.presentation.view.map.MapFragment;
 
 import dagger.Component;

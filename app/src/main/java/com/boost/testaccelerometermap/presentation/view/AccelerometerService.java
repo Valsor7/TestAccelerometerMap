@@ -13,10 +13,14 @@ import android.support.annotation.IntDef;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.boost.testaccelerometermap.MyApplication;
+import com.boost.testaccelerometermap.data.repository.Repository;
 import com.boost.testaccelerometermap.presentation.model.AccelerometerData;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 /**
  * Created by yaroslav on 24.05.17.
@@ -26,10 +30,16 @@ public class AccelerometerService extends Service implements SensorEventListener
     private static final String TAG = "AccelerometerService";
     private SensorManager mSensorManager;
     private List<AccelerometerData> mAccelerometerDataList = new ArrayList<>();
+
+    @Inject
+    Repository mRepository;
+
     @Override
     public void onCreate() {
         super.onCreate();
         initAccelerometer();
+
+        MyApplication.getApp().getAppComponent();
     }
 
     @Override
@@ -72,6 +82,7 @@ public class AccelerometerService extends Service implements SensorEventListener
 
     @Override
     public void onDestroy() {
+        // TODO: 24.05.17 kill service
         super.onDestroy();
         if (mSensorManager != null){
             mSensorManager.unregisterListener(this);

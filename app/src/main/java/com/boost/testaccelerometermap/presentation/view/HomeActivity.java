@@ -1,14 +1,7 @@
 package com.boost.testaccelerometermap.presentation.view;
 
-import android.content.ComponentName;
-import android.content.Intent;
-import android.content.ServiceConnection;
-import android.net.Uri;
-import android.os.Handler;
-import android.os.IBinder;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 
 import com.boost.testaccelerometermap.R;
 import com.boost.testaccelerometermap.presentation.view.map.MapFragment;

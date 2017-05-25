@@ -14,6 +14,8 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.boost.testaccelerometermap.MyApplication;
+import com.boost.testaccelerometermap.dagger.accelerometer.AccelerometerModule;
+import com.boost.testaccelerometermap.dagger.accelerometer.DaggerAccelerometerComponent;
 import com.boost.testaccelerometermap.data.repository.Repository;
 import com.boost.testaccelerometermap.presentation.model.AccelerometerData;
 
@@ -32,18 +34,27 @@ public class AccelerometerService extends Service implements SensorEventListener
     private List<AccelerometerData> mAccelerometerDataList = new ArrayList<>();
 
     @Inject
-    Repository mRepository;
+    Repository<AccelerometerData> mRepository;
 
     @Override
     public void onCreate() {
         super.onCreate();
+        initDI();
         initAccelerometer();
 
         MyApplication.getApp().getAppComponent();
     }
 
+    private void initDI() {
+        DaggerAccelerometerComponent.builder()
+                .utilsComponent(MyApplication.getApp().getAppComponent())
+                .accelerometerModule(new AccelerometerModule())
+                .build()
+                .inject(this);
+    }
+
     @Override
-    public int onStartCommand(Intent intent,  int flags, int startId) {
+    public int onStartCommand(Intent intent, int flags, int startId) {
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -52,7 +63,7 @@ public class AccelerometerService extends Service implements SensorEventListener
         mSensorManager = (SensorManager) getApplicationContext().getSystemService(Context.SENSOR_SERVICE);
         Sensor accelerometerSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 
-        if (accelerometerSensor != null){
+        if (accelerometerSensor != null) {
             mSensorManager.registerListener(this, accelerometerSensor, SensorManager.SENSOR_DELAY_NORMAL);
         }
     }
@@ -69,6 +80,9 @@ public class AccelerometerService extends Service implements SensorEventListener
         data.setY(event.values[1]);
         data.setZ(event.values[2]);
         mAccelerometerDataList.add(data);
+        if (mAccelerometerDataList.size() < 10){
+            mRepository.add(data);
+        }
     }
 
     @Override
@@ -76,7 +90,7 @@ public class AccelerometerService extends Service implements SensorEventListener
 
     }
 
-    public List<AccelerometerData> getData(){
+    public List<AccelerometerData> getData() {
         return mAccelerometerDataList;
     }
 
@@ -84,7 +98,7 @@ public class AccelerometerService extends Service implements SensorEventListener
     public void onDestroy() {
         // TODO: 24.05.17 kill service
         super.onDestroy();
-        if (mSensorManager != null){
+        if (mSensorManager != null) {
             mSensorManager.unregisterListener(this);
         }
     }

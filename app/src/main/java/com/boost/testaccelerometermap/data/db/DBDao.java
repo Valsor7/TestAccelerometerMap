@@ -10,5 +10,6 @@ import java.util.List;
  */
 
 public interface DBDao<T> {
-    void getAllData(RepositoryCallback<T> callback);
+    void getAllData(RepositoryCallback<List<T>> callback);
+    void save(T data);
 }

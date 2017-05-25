@@ -2,6 +2,7 @@ package com.boost.testaccelerometermap.presentation.view.map;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -13,6 +14,7 @@ import com.boost.testaccelerometermap.MyApplication;
 import com.boost.testaccelerometermap.R;
 import com.boost.testaccelerometermap.dagger.map.DaggerMapComponent;
 import com.boost.testaccelerometermap.dagger.map.MapModule;
+import com.boost.testaccelerometermap.presentation.model.AccelerometerData;
 import com.boost.testaccelerometermap.presentation.presenter.MapPresenterImpl;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -84,7 +86,13 @@ public class MapFragment extends Fragment implements
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         ButterKnife.bind(this, view);
         mMapPresenter.onAttachView(this);
-        mMapPresenter.getAllData();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mMapPresenter.getAllData();
+            }
+        }, 2000);
+
     }
 
     @Override
@@ -131,7 +139,7 @@ public class MapFragment extends Fragment implements
     }
 
     @Override
-    public void showAll(List<String> markers) {
+    public void showAll(List<AccelerometerData> markers) {
         Log.d(TAG, "showAll: " + markers.get(0));
     }
 

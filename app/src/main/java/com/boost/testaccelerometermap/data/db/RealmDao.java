@@ -45,7 +45,7 @@ public class RealmDao implements DBDao<AccelerometerData>{
     public void getAllData(RepositoryCallback<List<AccelerometerData>> callback){
         Log.d(TAG, "getAllData: ");
         mRepositoryCallback = callback;
-        Realm.getDefaultInstance().where(AccelerometerData.class);
+        callback.onResult(Realm.getDefaultInstance().where(AccelerometerData.class).findAll());
 //        RealmQuery<AccelerometerData> query = Realm.getDefaultInstance().where(AccelerometerData.class);
 //        RealmResults<AccelerometerData> realmResults = query.findAllAsync();
 //        realmResults.addChangeListener(mRealmQueryCallback);

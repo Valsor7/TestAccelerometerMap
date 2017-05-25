@@ -1,5 +1,6 @@
 package com.boost.testaccelerometermap.presentation.view.map;
 
+import com.boost.testaccelerometermap.presentation.model.AccelerometerData;
 import com.boost.testaccelerometermap.presentation.view.BaseView;
 
 import java.util.List;
@@ -9,5 +10,5 @@ import java.util.List;
  */
 
 public interface GoogleMapView extends BaseView {
-    public void showAll(List<String> markers);
+    public void showAll(List<AccelerometerData> markers);
 }

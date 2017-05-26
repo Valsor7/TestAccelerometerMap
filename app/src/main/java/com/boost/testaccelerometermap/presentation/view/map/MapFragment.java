@@ -69,7 +69,7 @@ public class MapFragment extends Fragment implements
 
         DaggerMapComponent.builder()
                 .utilsComponent(MyApplication.getApp().getAppComponent())
-                .mapModule(new MapModule(getActivity())).build()
+                .mapModule(new MapModule()).build()
                 .inject(this);
 
         if (getArguments() != null) {

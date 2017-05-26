@@ -86,13 +86,7 @@ public class MapFragment extends Fragment implements
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         ButterKnife.bind(this, view);
         mMapPresenter.onAttachView(this);
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mMapPresenter.getAllData();
-            }
-        }, 2000);
-
+        mMapPresenter.getAllData();
     }
 
     @Override

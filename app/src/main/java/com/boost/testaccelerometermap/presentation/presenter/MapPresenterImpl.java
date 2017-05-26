@@ -32,7 +32,7 @@ public class MapPresenterImpl implements MapPresenter {
         mRepository.getAll(new RepositoryCallback<List<AccelerometerData>>() {
             @Override
             public void onResult(List data) {
-                Log.d(TAG, "onResult: " + data.size());
+                Log.d(TAG, "onResult yeah: " + data.size());
                 mMapView.showAll(data);
             }
 

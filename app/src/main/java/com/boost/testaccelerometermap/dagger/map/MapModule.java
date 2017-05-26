@@ -15,17 +15,6 @@ import dagger.Provides;
  */
 @Module
 public class MapModule {
-    private Activity mActivity;
-
-    public MapModule(Activity activity) {
-        mActivity = activity;
-    }
-
-    @Provides
-    @MapScope
-    public Activity providesActivity(){
-        return mActivity;
-    }
 
     @MapScope
     @Provides

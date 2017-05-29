@@ -35,7 +35,6 @@ public class MapPresenterImpl implements MapPresenter {
     public MapPresenterImpl(Repository repository, LocationHelper locationHelper) {
         mRepository = repository;
         mLocationHelper = locationHelper;
-        mLocationHelper.connect();
     }
 
     @Override
@@ -73,5 +72,6 @@ public class MapPresenterImpl implements MapPresenter {
     @Override
     public void onDetachView() {
         mMapView = null;
+        mLocationHelper.removeLocationListener();
     }
 }

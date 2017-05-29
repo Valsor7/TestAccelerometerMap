@@ -28,18 +28,8 @@ public class MapModule {
 
     @MapScope
     @Provides
-    public GoogleApiClient providesGApiClient(){
-        return new GoogleApiClient.Builder(mFragment.getActivity())
-                .addApi(LocationServices.API)
-                .addConnectionCallbacks(mFragment)
-                .addOnConnectionFailedListener(mFragment)
-                .build();
-    }
-
-    @MapScope
-    @Provides
-    public LocationHelper providesLocationHelper(GoogleApiClient client){
-        return new LocationHelper(client, mFragment.getActivity());
+    public LocationHelper providesLocationHelper(){
+        return new LocationHelper(mFragment.getActivity());
     }
 
     @MapScope

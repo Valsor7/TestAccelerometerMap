@@ -21,8 +21,6 @@ import com.boost.testaccelerometermap.dagger.map.MapModule;
 import com.boost.testaccelerometermap.presentation.model.AccelerometerData;
 import com.boost.testaccelerometermap.presentation.presenter.MapPresenterImpl;
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -37,8 +35,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MapFragment extends Fragment implements
-        GoogleMapView, OnMapReadyCallback,
-        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+        GoogleMapView, OnMapReadyCallback {
     private static final String TAG = "MapFragment";
 
     @BindView(R.id.map_view)
@@ -89,7 +86,6 @@ public class MapFragment extends Fragment implements
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         ButterKnife.bind(this, view);
         mMapPresenter.onAttachView(this);
-        mMapPresenter.createLocationRequest();
 //        mMapPresenter.getAllData();
     }
 
@@ -103,6 +99,12 @@ public class MapFragment extends Fragment implements
     private void initMap(Bundle savedInstanceState) {
         mGoogleMapView.onCreate(savedInstanceState);
         mGoogleMapView.getMapAsync(this);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        mMapPresenter.createLocationRequest();
     }
 
     @Override
@@ -128,32 +130,6 @@ public class MapFragment extends Fragment implements
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         Log.d(TAG, "onActivityResult() called with: requestCode = [" + requestCode + "], resultCode = [" + resultCode + "], data = [" + data + "]");
-    }
-
-    @Override
-    public void onConnected(@Nullable Bundle bundle) {
-        Log.d(TAG, "onConnected: ");
-        mMapPresenter.createLocationRequest();
-    }
-
-    @Override
-    public void onConnectionSuspended(int i) {
-
-    }
-
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult result) {
-        Log.d(TAG, "onConnectionFailed: " + result);
-        if (result.hasResolution()) {
-            try {
-                // TODO: 29.05.17 handle this in activity
-                result.startResolutionForResult(getActivity(), Constants.REQUEST_RESOLVE_ERROR);
-            } catch (IntentSender.SendIntentException e) {
-                Log.e(TAG, "onConnectionFailed: " + e.getMessage());
-            }
-        } else {
-            Log.d(TAG, "onConnectionFailed: " + result.getErrorMessage());
-        }
     }
 
     @Override

@@ -8,7 +8,6 @@ import com.boost.testaccelerometermap.dagger.DaggerUtilsComponent;
 import com.boost.testaccelerometermap.dagger.UtilsComponent;
 import com.boost.testaccelerometermap.dagger.UtilsModule;
 import com.boost.testaccelerometermap.presentation.view.AccelerometerService;
-import com.facebook.stetho.Stetho;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
@@ -30,11 +29,6 @@ public class MyApplication extends Application {
         Realm.init(this);
         RealmConfiguration configuration = new RealmConfiguration.Builder().build();
         Realm.setDefaultConfiguration(configuration);
-        Stetho.initialize(
-                Stetho.newInitializerBuilder(this)
-                        .enableDumpapp(Stetho.defaultDumperPluginsProvider(this))
-                        .enableWebKitInspector(Stetho.defaultInspectorModulesProvider(this))
-                        .build());
     }
 
     private void initAppComponent(){

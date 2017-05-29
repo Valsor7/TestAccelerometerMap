@@ -1,8 +1,11 @@
 package com.boost.testaccelerometermap.presentation.view.map;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentSender;
+import android.location.Location;
 import android.os.Bundle;
-import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -10,18 +13,21 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.boost.testaccelerometermap.Constants;
 import com.boost.testaccelerometermap.MyApplication;
 import com.boost.testaccelerometermap.R;
 import com.boost.testaccelerometermap.dagger.map.DaggerMapComponent;
 import com.boost.testaccelerometermap.dagger.map.MapModule;
 import com.boost.testaccelerometermap.presentation.model.AccelerometerData;
 import com.boost.testaccelerometermap.presentation.presenter.MapPresenterImpl;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.List;
 
@@ -31,8 +37,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MapFragment extends Fragment implements
-        GoogleMapView,
-        OnMapReadyCallback {
+        GoogleMapView, OnMapReadyCallback,
+        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
     private static final String TAG = "MapFragment";
 
     @BindView(R.id.map_view)
@@ -43,6 +49,8 @@ public class MapFragment extends Fragment implements
 
     private OnFragmentMapCallback mListener;
     private GoogleMap mGoogleMap;
+    private boolean mResolvingError;
+
 
     public static MapFragment newInstance() {
         MapFragment fragment = new MapFragment();
@@ -65,15 +73,10 @@ public class MapFragment extends Fragment implements
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // TODO: 24.05.17 refactor
-
         DaggerMapComponent.builder()
                 .utilsComponent(MyApplication.getApp().getAppComponent())
-                .mapModule(new MapModule()).build()
+                .mapModule(new MapModule(this)).build()
                 .inject(this);
-
-        if (getArguments() != null) {
-        }
     }
 
     @Override
@@ -86,7 +89,8 @@ public class MapFragment extends Fragment implements
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         ButterKnife.bind(this, view);
         mMapPresenter.onAttachView(this);
-        mMapPresenter.getAllData();
+        mMapPresenter.createLocationRequest();
+//        mMapPresenter.getAllData();
     }
 
     @Override
@@ -99,6 +103,57 @@ public class MapFragment extends Fragment implements
     private void initMap(Bundle savedInstanceState) {
         mGoogleMapView.onCreate(savedInstanceState);
         mGoogleMapView.getMapAsync(this);
+    }
+
+    @Override
+    public void showAll(List<AccelerometerData> markers) {
+        Log.d(TAG, "showAll: " + markers.get(0));
+    }
+
+    @Override
+    public void onLocationTriggered(Location location) {
+        Log.d(TAG, "onLocationTriggered: " + location);
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mGoogleMap = googleMap;
+
+        LatLng sydney = new LatLng(-34, 151);
+        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+    }
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.d(TAG, "onActivityResult() called with: requestCode = [" + requestCode + "], resultCode = [" + resultCode + "], data = [" + data + "]");
+    }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        Log.d(TAG, "onConnected: ");
+        mMapPresenter.createLocationRequest();
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult result) {
+        Log.d(TAG, "onConnectionFailed: " + result);
+        if (result.hasResolution()) {
+            try {
+                // TODO: 29.05.17 handle this in activity
+                result.startResolutionForResult(getActivity(), Constants.REQUEST_RESOLVE_ERROR);
+            } catch (IntentSender.SendIntentException e) {
+                Log.e(TAG, "onConnectionFailed: " + e.getMessage());
+            }
+        } else {
+            Log.d(TAG, "onConnectionFailed: " + result.getErrorMessage());
+        }
     }
 
     @Override
@@ -116,6 +171,7 @@ public class MapFragment extends Fragment implements
     @Override
     public void onDestroy() {
         super.onDestroy();
+        // TODO: 29.05.17 stop location updates
         mGoogleMapView.onDestroy();
     }
 
@@ -132,19 +188,8 @@ public class MapFragment extends Fragment implements
         mListener = null;
     }
 
-    @Override
-    public void showAll(List<AccelerometerData> markers) {
-        Log.d(TAG, "showAll: " + markers.get(0));
-    }
-
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        // TODO: 24.05.17 refactor
-        mGoogleMap = googleMap;
-
-        LatLng sydney = new LatLng(-34, 151);
-        mGoogleMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+    public void onSettingsAccepted() {
+        mMapPresenter.createLocationRequest();
     }
 
     public interface OnFragmentMapCallback {

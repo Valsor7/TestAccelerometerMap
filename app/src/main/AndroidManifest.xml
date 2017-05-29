@@ -31,8 +31,7 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name=".presentation.view.HomeActivity"
-            android:label="@string/title_activity_home">
+            android:name=".presentation.view.HomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -1,15 +1,11 @@
 package com.boost.testaccelerometermap.dagger.map;
 
-import android.app.Activity;
-
 import com.boost.testaccelerometermap.data.db.DBDao;
-import com.boost.testaccelerometermap.data.db.RealmDao;
-import com.boost.testaccelerometermap.data.repository.MapRepository;
+import com.boost.testaccelerometermap.data.db.realm.RealmAccelerometerDao;
+import com.boost.testaccelerometermap.data.repository.AccelerometerRepositoryImpl;
 import com.boost.testaccelerometermap.data.repository.Repository;
 import com.boost.testaccelerometermap.presentation.view.map.LocationHelper;
 import com.boost.testaccelerometermap.presentation.view.map.MapFragment;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationServices;
 
 import dagger.Module;
 import dagger.Provides;
@@ -34,13 +30,13 @@ public class MapModule {
 
     @MapScope
     @Provides
-    public DBDao providesDao(RealmDao realmDao){
+    public DBDao providesDao(RealmAccelerometerDao realmDao){
         return realmDao;
     }
 
     @MapScope
     @Provides
-    public Repository providesRepository(MapRepository mapRepository){
+    public Repository providesRepository(AccelerometerRepositoryImpl mapRepository){
         return mapRepository;
     }
 }

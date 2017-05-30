@@ -6,6 +6,7 @@ import android.util.Log;
 import com.boost.testaccelerometermap.data.repository.Repository;
 import com.boost.testaccelerometermap.data.repository.RepositoryCallback;
 import com.boost.testaccelerometermap.presentation.model.AccelerometerData;
+import com.boost.testaccelerometermap.presentation.model.LatLngLocation;
 import com.boost.testaccelerometermap.presentation.view.BaseView;
 import com.boost.testaccelerometermap.presentation.view.map.GoogleMapView;
 import com.boost.testaccelerometermap.presentation.view.map.LocationHelper;
@@ -26,20 +27,41 @@ import javax.inject.Inject;
 
 public class MapPresenterImpl implements MapPresenter {
     private static final String TAG = "MapPresenterImpl";
-    Repository<AccelerometerData> mRepository;
+    Repository<AccelerometerData> mAccelerometerRepository;
+    Repository<LatLngLocation> mLocationRepository;
 
     private LocationHelper mLocationHelper;
     private GoogleMapView mMapView;
 
+    // TODO: 30.05.17 maybe add qualifiers annotations for repositories distinguish
     @Inject
-    public MapPresenterImpl(Repository repository, LocationHelper locationHelper) {
-        mRepository = repository;
+    public MapPresenterImpl(Repository<LatLngLocation> locationRepository,
+                            Repository<AccelerometerData> accelerometerRepository,
+                            LocationHelper locationHelper) {
+        mLocationRepository = locationRepository;
+        mAccelerometerRepository = accelerometerRepository;
         mLocationHelper = locationHelper;
     }
 
     @Override
-    public void getAllData() {
-        mRepository.getAll(new RepositoryCallback<List<AccelerometerData>>() {
+    public void getAllAccelerometerData() {
+        mAccelerometerRepository.getAll(new RepositoryCallback<List<AccelerometerData>>() {
+            @Override
+            public void onResult(List data) {
+                Log.d(TAG, "onResult yeah: " + data.size());
+                mMapView.showAll(data);
+            }
+
+            @Override
+            public void onError(Error error) {
+
+            }
+        });
+    }
+
+    @Override
+    public void getAllLocationData() {
+        mAccelerometerRepository.getAll(new RepositoryCallback<List<AccelerometerData>>() {
             @Override
             public void onResult(List data) {
                 Log.d(TAG, "onResult yeah: " + data.size());
@@ -61,6 +83,11 @@ public class MapPresenterImpl implements MapPresenter {
                 mMapView.onLocationTriggered(location);
             }
         });
+    }
+
+    @Override
+    public void saveLocations(List<LatLngLocation> location) {
+    
     }
 
 

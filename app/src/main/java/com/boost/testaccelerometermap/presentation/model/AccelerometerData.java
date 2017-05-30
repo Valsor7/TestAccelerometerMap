@@ -10,6 +10,7 @@ public class AccelerometerData extends RealmObject {
     private float x;
     private float y;
     private float z;
+    private long timestamp;
 
     public float getX() {
         return x;
@@ -33,6 +34,14 @@ public class AccelerometerData extends RealmObject {
 
     public void setZ(float z) {
         this.z = z;
+    }
+
+    public long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
     }
 
     @Override

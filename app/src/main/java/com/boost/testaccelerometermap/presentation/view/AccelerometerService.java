@@ -79,10 +79,9 @@ public class AccelerometerService extends Service implements SensorEventListener
         data.setX(event.values[0]);
         data.setY(event.values[1]);
         data.setZ(event.values[2]);
-        mAccelerometerDataList.add(data);
-        if (mAccelerometerDataList.size() < 10){
-            mRepository.add(data);
-        }
+        data.setTimestamp(System.currentTimeMillis());
+
+        mRepository.add(data);
     }
 
     @Override

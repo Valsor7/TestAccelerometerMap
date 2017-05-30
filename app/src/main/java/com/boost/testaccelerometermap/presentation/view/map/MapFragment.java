@@ -2,10 +2,9 @@ package com.boost.testaccelerometermap.presentation.view.map;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentSender;
+import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -13,20 +12,23 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.boost.testaccelerometermap.Constants;
 import com.boost.testaccelerometermap.MyApplication;
 import com.boost.testaccelerometermap.R;
 import com.boost.testaccelerometermap.dagger.map.DaggerMapComponent;
 import com.boost.testaccelerometermap.dagger.map.MapModule;
 import com.boost.testaccelerometermap.presentation.model.AccelerometerData;
+import com.boost.testaccelerometermap.presentation.model.LatLngLocation;
+import com.boost.testaccelerometermap.presentation.model.LocationToLatLngMapper;
 import com.boost.testaccelerometermap.presentation.presenter.MapPresenterImpl;
-import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -37,6 +39,7 @@ import butterknife.ButterKnife;
 public class MapFragment extends Fragment implements
         GoogleMapView, OnMapReadyCallback {
     private static final String TAG = "MapFragment";
+    private static final float STREET_ZOOM = 15;
 
     @BindView(R.id.map_view)
     MapView mGoogleMapView;
@@ -46,7 +49,7 @@ public class MapFragment extends Fragment implements
 
     private OnFragmentMapCallback mListener;
     private GoogleMap mGoogleMap;
-    private boolean mResolvingError;
+    private List<LatLng> mLatLngList = new ArrayList<>();
 
 
     public static MapFragment newInstance() {
@@ -86,7 +89,7 @@ public class MapFragment extends Fragment implements
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         ButterKnife.bind(this, view);
         mMapPresenter.onAttachView(this);
-//        mMapPresenter.getAllData();
+//        mMapPresenter.getAllAccelerometerData();
     }
 
     @Override
@@ -115,14 +118,21 @@ public class MapFragment extends Fragment implements
     @Override
     public void onLocationTriggered(Location location) {
         Log.d(TAG, "onLocationTriggered: " + location);
+        if (mGoogleMap != null){
+            mLatLngList.add(LocationToLatLngMapper.convertToLatLng(location));
+            PolylineOptions polylineOptions = new PolylineOptions();
+            polylineOptions.color(Color.RED);
+            polylineOptions.addAll(mLatLngList);
+            Polyline polyline = mGoogleMap.addPolyline(polylineOptions);
+            polyline.setWidth(12);
+            mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(mLatLngList.get(mLatLngList.size() - 1)));
+        }
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mGoogleMap = googleMap;
-
-        LatLng sydney = new LatLng(-34, 151);
-        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        mGoogleMap.moveCamera(CameraUpdateFactory.zoomTo(STREET_ZOOM));
     }
 
 

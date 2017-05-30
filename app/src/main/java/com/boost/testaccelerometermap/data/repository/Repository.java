@@ -19,6 +19,11 @@ public abstract class Repository<T> {
     public void add(T item) {
     }
 
+    public void addAll(List<T> items) {
+    }
+
+
+
     public void remove(Object id) {
     }
 

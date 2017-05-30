@@ -13,21 +13,15 @@ import javax.inject.Inject;
 /**
  * Created by yaroslav on 24.05.17.
  */
-
-public class MapRepository extends Repository<AccelerometerData> {
+public class AccelerometerRepositoryImpl extends Repository<AccelerometerData> {
     private static final String TAG = "MapRepository";
     private final Network mNetwork;
     private final DBDao<AccelerometerData> mDbDao;
 
     @Inject
-    public MapRepository(Network network, DBDao dbDao) {
+    public AccelerometerRepositoryImpl(Network network, DBDao dbDao) {
         this.mNetwork = network;
         mDbDao = dbDao;
-    }
-
-    @Override
-    public void get(Object id) {
-
     }
 
     @Override
@@ -36,7 +30,7 @@ public class MapRepository extends Repository<AccelerometerData> {
 //        if (mNetwork.isNetwork()){
 //
 //        } else {
-//            mDbDao.getAllData(callback);
+//            mDbDao.getAllAccelerometerData(callback);
 //        }
     }
 
@@ -44,15 +38,5 @@ public class MapRepository extends Repository<AccelerometerData> {
     public void add(AccelerometerData item) {
         Log.d(TAG, "add: " + item);
         mDbDao.save(item);
-    }
-
-    @Override
-    public void remove(Object id) {
-
-    }
-
-    @Override
-    public void update(Object id) {
-
     }
 }

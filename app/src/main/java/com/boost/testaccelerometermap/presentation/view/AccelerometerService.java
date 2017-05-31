@@ -7,9 +7,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener2;
 import android.hardware.SensorManager;
-import android.os.Binder;
 import android.os.IBinder;
-import android.support.annotation.IntDef;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
@@ -30,6 +28,7 @@ import javax.inject.Inject;
 
 public class AccelerometerService extends Service implements SensorEventListener2 {
     private static final String TAG = "AccelerometerService";
+    private static final int THRESHOLD_SIZE = 10;
     private SensorManager mSensorManager;
     private List<AccelerometerData> mAccelerometerDataList = new ArrayList<>();
     @Inject
@@ -82,8 +81,11 @@ public class AccelerometerService extends Service implements SensorEventListener
         data.setY(event.values[1]);
         data.setZ(event.values[2]);
         data.setTimestamp(System.currentTimeMillis());
-
-//        mRepository.add(data);
+        mAccelerometerDataList.add(data);
+        if (mAccelerometerDataList.size() > THRESHOLD_SIZE){
+            mRepository.addAll(mAccelerometerDataList);
+            mAccelerometerDataList.clear();
+        }
     }
 
     @Override
@@ -97,6 +99,7 @@ public class AccelerometerService extends Service implements SensorEventListener
 
     @Override
     public void onDestroy() {
+        super.onDestroy();
         Log.d(TAG, "onStartCommand: service stopped");
         MyApplication.getApp().setServiceStarted(false);
         if (mSensorManager != null) {

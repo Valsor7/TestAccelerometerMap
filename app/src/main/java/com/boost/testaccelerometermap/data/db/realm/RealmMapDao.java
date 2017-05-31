@@ -20,6 +20,11 @@ public class RealmMapDao implements DBDao<LatLngLocation> {
     }
 
     @Override
+    public void saveAll(List<LatLngLocation> items) {
+
+    }
+
+    @Override
     public void save(final LatLngLocation data) {
         Realm realm = Realm.getDefaultInstance();
         realm.executeTransactionAsync(new Realm.Transaction() {

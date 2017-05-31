@@ -37,19 +37,25 @@ public class RealmAccelerometerDao implements DBDao<AccelerometerData> {
     }
 
     @Override
-    public void save(final AccelerometerData data) {
+    public void saveAll(final List<AccelerometerData> items) {
         Realm realm = Realm.getDefaultInstance();
         realm.executeTransactionAsync(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
-                // TODO: 30.05.17 try to use clone pattern
-                AccelerometerData dbData = realm.createObject(AccelerometerData.class);
-                dbData.setX(data.getX());
-                dbData.setY(data.getY());
-                dbData.setZ(data.getZ());
-                dbData.setTimestamp(data.getTimestamp());
+                for (AccelerometerData item : items) {
+                    AccelerometerData dbData = realm.createObject(AccelerometerData.class);
+                    dbData.setX(item.getX());
+                    dbData.setY(item.getY());
+                    dbData.setZ(item.getZ());
+                    dbData.setTimestamp(item.getTimestamp());
+                }
             }
         });
+    }
+
+    @Override
+    public void save(AccelerometerData item) {
+
     }
 
 

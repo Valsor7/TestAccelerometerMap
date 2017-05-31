@@ -10,6 +10,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import io.realm.Realm;
+
 /**
  * Created by yaroslav on 24.05.17.
  */
@@ -35,8 +37,7 @@ public class AccelerometerRepositoryImpl extends Repository<AccelerometerData> {
     }
 
     @Override
-    public void add(AccelerometerData item) {
-        Log.d(TAG, "add: " + item);
-        mDbDao.save(item);
+    public void addAll(List<AccelerometerData> items) {
+        mDbDao.saveAll(items);
     }
 }

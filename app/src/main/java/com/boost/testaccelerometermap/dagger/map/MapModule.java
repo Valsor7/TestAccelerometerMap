@@ -1,9 +1,14 @@
 package com.boost.testaccelerometermap.dagger.map;
 
+import com.boost.testaccelerometermap.dagger.map.qualifiers.Accelerometer;
+import com.boost.testaccelerometermap.dagger.map.qualifiers.Location;
 import com.boost.testaccelerometermap.data.db.DBDao;
 import com.boost.testaccelerometermap.data.db.realm.RealmAccelerometerDao;
 import com.boost.testaccelerometermap.data.repository.AccelerometerRepositoryImpl;
+import com.boost.testaccelerometermap.data.repository.LocationRepositoryImpl;
 import com.boost.testaccelerometermap.data.repository.Repository;
+import com.boost.testaccelerometermap.presentation.model.AccelerometerData;
+import com.boost.testaccelerometermap.presentation.model.LatLngLocation;
 import com.boost.testaccelerometermap.presentation.view.map.LocationHelper;
 import com.boost.testaccelerometermap.presentation.view.map.MapFragment;
 
@@ -36,7 +41,15 @@ public class MapModule {
 
     @MapScope
     @Provides
-    public Repository providesRepository(AccelerometerRepositoryImpl mapRepository){
-        return mapRepository;
+    @Accelerometer
+    public Repository<AccelerometerData> providesAccelerometerRepository(AccelerometerRepositoryImpl accelerometerRepository){
+        return accelerometerRepository;
+    }
+
+    @MapScope
+    @Provides
+    @Location
+    public Repository<LatLngLocation> providesLocationRepository(LocationRepositoryImpl locationRepository){
+        return locationRepository;
     }
 }

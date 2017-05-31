@@ -15,6 +15,9 @@ public class LatLngLocation extends RealmObject {
     private double longitude;
     private long timestamp;
 
+    public LatLngLocation() {
+    }
+
     public LatLngLocation(double latitude, double longitude) {
         this.latitude = latitude;
         this.longitude = longitude;

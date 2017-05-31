@@ -32,7 +32,6 @@ public class AccelerometerService extends Service implements SensorEventListener
     private static final String TAG = "AccelerometerService";
     private SensorManager mSensorManager;
     private List<AccelerometerData> mAccelerometerDataList = new ArrayList<>();
-
     @Inject
     Repository<AccelerometerData> mRepository;
 
@@ -55,6 +54,8 @@ public class AccelerometerService extends Service implements SensorEventListener
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        MyApplication.getApp().setServiceStarted(true);
+        Log.d(TAG, "onStartCommand: service started");
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -75,13 +76,14 @@ public class AccelerometerService extends Service implements SensorEventListener
 
     @Override
     public void onSensorChanged(SensorEvent event) {
+        Log.d(TAG, "onSensorChanged: " + event);
         AccelerometerData data = new AccelerometerData();
         data.setX(event.values[0]);
         data.setY(event.values[1]);
         data.setZ(event.values[2]);
         data.setTimestamp(System.currentTimeMillis());
 
-        mRepository.add(data);
+//        mRepository.add(data);
     }
 
     @Override
@@ -95,8 +97,8 @@ public class AccelerometerService extends Service implements SensorEventListener
 
     @Override
     public void onDestroy() {
-        // TODO: 24.05.17 kill service
-        super.onDestroy();
+        Log.d(TAG, "onStartCommand: service stopped");
+        MyApplication.getApp().setServiceStarted(false);
         if (mSensorManager != null) {
             mSensorManager.unregisterListener(this);
         }

@@ -1,10 +1,13 @@
 package com.boost.testaccelerometermap.presentation.view.map;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -17,9 +20,10 @@ import com.boost.testaccelerometermap.R;
 import com.boost.testaccelerometermap.dagger.map.DaggerMapComponent;
 import com.boost.testaccelerometermap.dagger.map.MapModule;
 import com.boost.testaccelerometermap.presentation.model.AccelerometerData;
-import com.boost.testaccelerometermap.presentation.model.LatLngLocation;
 import com.boost.testaccelerometermap.presentation.model.LocationToLatLngMapper;
+import com.boost.testaccelerometermap.presentation.presenter.MapPresenter;
 import com.boost.testaccelerometermap.presentation.presenter.MapPresenterImpl;
+import com.boost.testaccelerometermap.presentation.view.AccelerometerService;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -35,6 +39,7 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class MapFragment extends Fragment implements
         GoogleMapView, OnMapReadyCallback {
@@ -50,7 +55,7 @@ public class MapFragment extends Fragment implements
     private OnFragmentMapCallback mListener;
     private GoogleMap mGoogleMap;
     private List<LatLng> mLatLngList = new ArrayList<>();
-
+    private Intent mAccelerometerIntent;
 
     public static MapFragment newInstance() {
         MapFragment fragment = new MapFragment();
@@ -77,6 +82,7 @@ public class MapFragment extends Fragment implements
                 .utilsComponent(MyApplication.getApp().getAppComponent())
                 .mapModule(new MapModule(this)).build()
                 .inject(this);
+
     }
 
     @Override
@@ -89,7 +95,6 @@ public class MapFragment extends Fragment implements
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         ButterKnife.bind(this, view);
         mMapPresenter.onAttachView(this);
-//        mMapPresenter.getAllAccelerometerData();
     }
 
     @Override
@@ -135,11 +140,27 @@ public class MapFragment extends Fragment implements
         mGoogleMap.moveCamera(CameraUpdateFactory.zoomTo(STREET_ZOOM));
     }
 
+    @OnClick(R.id.btn_start_service)
+    public void onClickStart(){
+        if (mAccelerometerIntent == null){
+            mAccelerometerIntent = new Intent(getActivity(), AccelerometerService.class);
+        }
+
+        if (!MyApplication.getApp().isServiceStarted()) {
+            getActivity().startService(mAccelerometerIntent);
+        }
+    }
+
+    @OnClick(R.id.btn_stop_service)
+    public void onStopService(){
+        if (MyApplication.getApp().isServiceStarted()) {
+            getActivity().stopService(mAccelerometerIntent);
+        }
+    }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        Log.d(TAG, "onActivityResult() called with: requestCode = [" + requestCode + "], resultCode = [" + resultCode + "], data = [" + data + "]");
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
     }
 
     @Override

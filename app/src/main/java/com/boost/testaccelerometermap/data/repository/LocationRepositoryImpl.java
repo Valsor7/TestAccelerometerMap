@@ -7,6 +7,8 @@ import com.boost.testaccelerometermap.presentation.model.LatLngLocation;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 /**
  * Created by yaroslav on 30.05.17.
  */
@@ -15,6 +17,7 @@ public class LocationRepositoryImpl extends Repository<LatLngLocation> {
     private static final String TAG = "LocationRepositoryImpl";
     private DBDao<LatLngLocation> mDbDao;
 
+    @Inject
     public LocationRepositoryImpl(DBDao dbDao) {
         mDbDao = dbDao;
     }

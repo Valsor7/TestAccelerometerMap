@@ -19,13 +19,13 @@ import io.realm.RealmConfiguration;
 public class MyApplication extends Application {
     private static MyApplication mApp;
     private UtilsComponent mUtilsComponent;
+    private boolean mServiceStarted;
 
     @Override
     public void onCreate() {
         super.onCreate();
         mApp = this;
         initAppComponent();
-//        initAccelerometerService();
         Realm.init(this);
         RealmConfiguration configuration = new RealmConfiguration.Builder().build();
         Realm.setDefaultConfiguration(configuration);
@@ -48,5 +48,13 @@ public class MyApplication extends Application {
 
     public static MyApplication getApp(){
         return mApp;
+    }
+
+    public boolean isServiceStarted() {
+        return mServiceStarted;
+    }
+
+    public void setServiceStarted(boolean serviceStarted) {
+        mServiceStarted = serviceStarted;
     }
 }

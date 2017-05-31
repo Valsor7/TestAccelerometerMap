@@ -31,7 +31,8 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name=".presentation.view.HomeActivity">
+            android:name=".presentation.view.HomeActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

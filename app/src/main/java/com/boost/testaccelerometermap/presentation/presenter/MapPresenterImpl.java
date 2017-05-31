@@ -1,8 +1,9 @@
 package com.boost.testaccelerometermap.presentation.presenter;
 
-import android.location.Location;
 import android.util.Log;
 
+import com.boost.testaccelerometermap.dagger.map.qualifiers.Accelerometer;
+import com.boost.testaccelerometermap.dagger.map.qualifiers.Location;
 import com.boost.testaccelerometermap.data.repository.Repository;
 import com.boost.testaccelerometermap.data.repository.RepositoryCallback;
 import com.boost.testaccelerometermap.presentation.model.AccelerometerData;
@@ -10,12 +11,6 @@ import com.boost.testaccelerometermap.presentation.model.LatLngLocation;
 import com.boost.testaccelerometermap.presentation.view.BaseView;
 import com.boost.testaccelerometermap.presentation.view.map.GoogleMapView;
 import com.boost.testaccelerometermap.presentation.view.map.LocationHelper;
-import com.google.android.gms.location.LocationRequest;
-import com.karumi.dexter.PermissionToken;
-import com.karumi.dexter.listener.PermissionDeniedResponse;
-import com.karumi.dexter.listener.PermissionGrantedResponse;
-import com.karumi.dexter.listener.PermissionRequest;
-import com.karumi.dexter.listener.single.PermissionListener;
 
 import java.util.List;
 
@@ -33,10 +28,9 @@ public class MapPresenterImpl implements MapPresenter {
     private LocationHelper mLocationHelper;
     private GoogleMapView mMapView;
 
-    // TODO: 30.05.17 maybe add qualifiers annotations for repositories distinguish
     @Inject
-    public MapPresenterImpl(Repository<LatLngLocation> locationRepository,
-                            Repository<AccelerometerData> accelerometerRepository,
+    public MapPresenterImpl(@Location Repository<LatLngLocation> locationRepository,
+                            @Accelerometer Repository<AccelerometerData> accelerometerRepository,
                             LocationHelper locationHelper) {
         mLocationRepository = locationRepository;
         mAccelerometerRepository = accelerometerRepository;
@@ -79,7 +73,7 @@ public class MapPresenterImpl implements MapPresenter {
     public void createLocationRequest() {
         mLocationHelper.requestLocation(new LocationHelper.LocationCallback() {
             @Override
-            public void onLocation(Location location) {
+            public void onLocation(android.location.Location location) {
                 mMapView.onLocationTriggered(location);
             }
         });
@@ -87,7 +81,7 @@ public class MapPresenterImpl implements MapPresenter {
 
     @Override
     public void saveLocations(List<LatLngLocation> location) {
-    
+
     }
 
 

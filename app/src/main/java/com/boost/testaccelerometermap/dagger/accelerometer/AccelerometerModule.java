@@ -1,5 +1,6 @@
 package com.boost.testaccelerometermap.dagger.accelerometer;
 
+import com.boost.testaccelerometermap.dagger.map.qualifiers.Accelerometer;
 import com.boost.testaccelerometermap.data.db.DBDao;
 import com.boost.testaccelerometermap.data.db.realm.RealmAccelerometerDao;
 import com.boost.testaccelerometermap.data.repository.AccelerometerRepositoryImpl;
@@ -17,6 +18,7 @@ public class AccelerometerModule {
 
     @AccelerometerScope
     @Provides
+    @Accelerometer
     public DBDao providesDao(RealmAccelerometerDao realmDao){
         return realmDao;
     }

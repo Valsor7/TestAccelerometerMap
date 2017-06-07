@@ -4,11 +4,12 @@ import com.boost.testaccelerometermap.dagger.map.qualifiers.Accelerometer;
 import com.boost.testaccelerometermap.dagger.map.qualifiers.Location;
 import com.boost.testaccelerometermap.data.db.DBDao;
 import com.boost.testaccelerometermap.data.db.realm.RealmAccelerometerDao;
+import com.boost.testaccelerometermap.data.db.realm.RealmLocationDao;
 import com.boost.testaccelerometermap.data.repository.AccelerometerRepositoryImpl;
 import com.boost.testaccelerometermap.data.repository.LocationRepositoryImpl;
 import com.boost.testaccelerometermap.data.repository.Repository;
 import com.boost.testaccelerometermap.presentation.model.AccelerometerData;
-import com.boost.testaccelerometermap.presentation.model.LatLngLocation;
+import com.boost.testaccelerometermap.presentation.model.LocationModel;
 import com.boost.testaccelerometermap.presentation.view.map.LocationHelper;
 import com.boost.testaccelerometermap.presentation.view.map.MapFragment;
 
@@ -35,9 +36,19 @@ public class MapModule {
 
     @MapScope
     @Provides
-    public DBDao providesDao(RealmAccelerometerDao realmDao){
+    @Accelerometer
+    public DBDao providesAccelerometerDao(RealmAccelerometerDao realmDao){
         return realmDao;
     }
+
+    @MapScope
+    @Provides
+    @Location
+    public DBDao providesLocationDao(RealmLocationDao realmDao){
+        return realmDao;
+    }
+
+
 
     @MapScope
     @Provides
@@ -49,7 +60,7 @@ public class MapModule {
     @MapScope
     @Provides
     @Location
-    public Repository<LatLngLocation> providesLocationRepository(LocationRepositoryImpl locationRepository){
+    public Repository<LocationModel> providesLocationRepository(LocationRepositoryImpl locationRepository){
         return locationRepository;
     }
 }

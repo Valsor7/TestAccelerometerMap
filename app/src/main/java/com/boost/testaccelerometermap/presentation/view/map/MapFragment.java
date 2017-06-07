@@ -1,13 +1,10 @@
 package com.boost.testaccelerometermap.presentation.view.map;
 
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -20,9 +17,9 @@ import com.boost.testaccelerometermap.R;
 import com.boost.testaccelerometermap.dagger.map.DaggerMapComponent;
 import com.boost.testaccelerometermap.dagger.map.MapModule;
 import com.boost.testaccelerometermap.presentation.model.AccelerometerData;
+import com.boost.testaccelerometermap.presentation.model.LocationModel;
 import com.boost.testaccelerometermap.presentation.model.LocationToLatLngMapper;
-import com.boost.testaccelerometermap.presentation.presenter.MapPresenter;
-import com.boost.testaccelerometermap.presentation.presenter.MapPresenterImpl;
+import com.boost.testaccelerometermap.presentation.presenter.location.MapPresenterImpl;
 import com.boost.testaccelerometermap.presentation.view.AccelerometerService;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -124,7 +121,9 @@ public class MapFragment extends Fragment implements
     public void onLocationTriggered(Location location) {
         Log.d(TAG, "onLocationTriggered: " + location);
         if (mGoogleMap != null){
+            mMapPresenter.saveLocation(new LocationModel(location));
             mLatLngList.add(LocationToLatLngMapper.convertToLatLng(location));
+
             PolylineOptions polylineOptions = new PolylineOptions();
             polylineOptions.color(Color.RED);
             polylineOptions.addAll(mLatLngList);

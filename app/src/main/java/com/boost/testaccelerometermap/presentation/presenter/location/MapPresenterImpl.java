@@ -1,4 +1,4 @@
-package com.boost.testaccelerometermap.presentation.presenter;
+package com.boost.testaccelerometermap.presentation.presenter.location;
 
 import android.util.Log;
 
@@ -7,7 +7,7 @@ import com.boost.testaccelerometermap.dagger.map.qualifiers.Location;
 import com.boost.testaccelerometermap.data.repository.Repository;
 import com.boost.testaccelerometermap.data.repository.RepositoryCallback;
 import com.boost.testaccelerometermap.presentation.model.AccelerometerData;
-import com.boost.testaccelerometermap.presentation.model.LatLngLocation;
+import com.boost.testaccelerometermap.presentation.model.LocationModel;
 import com.boost.testaccelerometermap.presentation.view.BaseView;
 import com.boost.testaccelerometermap.presentation.view.map.GoogleMapView;
 import com.boost.testaccelerometermap.presentation.view.map.LocationHelper;
@@ -23,13 +23,13 @@ import javax.inject.Inject;
 public class MapPresenterImpl implements MapPresenter {
     private static final String TAG = "MapPresenterImpl";
     Repository<AccelerometerData> mAccelerometerRepository;
-    Repository<LatLngLocation> mLocationRepository;
+    Repository<LocationModel> mLocationRepository;
 
     private LocationHelper mLocationHelper;
     private GoogleMapView mMapView;
 
     @Inject
-    public MapPresenterImpl(@Location Repository<LatLngLocation> locationRepository,
+    public MapPresenterImpl(@Location Repository<LocationModel> locationRepository,
                             @Accelerometer Repository<AccelerometerData> accelerometerRepository,
                             LocationHelper locationHelper) {
         mLocationRepository = locationRepository;
@@ -43,6 +43,7 @@ public class MapPresenterImpl implements MapPresenter {
             @Override
             public void onResult(List data) {
                 Log.d(TAG, "onResult yeah: " + data.size());
+                if (mMapView == null) return;
                 mMapView.showAll(data);
             }
 
@@ -59,6 +60,7 @@ public class MapPresenterImpl implements MapPresenter {
             @Override
             public void onResult(List data) {
                 Log.d(TAG, "onResult yeah: " + data.size());
+                if (mMapView == null) return;
                 mMapView.showAll(data);
             }
 
@@ -80,8 +82,8 @@ public class MapPresenterImpl implements MapPresenter {
     }
 
     @Override
-    public void saveLocations(List<LatLngLocation> location) {
-
+    public void saveLocation(LocationModel location) {
+        mLocationRepository.add(location);
     }
 
 

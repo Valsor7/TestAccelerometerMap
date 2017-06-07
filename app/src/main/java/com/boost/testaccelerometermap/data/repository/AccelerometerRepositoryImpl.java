@@ -1,7 +1,6 @@
 package com.boost.testaccelerometermap.data.repository;
 
-import android.util.Log;
-
+import com.boost.testaccelerometermap.dagger.map.qualifiers.Accelerometer;
 import com.boost.testaccelerometermap.data.Network;
 import com.boost.testaccelerometermap.data.db.DBDao;
 import com.boost.testaccelerometermap.presentation.model.AccelerometerData;
@@ -9,8 +8,6 @@ import com.boost.testaccelerometermap.presentation.model.AccelerometerData;
 import java.util.List;
 
 import javax.inject.Inject;
-
-import io.realm.Realm;
 
 /**
  * Created by yaroslav on 24.05.17.
@@ -21,7 +18,7 @@ public class AccelerometerRepositoryImpl extends Repository<AccelerometerData> {
     private final DBDao<AccelerometerData> mDbDao;
 
     @Inject
-    public AccelerometerRepositoryImpl(Network network, DBDao dbDao) {
+    public AccelerometerRepositoryImpl(Network network, @Accelerometer DBDao dbDao) {
         this.mNetwork = network;
         mDbDao = dbDao;
     }

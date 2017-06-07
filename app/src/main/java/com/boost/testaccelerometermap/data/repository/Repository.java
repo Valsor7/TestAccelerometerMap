@@ -16,6 +16,9 @@ public abstract class Repository<T> {
     public void getAll(RepositoryCallback<List<T>> callback) {
     }
 
+    public void getAllUnique(RepositoryCallback<List<T>> callback) {
+    }
+
     public void add(T item) {
     }
 

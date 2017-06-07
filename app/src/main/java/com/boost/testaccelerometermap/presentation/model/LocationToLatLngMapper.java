@@ -12,4 +12,8 @@ public class LocationToLatLngMapper {
     public static LatLng convertToLatLng(Location location){
         return new LatLng(location.getLatitude(), location.getLongitude());
     }
+
+    public static LocationModel convertToLatLngLocation(Location location){
+        return new LocationModel(location.getLatitude(), location.getLongitude());
+    }
 }

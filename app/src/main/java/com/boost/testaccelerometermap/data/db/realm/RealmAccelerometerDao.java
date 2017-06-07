@@ -37,18 +37,24 @@ public class RealmAccelerometerDao implements DBDao<AccelerometerData> {
     }
 
     @Override
+    public void getAllUnique(RepositoryCallback<List<AccelerometerData>> callback) {
+
+    }
+
+    @Override
     public void saveAll(final List<AccelerometerData> items) {
         Realm realm = Realm.getDefaultInstance();
         realm.executeTransactionAsync(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
-                for (AccelerometerData item : items) {
-                    AccelerometerData dbData = realm.createObject(AccelerometerData.class);
-                    dbData.setX(item.getX());
-                    dbData.setY(item.getY());
-                    dbData.setZ(item.getZ());
-                    dbData.setTimestamp(item.getTimestamp());
-                }
+                realm.copyToRealm(items);
+//                for (AccelerometerData item : items) {
+//                    AccelerometerData dbData = realm.createObject(AccelerometerData.class);
+//                    dbData.setX(item.getX());
+//                    dbData.setY(item.getY());
+//                    dbData.setZ(item.getZ());
+//                    dbData.setTimestamp(item.getTimestamp());
+//                }
             }
         });
     }

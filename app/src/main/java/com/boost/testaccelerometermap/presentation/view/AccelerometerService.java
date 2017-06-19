@@ -75,7 +75,7 @@ public class AccelerometerService extends Service implements SensorEventListener
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        Log.d(TAG, "onSensorChanged: " + event);
+//        Log.d(TAG, "onSensorChanged: " + event);
         AccelerometerData data = new AccelerometerData();
         data.setX(event.values[0]);
         data.setY(event.values[1]);

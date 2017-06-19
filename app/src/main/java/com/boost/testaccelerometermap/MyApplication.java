@@ -29,6 +29,7 @@ public class MyApplication extends Application {
         Realm.init(this);
         RealmConfiguration configuration = new RealmConfiguration.Builder().build();
         Realm.setDefaultConfiguration(configuration);
+        initAccelerometerService();
     }
 
     private void initAppComponent(){

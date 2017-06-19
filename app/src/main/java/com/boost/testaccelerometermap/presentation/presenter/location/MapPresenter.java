@@ -11,10 +11,6 @@ import java.util.List;
 
 public interface MapPresenter extends BasePresenter {
 
-    void getAllAccelerometerData();
-
-    void getAllLocationData();
-
     void createLocationRequest();
 
     void saveLocation(LocationModel location);

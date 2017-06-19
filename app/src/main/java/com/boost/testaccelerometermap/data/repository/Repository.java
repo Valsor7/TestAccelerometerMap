@@ -13,6 +13,9 @@ public abstract class Repository<T> {
     public void get(Object id) {
     }
 
+    public void getInRange(long from, long to, RepositoryCallback<List<T>> callback){
+    }
+
     public void getAll(RepositoryCallback<List<T>> callback) {
     }
 

@@ -1,7 +1,12 @@
 package com.boost.testaccelerometermap.presentation.utils;
 
+import android.util.Log;
+
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Locale;
 
 /**
  * Created by yaroslav on 07.06.17.
@@ -16,5 +21,12 @@ public class TimeUtils {
         cal.set(Calendar.SECOND,      cal.getActualMinimum(Calendar.SECOND));
         cal.set(Calendar.MILLISECOND, cal.getActualMinimum(Calendar.MILLISECOND));
         return cal.getTimeInMillis();
+    }
+
+    public static String getTimeFromMillis(long millis){
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        Date date = new Date();
+        date.setTime(millis);
+        return format.format(date);
     }
 }

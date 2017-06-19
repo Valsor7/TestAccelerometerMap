@@ -2,12 +2,17 @@ package com.boost.testaccelerometermap.presentation.presenter.statistics;
 
 import android.util.Log;
 
+import com.boost.testaccelerometermap.dagger.map.qualifiers.Accelerometer;
+import com.boost.testaccelerometermap.dagger.map.qualifiers.Location;
+import com.boost.testaccelerometermap.data.MyError;
 import com.boost.testaccelerometermap.data.repository.Repository;
 import com.boost.testaccelerometermap.data.repository.RepositoryCallback;
+import com.boost.testaccelerometermap.presentation.model.AccelerometerData;
 import com.boost.testaccelerometermap.presentation.model.LocationModel;
 import com.boost.testaccelerometermap.presentation.view.BaseView;
 import com.boost.testaccelerometermap.presentation.view.statistics.StatisticView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -17,11 +22,13 @@ import java.util.List;
 public class StatisticPresenterImpl implements StatisticPresenter {
     private static final String TAG = "StatisticPresenterImpl";
 
-    StatisticView mStatisticView;
-    Repository<LocationModel> mLocationRepository;
+    private StatisticView mStatisticView;
+    private Repository<LocationModel> mLocationRepository;
+    private Repository<AccelerometerData> mAccelerometerRepository;
 
-    public StatisticPresenterImpl(Repository<LocationModel> locationRepository) {
+    public StatisticPresenterImpl(@Location Repository<LocationModel> locationRepository, @Accelerometer Repository<AccelerometerData> accelerometerRepository) {
         mLocationRepository = locationRepository;
+        mAccelerometerRepository = accelerometerRepository;
     }
 
     @Override
@@ -35,15 +42,48 @@ public class StatisticPresenterImpl implements StatisticPresenter {
     }
 
     @Override
+    public void getAccelerometerDataInRange(long timestampFrom, long timestampTo) {
+        Log.d(TAG, "getAccelerometerDataInRange() called with: timestampFrom = [" + timestampFrom + "], timestampTo = [" + timestampTo + "]");
+        mAccelerometerRepository.getInRange(timestampFrom, timestampTo, new RepositoryCallback<List<AccelerometerData>>() {
+            @Override
+            public void onResult(List<AccelerometerData> data) {
+                Log.d(TAG, "onAccelerometer data yeah: " + data.size());
+                if (mStatisticView == null) return;
+                mStatisticView.onAccelerometerResult(data);
+            }
+
+            @Override
+            public void onError(MyError error) {
+
+            }
+        });
+    }
+
+    @Override
     public void getStatistics(){
         mLocationRepository.getAllUnique(new RepositoryCallback<List<LocationModel>>() {
             @Override
             public void onResult(List<LocationModel> data) {
-                Log.d(TAG, "onResult: " + data);
+                mStatisticView.onStatisticsByDay(data);
             }
 
             @Override
-            public void onError(Error error) {
+            public void onError(MyError error) {
+
+            }
+        });
+    }
+
+    @Override
+    public void getLocations(long dayInMillis) {
+        mLocationRepository.getAll(new RepositoryCallback<List<LocationModel>>() {
+            @Override
+            public void onResult(List<LocationModel> data) {
+                mStatisticView.onLocations(new ArrayList<>(data));
+            }
+
+            @Override
+            public void onError(MyError error) {
 
             }
         });

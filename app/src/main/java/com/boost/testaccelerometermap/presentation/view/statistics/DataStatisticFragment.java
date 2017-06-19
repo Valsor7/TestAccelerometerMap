@@ -1,22 +1,30 @@
 package com.boost.testaccelerometermap.presentation.view.statistics;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.boost.testaccelerometermap.R;
+import com.boost.testaccelerometermap.data.Network;
+import com.boost.testaccelerometermap.data.db.realm.RealmAccelerometerDao;
 import com.boost.testaccelerometermap.data.db.realm.RealmLocationDao;
+import com.boost.testaccelerometermap.data.repository.AccelerometerRepositoryImpl;
 import com.boost.testaccelerometermap.data.repository.LocationRepositoryImpl;
+import com.boost.testaccelerometermap.presentation.model.AccelerometerData;
 import com.boost.testaccelerometermap.presentation.model.LocationModel;
 import com.boost.testaccelerometermap.presentation.presenter.statistics.StatisticPresenterImpl;
 import com.boost.testaccelerometermap.presentation.view.statistics.adapter.StatisticAdapter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -68,14 +76,27 @@ public class DataStatisticFragment extends Fragment implements StatisticView{
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         ButterKnife.bind(this, view);
-        mStatisticPresenter = new StatisticPresenterImpl(new LocationRepositoryImpl(new RealmLocationDao()));
+        // TODO: 19.06.17 remake to dagger
+        mStatisticPresenter =
+                new StatisticPresenterImpl(
+                        new LocationRepositoryImpl(new RealmLocationDao()),
+                        new AccelerometerRepositoryImpl(new Network(getContext().getApplicationContext()), new RealmAccelerometerDao()));
+
         mStatisticPresenter.onAttachView(this);
         initRecyclerView();
         mStatisticPresenter.getStatistics();
+        mStatisticPresenter.getAccelerometerDataInRange(1497871606089L, 1497885024385L);
     }
 
     private void initRecyclerView() {
-        mStatisticAdapter = new StatisticAdapter();
+        mStatisticAdapter = new StatisticAdapter(new StatisticAdapter.DateClickCallback() {
+            @Override
+            public void onDateClick(View view) {
+                int pos = mStatisticsRecyclerView.getChildAdapterPosition(view);
+                LocationModel model = mStatisticAdapter.getDataByPosition(pos);
+                mStatisticPresenter.getLocations(model.getDayInMillis());
+            }
+        });
         mStatisticsRecyclerView.setAdapter(mStatisticAdapter);
         mStatisticsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
     }
@@ -85,11 +106,48 @@ public class DataStatisticFragment extends Fragment implements StatisticView{
     }
 
     @Override
-    public void onResult(List<LocationModel> data) {
+    public void onAccelerometerResult(List<AccelerometerData> data) {
+
+    }
+
+    @Override
+    public void onStatisticsByDay(List<LocationModel> data) {
+        mStatisticAdapter.addAll(data);
+    }
+
+    @Override
+    public void onLocations(ArrayList<LocationModel> data) {
+        StatisticsDialog dialog = new StatisticsDialog();
+        Bundle bundle = new Bundle();
+        bundle.putParcelableArrayList(LocationModel.class.getSimpleName(), data);
+        dialog.setArguments(bundle);
+        dialog.setTargetFragment(this, StatisticsDialog.REQ_CODE_LOCATIONS);
+        dialog.show(getChildFragmentManager(), StatisticsDialog.class.getSimpleName());
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == StatisticsDialog.REQ_CODE_LOCATIONS && resultCode == Activity.RESULT_OK){
+            if (data != null){
+                mListener.onStatisticCallback(data.getBundleExtra(LocationModel.class.getSimpleName()));
+            }
+        }
 
     }
 
     public interface OnFragmentDataStatisticCallback {
-        void onCallback();
+        void onStatisticCallback(Bundle data);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d(TAG, "onDestroy: ");
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        Log.d(TAG, "onDetach: ");
     }
 }

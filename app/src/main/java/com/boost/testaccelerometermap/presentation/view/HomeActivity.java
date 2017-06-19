@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -24,7 +25,7 @@ public class HomeActivity extends AppCompatActivity implements MapFragment.OnFra
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        setNewFragment(MapFragment.newInstance());
+        setNewFragment(MapFragment.newInstance(), false);
     }
 
     @Override
@@ -37,20 +38,18 @@ public class HomeActivity extends AppCompatActivity implements MapFragment.OnFra
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_history) {
-            setNewFragment(DataStatisticFragment.newInstance());
+            setNewFragment(DataStatisticFragment.newInstance(), true);
         }
         return true;
     }
 
-    private void setNewFragment(Fragment fragment) {
-        getSupportFragmentManager()
-                .beginTransaction().replace(R.id.fl_container, fragment, fragment.getClass().getSimpleName())
-                .commit();
-    }
-
-    @Override
-    public void onCallback() {
-
+    private void setNewFragment(Fragment fragment, boolean addTobackStack) {
+        FragmentTransaction transaction = getSupportFragmentManager()
+                .beginTransaction().replace(R.id.fl_container, fragment, fragment.getClass().getSimpleName());
+        if (addTobackStack) {
+            transaction.addToBackStack(null);
+        }
+        transaction.commit();
     }
 
     @Override
@@ -64,5 +63,27 @@ public class HomeActivity extends AppCompatActivity implements MapFragment.OnFra
 
         }
         Log.d(TAG, "onActivityResult() called with: requestCode = [" + requestCode + "], resultCode = [" + resultCode + "], data = [" + data + "]");
+    }
+
+    @Override
+    public void onStatisticCallback(Bundle data) {
+        getSupportFragmentManager().popBackStack();
+        setNewFragment(MapFragment.newInstance(data), false);
+    }
+
+    @Override
+    public void onMapCallback() {
+
+    }
+
+    @Override
+    public void onBackPressed() {
+        int count = getSupportFragmentManager().getBackStackEntryCount();
+        Log.d(TAG, "onBackPressed: count " + count);
+        if (count == 0) {
+            super.onBackPressed();
+        } else {
+            getSupportFragmentManager().popBackStack();
+        }
     }
 }

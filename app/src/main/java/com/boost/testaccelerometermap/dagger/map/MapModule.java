@@ -36,30 +36,12 @@ public class MapModule {
 
     @MapScope
     @Provides
-    @Accelerometer
-    public DBDao providesAccelerometerDao(RealmAccelerometerDao realmDao){
+    public DBDao<LocationModel> providesLocationDao(RealmLocationDao realmDao){
         return realmDao;
     }
 
     @MapScope
     @Provides
-    @Location
-    public DBDao providesLocationDao(RealmLocationDao realmDao){
-        return realmDao;
-    }
-
-
-
-    @MapScope
-    @Provides
-    @Accelerometer
-    public Repository<AccelerometerData> providesAccelerometerRepository(AccelerometerRepositoryImpl accelerometerRepository){
-        return accelerometerRepository;
-    }
-
-    @MapScope
-    @Provides
-    @Location
     public Repository<LocationModel> providesLocationRepository(LocationRepositoryImpl locationRepository){
         return locationRepository;
     }

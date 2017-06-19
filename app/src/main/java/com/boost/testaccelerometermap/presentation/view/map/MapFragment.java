@@ -20,6 +20,7 @@ import com.boost.testaccelerometermap.presentation.model.AccelerometerData;
 import com.boost.testaccelerometermap.presentation.model.LocationModel;
 import com.boost.testaccelerometermap.presentation.model.LocationToLatLngMapper;
 import com.boost.testaccelerometermap.presentation.presenter.location.MapPresenterImpl;
+import com.boost.testaccelerometermap.presentation.utils.TimeUtils;
 import com.boost.testaccelerometermap.presentation.view.AccelerometerService;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -51,13 +52,27 @@ public class MapFragment extends Fragment implements
 
     private OnFragmentMapCallback mListener;
     private GoogleMap mGoogleMap;
+    // TODO: 19.06.17 for optimization
     private List<LatLng> mLatLngList = new ArrayList<>();
     private Intent mAccelerometerIntent;
+    private List<LocationModel> mLocationModels = new ArrayList<>();
 
     public static MapFragment newInstance() {
-        MapFragment fragment = new MapFragment();
+        return newInstance(new ArrayList<LocationModel>());
+    }
+
+    public static MapFragment newInstance(ArrayList<LocationModel> locations){
+        if (locations == null){
+            locations = new ArrayList<>();
+        }
         Bundle args = new Bundle();
-        fragment.setArguments(args);
+        args.putParcelableArrayList(LocationModel.class.getSimpleName(), locations);
+        return newInstance(args);
+    }
+
+    public static MapFragment newInstance(Bundle data){
+        MapFragment fragment = new MapFragment();
+        fragment.setArguments(data);
         return fragment;
     }
 
@@ -79,7 +94,6 @@ public class MapFragment extends Fragment implements
                 .utilsComponent(MyApplication.getApp().getAppComponent())
                 .mapModule(new MapModule(this)).build()
                 .inject(this);
-
     }
 
     @Override
@@ -94,11 +108,14 @@ public class MapFragment extends Fragment implements
         mMapPresenter.onAttachView(this);
     }
 
+//    public void dummyData(){
+//        List<LocationModel>
+//    };
+
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         initMap(savedInstanceState);
-        mListener.onCallback();
     }
 
     private void initMap(Bundle savedInstanceState) {
@@ -120,23 +137,49 @@ public class MapFragment extends Fragment implements
     @Override
     public void onLocationTriggered(Location location) {
         Log.d(TAG, "onLocationTriggered: " + location);
-        if (mGoogleMap != null){
+        if (mGoogleMap != null) {
+            if (mLocationModels.isEmpty()) {
+                Log.d(TAG, "onLocationTriggered: first time");
+                mLocationModels.add(new LocationModel(location));
+            }
             mMapPresenter.saveLocation(new LocationModel(location));
             mLatLngList.add(LocationToLatLngMapper.convertToLatLng(location));
-
-            PolylineOptions polylineOptions = new PolylineOptions();
-            polylineOptions.color(Color.RED);
-            polylineOptions.addAll(mLatLngList);
-            Polyline polyline = mGoogleMap.addPolyline(polylineOptions);
-            polyline.setWidth(12);
-            mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(mLatLngList.get(mLatLngList.size() - 1)));
+            if (isSameDay()) {
+                Log.d(TAG, "onLocationTriggered: size " + mLatLngList.size());
+                drawTrackLine(mLatLngList);
+            }
         }
+    }
+
+    private boolean isSameDay() {
+        return !mLocationModels.isEmpty() && mLocationModels.get(0).getDayInMillis() == TimeUtils.getResetedDayInMillis();
+    }
+
+    private void drawTrackLine(List<LatLng> latLngList){
+        PolylineOptions polylineOptions = new PolylineOptions();
+        polylineOptions.color(Color.BLUE);
+        polylineOptions.addAll(latLngList);
+        Polyline polyline = mGoogleMap.addPolyline(polylineOptions);
+        polyline.setWidth(12);
+        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(latLngList.get(latLngList.size() - 1)));
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mGoogleMap = googleMap;
         mGoogleMap.moveCamera(CameraUpdateFactory.zoomTo(STREET_ZOOM));
+        if (getArguments() != null) {
+            showHistory();
+        }
+    }
+
+    private void showHistory() {
+        mLocationModels.clear();
+        mLocationModels = getArguments().getParcelableArrayList(LocationModel.class.getSimpleName());
+        if (mLocationModels != null && !mLocationModels.isEmpty()) {
+            Log.d(TAG, "showHistory: " + mLocationModels.size());
+            drawTrackLine(LocationToLatLngMapper.convertToLatLngList(mLocationModels));
+        }
     }
 
     @OnClick(R.id.btn_start_service)
@@ -175,8 +218,15 @@ public class MapFragment extends Fragment implements
     }
 
     @Override
+    public void onStop() {
+        super.onStop();
+        mMapPresenter.onDetachView();
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
+        Log.d(TAG, "onDestroy: ");
         // TODO: 29.05.17 stop location updates
         mGoogleMapView.onDestroy();
     }
@@ -190,7 +240,7 @@ public class MapFragment extends Fragment implements
     @Override
     public void onDetach() {
         super.onDetach();
-        mMapPresenter.onDetachView();
+        Log.d(TAG, "onDetach: ");
         mListener = null;
     }
 
@@ -199,6 +249,6 @@ public class MapFragment extends Fragment implements
     }
 
     public interface OnFragmentMapCallback {
-        void onCallback();
+        void onMapCallback();
     }
 }

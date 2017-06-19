@@ -22,53 +22,17 @@ import javax.inject.Inject;
 
 public class MapPresenterImpl implements MapPresenter {
     private static final String TAG = "MapPresenterImpl";
-    Repository<AccelerometerData> mAccelerometerRepository;
+
     Repository<LocationModel> mLocationRepository;
 
     private LocationHelper mLocationHelper;
     private GoogleMapView mMapView;
 
     @Inject
-    public MapPresenterImpl(@Location Repository<LocationModel> locationRepository,
-                            @Accelerometer Repository<AccelerometerData> accelerometerRepository,
+    public MapPresenterImpl(Repository<LocationModel> locationRepository,
                             LocationHelper locationHelper) {
         mLocationRepository = locationRepository;
-        mAccelerometerRepository = accelerometerRepository;
         mLocationHelper = locationHelper;
-    }
-
-    @Override
-    public void getAllAccelerometerData() {
-        mAccelerometerRepository.getAll(new RepositoryCallback<List<AccelerometerData>>() {
-            @Override
-            public void onResult(List data) {
-                Log.d(TAG, "onResult yeah: " + data.size());
-                if (mMapView == null) return;
-                mMapView.showAll(data);
-            }
-
-            @Override
-            public void onError(Error error) {
-
-            }
-        });
-    }
-
-    @Override
-    public void getAllLocationData() {
-        mAccelerometerRepository.getAll(new RepositoryCallback<List<AccelerometerData>>() {
-            @Override
-            public void onResult(List data) {
-                Log.d(TAG, "onResult yeah: " + data.size());
-                if (mMapView == null) return;
-                mMapView.showAll(data);
-            }
-
-            @Override
-            public void onError(Error error) {
-
-            }
-        });
     }
 
     @Override
@@ -76,6 +40,7 @@ public class MapPresenterImpl implements MapPresenter {
         mLocationHelper.requestLocation(new LocationHelper.LocationCallback() {
             @Override
             public void onLocation(android.location.Location location) {
+                if (mMapView == null) return;
                 mMapView.onLocationTriggered(location);
             }
         });

@@ -7,4 +7,6 @@
     <string name="start">start</string>
     <string name="stop">stop</string>
     <string name="history">history</string>
+    <string name="location_pattern">lat: %1$.2f long: %2$.2f</string>
+    <string name="show_on_map">Show on map</string>
 </resources>

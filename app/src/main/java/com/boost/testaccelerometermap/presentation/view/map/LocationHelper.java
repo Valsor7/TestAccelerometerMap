@@ -93,7 +93,7 @@ public class LocationHelper implements LocationListener, ResultCallback, Permiss
     @Override
     public void onResult(@NonNull Result result) {
         Status status = result.getStatus();
-        Log.d(TAG, "onResult: status " + status.getStatusCode());
+        Log.d(TAG, "onStatisticsByDay: status " + status.getStatusCode());
         switch (status.getStatusCode()) {
             case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
                 try {
@@ -103,11 +103,11 @@ public class LocationHelper implements LocationListener, ResultCallback, Permiss
                 }
                 break;
             case LocationSettingsStatusCodes.SUCCESS:
-                Log.d(TAG, "onResult: success setting changed");
+                Log.d(TAG, "onStatisticsByDay: success setting changed");
                 checkPermission(Manifest.permission.ACCESS_FINE_LOCATION);
                 break;
             case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
-                Log.d(TAG, "onResult: Change unavailable" + LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE);
+                Log.d(TAG, "onStatisticsByDay: Change unavailable" + LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE);
                 break;
         }
     }
@@ -166,7 +166,9 @@ public class LocationHelper implements LocationListener, ResultCallback, Permiss
     }
 
     public void removeLocationListener() {
-        LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
+        if (mGoogleApiClient.isConnected()) {
+            LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
+        }
     }
 
     public interface LocationCallback {

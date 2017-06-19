@@ -1,6 +1,7 @@
 package com.boost.testaccelerometermap.data.repository;
 
 import com.boost.testaccelerometermap.dagger.map.qualifiers.Accelerometer;
+import com.boost.testaccelerometermap.data.MyError;
 import com.boost.testaccelerometermap.data.Network;
 import com.boost.testaccelerometermap.data.db.DBDao;
 import com.boost.testaccelerometermap.presentation.model.AccelerometerData;
@@ -29,8 +30,17 @@ public class AccelerometerRepositoryImpl extends Repository<AccelerometerData> {
 //        if (mNetwork.isNetwork()){
 //
 //        } else {
-//            mDbDao.getAllAccelerometerData(callback);
+//            mDbDao.getAccelerometerDataInRange(callback);
 //        }
+    }
+
+    @Override
+    public void getInRange(long from, long to, RepositoryCallback<List<AccelerometerData>> callback) {
+        if (from < to) {
+            mDbDao.getInRange(from, to, callback);
+        } else {
+            callback.onError(MyError.RANGE_ERROR);
+        }
     }
 
     @Override

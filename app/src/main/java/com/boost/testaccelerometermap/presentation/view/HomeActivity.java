@@ -20,7 +20,7 @@ import com.google.android.gms.maps.GoogleMap;
 public class HomeActivity extends AppCompatActivity implements MapFragment.OnFragmentMapCallback, DataStatisticFragment.OnFragmentDataStatisticCallback {
     private static final String TAG = "HomeActivity";
     private GoogleMap mMap;
-
+    private DaggerBuildManager mDaggerManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

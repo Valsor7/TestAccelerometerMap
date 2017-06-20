@@ -56,6 +56,7 @@ public class MapFragment extends Fragment implements
     private List<LatLng> mLatLngList = new ArrayList<>();
     private Intent mAccelerometerIntent;
     private List<LocationModel> mLocationModels = new ArrayList<>();
+    private PolylineOptions mPolylineOptions = new PolylineOptions();
 
     public static MapFragment newInstance() {
         return newInstance(new ArrayList<LocationModel>());
@@ -108,10 +109,6 @@ public class MapFragment extends Fragment implements
         mMapPresenter.onAttachView(this);
     }
 
-//    public void dummyData(){
-//        List<LocationModel>
-//    };
-
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -156,10 +153,9 @@ public class MapFragment extends Fragment implements
     }
 
     private void drawTrackLine(List<LatLng> latLngList){
-        PolylineOptions polylineOptions = new PolylineOptions();
-        polylineOptions.color(Color.BLUE);
-        polylineOptions.addAll(latLngList);
-        Polyline polyline = mGoogleMap.addPolyline(polylineOptions);
+        mPolylineOptions.color(Color.BLUE);
+        mPolylineOptions.addAll(latLngList);
+        Polyline polyline = mGoogleMap.addPolyline(mPolylineOptions);
         polyline.setWidth(12);
         mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(latLngList.get(latLngList.size() - 1)));
     }
@@ -220,7 +216,6 @@ public class MapFragment extends Fragment implements
     @Override
     public void onStop() {
         super.onStop();
-        mMapPresenter.onDetachView();
     }
 
     @Override
@@ -229,6 +224,7 @@ public class MapFragment extends Fragment implements
         Log.d(TAG, "onDestroy: ");
         // TODO: 29.05.17 stop location updates
         mGoogleMapView.onDestroy();
+        mMapPresenter.onDetachView();
     }
 
     @Override

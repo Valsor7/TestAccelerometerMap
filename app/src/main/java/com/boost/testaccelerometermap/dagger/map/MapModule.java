@@ -1,5 +1,7 @@
 package com.boost.testaccelerometermap.dagger.map;
 
+import android.app.Activity;
+
 import com.boost.testaccelerometermap.dagger.map.qualifiers.Accelerometer;
 import com.boost.testaccelerometermap.dagger.map.qualifiers.Location;
 import com.boost.testaccelerometermap.data.db.DBDao;
@@ -22,16 +24,16 @@ import dagger.Provides;
 @Module
 public class MapModule {
 
-    private MapFragment mFragment;
+    private Activity mActivity;
 
-    public MapModule(MapFragment fragment) {
-        mFragment = fragment;
+    public MapModule(Activity activity) {
+        mActivity = activity;
     }
 
     @MapScope
     @Provides
     public LocationHelper providesLocationHelper(){
-        return new LocationHelper(mFragment.getActivity());
+        return new LocationHelper(mActivity);
     }
 
     @MapScope

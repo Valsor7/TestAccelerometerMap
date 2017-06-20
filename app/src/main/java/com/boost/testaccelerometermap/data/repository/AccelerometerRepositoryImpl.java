@@ -1,6 +1,5 @@
 package com.boost.testaccelerometermap.data.repository;
 
-import com.boost.testaccelerometermap.dagger.map.qualifiers.Accelerometer;
 import com.boost.testaccelerometermap.data.MyError;
 import com.boost.testaccelerometermap.data.Network;
 import com.boost.testaccelerometermap.data.db.DBDao;
@@ -19,19 +18,14 @@ public class AccelerometerRepositoryImpl extends Repository<AccelerometerData> {
     private final DBDao<AccelerometerData> mDbDao;
 
     @Inject
-    public AccelerometerRepositoryImpl(Network network, @Accelerometer DBDao dbDao) {
-        this.mNetwork = network;
+    public AccelerometerRepositoryImpl(Network network, DBDao<AccelerometerData> dbDao) {
+        mNetwork = network;
         mDbDao = dbDao;
     }
 
     @Override
     public void getAll(RepositoryCallback<List<AccelerometerData>> callback) {
         mDbDao.getAllData(callback);
-//        if (mNetwork.isNetwork()){
-//
-//        } else {
-//            mDbDao.getAccelerometerDataInRange(callback);
-//        }
     }
 
     @Override
@@ -41,6 +35,11 @@ public class AccelerometerRepositoryImpl extends Repository<AccelerometerData> {
         } else {
             callback.onError(MyError.RANGE_ERROR);
         }
+    }
+
+    @Override
+    public void add(AccelerometerData item) {
+        mDbDao.save(item);
     }
 
     @Override

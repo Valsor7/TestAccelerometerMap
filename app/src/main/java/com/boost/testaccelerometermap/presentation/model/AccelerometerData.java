@@ -50,6 +50,8 @@ public class AccelerometerData extends RealmObject {
                 "x=" + x +
                 ", y=" + y +
                 ", z=" + z +
+                ", time=" + timestamp +
+
                 '}';
     }
 }

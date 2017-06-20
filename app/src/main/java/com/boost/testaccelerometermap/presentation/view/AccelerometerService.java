@@ -18,6 +18,7 @@ import com.boost.testaccelerometermap.data.repository.Repository;
 import com.boost.testaccelerometermap.presentation.model.AccelerometerData;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -28,7 +29,7 @@ import javax.inject.Inject;
 
 public class AccelerometerService extends Service implements SensorEventListener2 {
     private static final String TAG = "AccelerometerService";
-    private static final int THRESHOLD_SIZE = 10;
+    private static final int THRESHOLD_SIZE = 20;
     private SensorManager mSensorManager;
     private List<AccelerometerData> mAccelerometerDataList = new ArrayList<>();
     @Inject
@@ -75,7 +76,6 @@ public class AccelerometerService extends Service implements SensorEventListener
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-//        Log.d(TAG, "onSensorChanged: " + event);
         AccelerometerData data = new AccelerometerData();
         data.setX(event.values[0]);
         data.setY(event.values[1]);
@@ -83,7 +83,7 @@ public class AccelerometerService extends Service implements SensorEventListener
         data.setTimestamp(System.currentTimeMillis());
         mAccelerometerDataList.add(data);
         if (mAccelerometerDataList.size() > THRESHOLD_SIZE){
-            mRepository.addAll(mAccelerometerDataList);
+            mRepository.addAll(new ArrayList<>(mAccelerometerDataList));
             mAccelerometerDataList.clear();
         }
     }

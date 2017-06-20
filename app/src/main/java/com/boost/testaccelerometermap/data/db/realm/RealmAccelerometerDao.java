@@ -5,6 +5,7 @@ import android.util.Log;
 import com.boost.testaccelerometermap.data.db.DBDao;
 import com.boost.testaccelerometermap.data.repository.RepositoryCallback;
 import com.boost.testaccelerometermap.presentation.model.AccelerometerData;
+import com.boost.testaccelerometermap.presentation.model.LocationModel;
 
 import java.util.List;
 
@@ -31,27 +32,14 @@ public class RealmAccelerometerDao implements DBDao<AccelerometerData> {
     @Override
     public void getAllData(final RepositoryCallback<List<AccelerometerData>> callback) {
         Log.d(TAG, "getAllData: ");
-        mRealm.executeTransactionAsync(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                callback.onResult(realm.where(AccelerometerData.class).findAll());
-            }
-        });
+        final RealmResults<AccelerometerData> realmResults = mRealm.where(AccelerometerData.class).findAllAsync();
+        getAllData(realmResults, callback);
     }
 
     @Override
     public void getInRange(final long from, final long to, final RepositoryCallback<List<AccelerometerData>> callback) {
         final RealmResults<AccelerometerData> realmResults = mRealm.where(AccelerometerData.class).between("timestamp", from, to).findAllAsync();
-        realmResults.addChangeListener(new RealmChangeListener<RealmResults<AccelerometerData>>() {
-            @Override
-            public void onChange(RealmResults<AccelerometerData> accelerometerData) {
-                Log.d(TAG, "onChange: ");
-                if(accelerometerData != null && accelerometerData.isValid() && accelerometerData.isLoaded()) {
-                    realmResults.removeAllChangeListeners();
-                    callback.onResult(accelerometerData);
-                }
-            }
-        });
+        getAllData(realmResults, callback);
     }
 
     @Override
@@ -59,25 +47,39 @@ public class RealmAccelerometerDao implements DBDao<AccelerometerData> {
 
     }
 
-    @Override
-    public void saveAll(final List<AccelerometerData> items) {
-        mRealm.executeTransactionAsync(new Realm.Transaction() {
+    private void getAllData(final RealmResults<AccelerometerData> queryResults, final RepositoryCallback<List<AccelerometerData>> callback){
+        queryResults.addChangeListener(new RealmChangeListener<RealmResults<AccelerometerData>>() {
             @Override
-            public void execute(Realm realm) {
-                for (AccelerometerData item : items) {
-                    AccelerometerData dbData = realm.createObject(AccelerometerData.class);
-                    dbData.setX(item.getX());
-                    dbData.setY(item.getY());
-                    dbData.setZ(item.getZ());
-                    dbData.setTimestamp(item.getTimestamp());
+            public void onChange(RealmResults<AccelerometerData> accelerometerData) {
+                Log.d(TAG, "onChange: ");
+                if(accelerometerData != null && accelerometerData.isValid() && accelerometerData.isLoaded()) {
+                    queryResults.removeAllChangeListeners();
+                    callback.onResult(accelerometerData);
                 }
             }
         });
     }
 
     @Override
-    public void save(AccelerometerData item) {
+    public void saveAll(final List<AccelerometerData> items) {
+        Log.d(TAG, "saveAll: " + items.size());
+        mRealm.executeTransactionAsync(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                Log.d(TAG, "execute: async" + items.size());
+                realm.copyToRealm(items);
+            }
+        });
+    }
 
+    @Override
+    public void save(final AccelerometerData item) {
+        mRealm.executeTransactionAsync(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                realm.copyToRealm(item);
+            }
+        });
     }
 
 

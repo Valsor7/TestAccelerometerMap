@@ -12,8 +12,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
 
 import com.boost.testaccelerometermap.R;
+import com.boost.testaccelerometermap.dagger.statistics.DaggerStatisticsComponent;
 import com.boost.testaccelerometermap.data.Network;
 import com.boost.testaccelerometermap.data.db.realm.RealmAccelerometerDao;
 import com.boost.testaccelerometermap.data.db.realm.RealmLocationDao;
@@ -22,6 +24,7 @@ import com.boost.testaccelerometermap.data.repository.LocationRepositoryImpl;
 import com.boost.testaccelerometermap.presentation.model.AccelerometerData;
 import com.boost.testaccelerometermap.presentation.model.LocationModel;
 import com.boost.testaccelerometermap.presentation.presenter.statistics.StatisticPresenterImpl;
+import com.boost.testaccelerometermap.presentation.view.DaggerBuildManager;
 import com.boost.testaccelerometermap.presentation.view.statistics.adapter.StatisticAdapter;
 
 import java.util.ArrayList;
@@ -77,15 +80,13 @@ public class DataStatisticFragment extends Fragment implements StatisticView{
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         ButterKnife.bind(this, view);
         // TODO: 19.06.17 remake to dagger
-        mStatisticPresenter =
-                new StatisticPresenterImpl(
-                        new LocationRepositoryImpl(new RealmLocationDao()),
-                        new AccelerometerRepositoryImpl(new Network(getContext().getApplicationContext()), new RealmAccelerometerDao()));
-
-        mStatisticPresenter.onAttachView(this);
+//        mStatisticPresenter =
+//                new StatisticPresenterImpl(
+//                        new LocationRepositoryImpl(new RealmLocationDao()),
+//                        new AccelerometerRepositoryImpl(new Network(getContext().getApplicationContext()), new RealmAccelerometerDao()));
+//        DaggerStatisticsComponent component = DaggerStatisticsComponent.builder().accelerometerComponent(DaggerBuildManager.buildAccelerometerComponent()).
+//        mStatisticPresenter.onAttachView(this);
         initRecyclerView();
-        mStatisticPresenter.getStatistics();
-        mStatisticPresenter.getAccelerometerDataInRange(1497871606089L, 1497885024385L);
     }
 
     private void initRecyclerView() {
@@ -132,7 +133,6 @@ public class DataStatisticFragment extends Fragment implements StatisticView{
                 mListener.onStatisticCallback(data.getBundleExtra(LocationModel.class.getSimpleName()));
             }
         }
-
     }
 
     public interface OnFragmentDataStatisticCallback {

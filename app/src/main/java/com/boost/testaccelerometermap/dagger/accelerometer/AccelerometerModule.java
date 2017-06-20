@@ -18,8 +18,7 @@ public class AccelerometerModule {
 
     @AccelerometerScope
     @Provides
-    @Accelerometer
-    public DBDao providesDao(RealmAccelerometerDao realmDao){
+    public DBDao<AccelerometerData> providesDao(RealmAccelerometerDao realmDao){
         return realmDao;
     }
 

@@ -34,6 +34,19 @@ public class StatisticPresenterImpl implements StatisticPresenter {
     @Override
     public void onAttachView(BaseView view) {
         mStatisticView = (StatisticView) view;
+        mAccelerometerRepository.getInRange(1497958219483L, 1497958219745L, new RepositoryCallback<List<AccelerometerData>>() {
+            @Override
+            public void onResult(List<AccelerometerData> data) {
+                for (AccelerometerData accelerometerData : data) {
+                    Log.d(TAG, "onResult:" + accelerometerData);
+                }
+            }
+
+            @Override
+            public void onError(MyError error) {
+
+            }
+        });
     }
 
     @Override

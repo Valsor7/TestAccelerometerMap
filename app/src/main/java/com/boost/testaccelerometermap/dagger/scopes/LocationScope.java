@@ -1,4 +1,4 @@
-package com.boost.testaccelerometermap.dagger.map;
+package com.boost.testaccelerometermap.dagger.scopes;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
@@ -13,6 +13,6 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Scope
 @Documented
 @Retention(RUNTIME)
-public @interface MapScope {
+public @interface LocationScope {
 
 }

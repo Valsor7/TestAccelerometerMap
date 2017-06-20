@@ -1,6 +1,6 @@
-package com.boost.testaccelerometermap.dagger.accelerometer;
+package com.boost.testaccelerometermap.dagger.modules;
 
-import com.boost.testaccelerometermap.dagger.map.qualifiers.Accelerometer;
+import com.boost.testaccelerometermap.dagger.scopes.LocationScope;
 import com.boost.testaccelerometermap.data.db.DBDao;
 import com.boost.testaccelerometermap.data.db.realm.RealmAccelerometerDao;
 import com.boost.testaccelerometermap.data.repository.AccelerometerRepositoryImpl;
@@ -16,15 +16,15 @@ import dagger.Provides;
 @Module
 public class AccelerometerModule {
 
-    @AccelerometerScope
+    @LocationScope
     @Provides
     public DBDao<AccelerometerData> providesDao(RealmAccelerometerDao realmDao){
         return realmDao;
     }
 
-    @AccelerometerScope
+    @LocationScope
     @Provides
-    public Repository<AccelerometerData> provideAccelerometerRepository(AccelerometerRepositoryImpl mapRepository){
-        return mapRepository;
+    public Repository<AccelerometerData> provideAccelerometerRepository(AccelerometerRepositoryImpl accelerometerRepository){
+        return accelerometerRepository;
     }
 }

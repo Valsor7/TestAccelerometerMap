@@ -1,4 +1,4 @@
-package com.boost.testaccelerometermap.dagger;
+package com.boost.testaccelerometermap.dagger.modules;
 
 import android.content.Context;
 

@@ -14,8 +14,6 @@ import android.view.ViewGroup;
 
 import com.boost.testaccelerometermap.MyApplication;
 import com.boost.testaccelerometermap.R;
-import com.boost.testaccelerometermap.dagger.map.DaggerMapComponent;
-import com.boost.testaccelerometermap.dagger.map.MapModule;
 import com.boost.testaccelerometermap.presentation.model.AccelerometerData;
 import com.boost.testaccelerometermap.presentation.model.LocationModel;
 import com.boost.testaccelerometermap.presentation.model.LocationToLatLngMapper;
@@ -86,15 +84,6 @@ public class MapFragment extends Fragment implements
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
         }
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        DaggerMapComponent.builder()
-                .utilsComponent(MyApplication.getApp().getAppComponent())
-                .mapModule(new MapModule(this)).build()
-                .inject(this);
     }
 
     @Override
@@ -225,19 +214,13 @@ public class MapFragment extends Fragment implements
         // TODO: 29.05.17 stop location updates
         mGoogleMapView.onDestroy();
         mMapPresenter.onDetachView();
+        mListener = null;
     }
 
     @Override
     public void onLowMemory() {
         super.onLowMemory();
         mGoogleMapView.onLowMemory();
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        Log.d(TAG, "onDetach: ");
-        mListener = null;
     }
 
     public void onSettingsAccepted() {

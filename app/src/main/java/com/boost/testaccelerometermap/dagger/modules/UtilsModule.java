@@ -1,4 +1,4 @@
-package com.boost.testaccelerometermap.dagger;
+package com.boost.testaccelerometermap.dagger.modules;
 
 import com.boost.testaccelerometermap.MyApplication;
 import com.boost.testaccelerometermap.data.Network;

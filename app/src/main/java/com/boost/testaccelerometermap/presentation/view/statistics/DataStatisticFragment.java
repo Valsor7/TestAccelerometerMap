@@ -31,7 +31,7 @@ import butterknife.ButterKnife;
  * Created by yaroslav on 07.06.17.
  */
 
-public class DataStatisticFragment extends Fragment implements StatisticView{
+public class DataStatisticFragment extends Fragment implements StatisticView {
     private static final String TAG = "DataStatisticFragment";
     @BindView(R.id.rv_statistics)
     RecyclerView mStatisticsRecyclerView;
@@ -121,6 +121,8 @@ public class DataStatisticFragment extends Fragment implements StatisticView{
         if (requestCode == StatisticsDialog.REQ_CODE_LOCATIONS && resultCode == Activity.RESULT_OK){
             if (data != null){
                 mListener.onStatisticCallback(data.getBundleExtra(LocationModel.class.getSimpleName()));
+            } else {
+                mStatisticPresenter.getAccelerometerDataInRange();
             }
         }
     }

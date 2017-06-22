@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.boost.testaccelerometermap.R;
+import com.boost.testaccelerometermap.presentation.model.DataCallback;
 import com.boost.testaccelerometermap.presentation.model.LocationModel;
 import com.boost.testaccelerometermap.presentation.view.statistics.adapter.LocationsAdapter;
 
@@ -31,6 +32,7 @@ public class StatisticsDialog extends DialogFragment {
     public static int REQ_CODE_LOCATIONS = 22002;
     @BindView(R.id.rv_locations)
     RecyclerView mLocationsRv;
+    private LocationsAdapter mLocationsAdapter;
 
     @Nullable
     @Override
@@ -45,10 +47,20 @@ public class StatisticsDialog extends DialogFragment {
     }
 
     private void initRecyclerView() {
-        LocationsAdapter adapter = new LocationsAdapter();
-        adapter.addAll(getLocationsFromBundle());
+        mLocationsAdapter = new LocationsAdapter(new DataCallback<View>() {
+            @Override
+            public void onResult(View view) {
+                Intent intent = new Intent();
+                intent.
+                int pos = mLocationsRv.getChildAdapterPosition(view);
+                LocationModel model = mLocationsAdapter.getItemByPosition(pos);
+                getTargetFragment().onActivityResult(REQ_CODE_LOCATIONS, Activity.RESULT_OK, null);
+
+            }
+        });
+        mLocationsAdapter.addAll(getLocationsFromBundle());
         mLocationsRv.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mLocationsRv.setAdapter(adapter);
+        mLocationsRv.setAdapter(mLocationsAdapter);
     }
 
     private List<LocationModel> getLocationsFromBundle(){

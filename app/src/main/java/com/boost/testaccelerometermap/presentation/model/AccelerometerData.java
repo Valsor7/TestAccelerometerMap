@@ -1,16 +1,38 @@
 package com.boost.testaccelerometermap.presentation.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import io.realm.RealmObject;
 
 /**
  * Created by yaroslav on 24.05.17.
  */
 
-public class AccelerometerData extends RealmObject {
+public class AccelerometerData extends RealmObject implements Parcelable {
     private float x;
     private float y;
     private float z;
     private long timestamp;
+
+    protected AccelerometerData(Parcel in) {
+        x = in.readFloat();
+        y = in.readFloat();
+        z = in.readFloat();
+        timestamp = in.readLong();
+    }
+
+    public static final Creator<AccelerometerData> CREATOR = new Creator<AccelerometerData>() {
+        @Override
+        public AccelerometerData createFromParcel(Parcel in) {
+            return new AccelerometerData(in);
+        }
+
+        @Override
+        public AccelerometerData[] newArray(int size) {
+            return new AccelerometerData[size];
+        }
+    };
 
     public float getX() {
         return x;
@@ -53,5 +75,18 @@ public class AccelerometerData extends RealmObject {
                 ", time=" + timestamp +
 
                 '}';
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeFloat(x);
+        dest.writeFloat(y);
+        dest.writeFloat(z);
+        dest.writeLong(timestamp);
     }
 }

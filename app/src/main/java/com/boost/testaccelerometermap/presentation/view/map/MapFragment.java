@@ -93,7 +93,7 @@ public class MapFragment extends Fragment implements
         super.onCreate(savedInstanceState);
         DaggerMapComponent.builder()
                 .utilsComponent(MyApplication.getApp().getAppComponent())
-                .mapModule(new MapModule(this)).build()
+                .mapModule(new MapModule(getActivity())).build()
                 .inject(this);
     }
 

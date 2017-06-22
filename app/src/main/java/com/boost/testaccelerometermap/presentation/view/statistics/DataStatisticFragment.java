@@ -12,23 +12,17 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
 
 import com.boost.testaccelerometermap.R;
-import com.boost.testaccelerometermap.dagger.statistics.DaggerStatisticsComponent;
-import com.boost.testaccelerometermap.data.Network;
-import com.boost.testaccelerometermap.data.db.realm.RealmAccelerometerDao;
-import com.boost.testaccelerometermap.data.db.realm.RealmLocationDao;
-import com.boost.testaccelerometermap.data.repository.AccelerometerRepositoryImpl;
-import com.boost.testaccelerometermap.data.repository.LocationRepositoryImpl;
 import com.boost.testaccelerometermap.presentation.model.AccelerometerData;
 import com.boost.testaccelerometermap.presentation.model.LocationModel;
 import com.boost.testaccelerometermap.presentation.presenter.statistics.StatisticPresenterImpl;
-import com.boost.testaccelerometermap.presentation.view.DaggerBuildManager;
 import com.boost.testaccelerometermap.presentation.view.statistics.adapter.StatisticAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -43,7 +37,9 @@ public class DataStatisticFragment extends Fragment implements StatisticView{
     RecyclerView mStatisticsRecyclerView;
 
     private DataStatisticFragment.OnFragmentDataStatisticCallback mListener;
-    private StatisticPresenterImpl mStatisticPresenter;
+    @Inject
+    StatisticPresenterImpl mStatisticPresenter;
+
     private StatisticAdapter mStatisticAdapter;
 
 
@@ -79,13 +75,7 @@ public class DataStatisticFragment extends Fragment implements StatisticView{
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         ButterKnife.bind(this, view);
-        // TODO: 19.06.17 remake to dagger
-//        mStatisticPresenter =
-//                new StatisticPresenterImpl(
-//                        new LocationRepositoryImpl(new RealmLocationDao()),
-//                        new AccelerometerRepositoryImpl(new Network(getContext().getApplicationContext()), new RealmAccelerometerDao()));
-//        DaggerStatisticsComponent component = DaggerStatisticsComponent.builder().accelerometerComponent(DaggerBuildManager.buildAccelerometerComponent()).
-//        mStatisticPresenter.onAttachView(this);
+        mStatisticPresenter.onAttachView(this);
         initRecyclerView();
     }
 
@@ -142,12 +132,7 @@ public class DataStatisticFragment extends Fragment implements StatisticView{
     @Override
     public void onDestroy() {
         super.onDestroy();
+        mStatisticPresenter.onDetachView();
         Log.d(TAG, "onDestroy: ");
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        Log.d(TAG, "onDetach: ");
     }
 }

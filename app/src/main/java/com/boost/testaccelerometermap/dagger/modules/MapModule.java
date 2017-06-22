@@ -1,19 +1,14 @@
-package com.boost.testaccelerometermap.dagger.map;
+package com.boost.testaccelerometermap.dagger.modules;
 
 import android.app.Activity;
 
-import com.boost.testaccelerometermap.dagger.map.qualifiers.Accelerometer;
-import com.boost.testaccelerometermap.dagger.map.qualifiers.Location;
+import com.boost.testaccelerometermap.dagger.scopes.LocationScope;
 import com.boost.testaccelerometermap.data.db.DBDao;
-import com.boost.testaccelerometermap.data.db.realm.RealmAccelerometerDao;
 import com.boost.testaccelerometermap.data.db.realm.RealmLocationDao;
-import com.boost.testaccelerometermap.data.repository.AccelerometerRepositoryImpl;
 import com.boost.testaccelerometermap.data.repository.LocationRepositoryImpl;
 import com.boost.testaccelerometermap.data.repository.Repository;
-import com.boost.testaccelerometermap.presentation.model.AccelerometerData;
 import com.boost.testaccelerometermap.presentation.model.LocationModel;
 import com.boost.testaccelerometermap.presentation.view.map.LocationHelper;
-import com.boost.testaccelerometermap.presentation.view.map.MapFragment;
 
 import dagger.Module;
 import dagger.Provides;
@@ -30,19 +25,19 @@ public class MapModule {
         mActivity = activity;
     }
 
-    @MapScope
+    @LocationScope
     @Provides
     public LocationHelper providesLocationHelper(){
         return new LocationHelper(mActivity);
     }
 
-    @MapScope
+    @LocationScope
     @Provides
     public DBDao<LocationModel> providesLocationDao(RealmLocationDao realmDao){
         return realmDao;
     }
 
-    @MapScope
+    @LocationScope
     @Provides
     public Repository<LocationModel> providesLocationRepository(LocationRepositoryImpl locationRepository){
         return locationRepository;

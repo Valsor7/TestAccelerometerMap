@@ -2,10 +2,7 @@ package com.boost.testaccelerometermap.data.repository;
 
 import android.util.Log;
 
-import com.boost.testaccelerometermap.dagger.map.qualifiers.Accelerometer;
-import com.boost.testaccelerometermap.dagger.map.qualifiers.Location;
 import com.boost.testaccelerometermap.data.db.DBDao;
-import com.boost.testaccelerometermap.presentation.model.AccelerometerData;
 import com.boost.testaccelerometermap.presentation.model.LocationModel;
 
 import java.util.List;

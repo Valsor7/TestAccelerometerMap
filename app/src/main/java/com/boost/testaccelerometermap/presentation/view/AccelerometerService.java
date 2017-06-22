@@ -12,13 +12,11 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.boost.testaccelerometermap.MyApplication;
-import com.boost.testaccelerometermap.dagger.accelerometer.AccelerometerModule;
-import com.boost.testaccelerometermap.dagger.accelerometer.DaggerAccelerometerComponent;
+import com.boost.testaccelerometermap.dagger.components.DaggerServiceComponent;
 import com.boost.testaccelerometermap.data.repository.Repository;
 import com.boost.testaccelerometermap.presentation.model.AccelerometerData;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -40,14 +38,11 @@ public class AccelerometerService extends Service implements SensorEventListener
         super.onCreate();
         initDI();
         initAccelerometer();
-
-        MyApplication.getApp().getAppComponent();
     }
 
     private void initDI() {
-        DaggerAccelerometerComponent.builder()
+        DaggerServiceComponent.builder()
                 .utilsComponent(MyApplication.getApp().getAppComponent())
-                .accelerometerModule(new AccelerometerModule())
                 .build()
                 .inject(this);
     }
@@ -82,7 +77,7 @@ public class AccelerometerService extends Service implements SensorEventListener
         data.setZ(event.values[2]);
         data.setTimestamp(System.currentTimeMillis());
         mAccelerometerDataList.add(data);
-        if (mAccelerometerDataList.size() > THRESHOLD_SIZE){
+        if (mAccelerometerDataList.size() > THRESHOLD_SIZE) {
             mRepository.addAll(new ArrayList<>(mAccelerometerDataList));
             mAccelerometerDataList.clear();
         }

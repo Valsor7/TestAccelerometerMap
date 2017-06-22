@@ -1,18 +1,10 @@
 package com.boost.testaccelerometermap.presentation.presenter.location;
 
-import android.util.Log;
-
-import com.boost.testaccelerometermap.dagger.map.qualifiers.Accelerometer;
-import com.boost.testaccelerometermap.dagger.map.qualifiers.Location;
 import com.boost.testaccelerometermap.data.repository.Repository;
-import com.boost.testaccelerometermap.data.repository.RepositoryCallback;
-import com.boost.testaccelerometermap.presentation.model.AccelerometerData;
 import com.boost.testaccelerometermap.presentation.model.LocationModel;
 import com.boost.testaccelerometermap.presentation.view.BaseView;
 import com.boost.testaccelerometermap.presentation.view.map.GoogleMapView;
 import com.boost.testaccelerometermap.presentation.view.map.LocationHelper;
-
-import java.util.List;
 
 import javax.inject.Inject;
 

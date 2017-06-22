@@ -12,7 +12,11 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.boost.testaccelerometermap.Constants;
+import com.boost.testaccelerometermap.MyApplication;
 import com.boost.testaccelerometermap.R;
+import com.boost.testaccelerometermap.dagger.components.DaggerLocationComponent;
+import com.boost.testaccelerometermap.dagger.components.LocationComponent;
+import com.boost.testaccelerometermap.dagger.modules.MapModule;
 import com.boost.testaccelerometermap.presentation.view.map.MapFragment;
 import com.boost.testaccelerometermap.presentation.view.statistics.DataStatisticFragment;
 import com.google.android.gms.maps.GoogleMap;
@@ -20,13 +24,21 @@ import com.google.android.gms.maps.GoogleMap;
 public class HomeActivity extends AppCompatActivity implements MapFragment.OnFragmentMapCallback, DataStatisticFragment.OnFragmentDataStatisticCallback {
     private static final String TAG = "HomeActivity";
     private GoogleMap mMap;
-    private DaggerBuildManager mDaggerManager;
+    private LocationComponent mDIComponent;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
+        mDIComponent = DaggerLocationComponent.builder()
+                .utilsComponent(MyApplication.getApp().getAppComponent())
+                .mapModule(new MapModule(this))
+                .build();
+
         setNewFragment(MapFragment.newInstance(), false);
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -44,12 +56,24 @@ public class HomeActivity extends AppCompatActivity implements MapFragment.OnFra
     }
 
     private void setNewFragment(Fragment fragment, boolean addTobackStack) {
+        inject(fragment);
+
         FragmentTransaction transaction = getSupportFragmentManager()
-                .beginTransaction().replace(R.id.fl_container, fragment, fragment.getClass().getSimpleName());
+                .beginTransaction()
+                .replace(R.id.fl_container, fragment, fragment.getClass().getSimpleName());
         if (addTobackStack) {
             transaction.addToBackStack(null);
         }
         transaction.commit();
+    }
+
+    private void inject(Fragment fragment){
+        if (fragment instanceof MapFragment){
+            mDIComponent.inject((MapFragment) fragment);
+        }
+        if (fragment instanceof DataStatisticFragment){
+            mDIComponent.inject((DataStatisticFragment) fragment);
+        }
     }
 
     @Override

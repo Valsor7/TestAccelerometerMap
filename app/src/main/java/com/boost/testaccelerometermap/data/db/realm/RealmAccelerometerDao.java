@@ -37,6 +37,11 @@ public class RealmAccelerometerDao implements DBDao<AccelerometerData> {
     }
 
     @Override
+    public void getAllById(long id, RepositoryCallback<List<AccelerometerData>> callback) {
+
+    }
+
+    @Override
     public void getInRange(final long from, final long to, final RepositoryCallback<List<AccelerometerData>> callback) {
         final RealmResults<AccelerometerData> realmResults = mRealm.where(AccelerometerData.class).between("timestamp", from, to).findAllAsync();
         getAllData(realmResults, callback);
@@ -62,11 +67,9 @@ public class RealmAccelerometerDao implements DBDao<AccelerometerData> {
 
     @Override
     public void saveAll(final List<AccelerometerData> items) {
-        Log.d(TAG, "saveAll: " + items.size());
         mRealm.executeTransactionAsync(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
-                Log.d(TAG, "execute: async" + items.size());
                 realm.copyToRealm(items);
             }
         });

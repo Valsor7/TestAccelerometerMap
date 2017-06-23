@@ -10,6 +10,7 @@ import java.util.List;
 
 public interface DBDao<T> {
     void getAllData(RepositoryCallback<List<T>> callback);
+    void getAllById(long id, RepositoryCallback<List<T>> callback);
     void getInRange(long from, long to, RepositoryCallback<List<T>> callback);
     void getAllUnique(RepositoryCallback<List<T>> callback);
     void saveAll(List<T> items);

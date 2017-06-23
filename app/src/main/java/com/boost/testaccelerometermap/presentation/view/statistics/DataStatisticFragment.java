@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 
 import com.boost.testaccelerometermap.R;
 import com.boost.testaccelerometermap.presentation.model.AccelerometerData;
+import com.boost.testaccelerometermap.presentation.model.LocationGroup;
 import com.boost.testaccelerometermap.presentation.model.LocationModel;
 import com.boost.testaccelerometermap.presentation.presenter.statistics.StatisticPresenterImpl;
 import com.boost.testaccelerometermap.presentation.view.statistics.adapter.StatisticAdapter;
@@ -62,11 +63,6 @@ public class DataStatisticFragment extends Fragment implements StatisticView {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_statistics, container, false);
@@ -77,6 +73,7 @@ public class DataStatisticFragment extends Fragment implements StatisticView {
         ButterKnife.bind(this, view);
         mStatisticPresenter.onAttachView(this);
         initRecyclerView();
+        mStatisticPresenter.getStatistics();
     }
 
     private void initRecyclerView() {
@@ -92,10 +89,6 @@ public class DataStatisticFragment extends Fragment implements StatisticView {
         mStatisticsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
     }
 
-    private void updateData(){
-        mStatisticPresenter.getStatistics();
-    }
-
     @Override
     public void onAccelerometerResult(List<AccelerometerData> data) {
 
@@ -107,11 +100,9 @@ public class DataStatisticFragment extends Fragment implements StatisticView {
     }
 
     @Override
-    public void onLocations(ArrayList<LocationModel> data) {
-        StatisticsDialog dialog = new StatisticsDialog();
-        Bundle bundle = new Bundle();
-        bundle.putParcelableArrayList(LocationModel.class.getSimpleName(), data);
-        dialog.setArguments(bundle);
+    public void onLocations(List<LocationModel> data) {
+        StatisticsDialog dialog =
+                StatisticsDialog.newInstance(LocationGroup.parseFromLocationsList(data, getString(R.string.location_pattern)));
         dialog.setTargetFragment(this, StatisticsDialog.REQ_CODE_LOCATIONS);
         dialog.show(getChildFragmentManager(), StatisticsDialog.class.getSimpleName());
     }
@@ -122,7 +113,7 @@ public class DataStatisticFragment extends Fragment implements StatisticView {
             if (data != null){
                 mListener.onStatisticCallback(data.getBundleExtra(LocationModel.class.getSimpleName()));
             } else {
-                mStatisticPresenter.getAccelerometerDataInRange();
+//                mStatisticPresenter.getAccelerometerDataInRange();
             }
         }
     }

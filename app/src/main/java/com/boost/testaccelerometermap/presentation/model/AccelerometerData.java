@@ -22,6 +22,9 @@ public class AccelerometerData extends RealmObject implements Parcelable {
         timestamp = in.readLong();
     }
 
+    public AccelerometerData() {
+    }
+
     public static final Creator<AccelerometerData> CREATOR = new Creator<AccelerometerData>() {
         @Override
         public AccelerometerData createFromParcel(Parcel in) {
@@ -88,5 +91,9 @@ public class AccelerometerData extends RealmObject implements Parcelable {
         dest.writeFloat(y);
         dest.writeFloat(z);
         dest.writeLong(timestamp);
+    }
+
+    public String getTitle(){
+        return "x: " + x + "y: " + y + "z: " + z;
     }
 }

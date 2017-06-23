@@ -49,7 +49,7 @@ public class RealmAccelerometerDao implements DBDao<AccelerometerData> {
 
     @Override
     public void getAllUnique(RepositoryCallback<List<AccelerometerData>> callback) {
-
+        Log.d(TAG, "getAllUnique: ");
     }
 
     private void getAllData(final RealmResults<AccelerometerData> queryResults, final RepositoryCallback<List<AccelerometerData>> callback){

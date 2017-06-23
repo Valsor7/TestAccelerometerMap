@@ -8,12 +8,14 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.boost.testaccelerometermap.R;
 import com.boost.testaccelerometermap.presentation.model.DataCallback;
+import com.boost.testaccelerometermap.presentation.model.LocationGroup;
 import com.boost.testaccelerometermap.presentation.model.LocationModel;
 import com.boost.testaccelerometermap.presentation.view.statistics.adapter.LocationsAdapter;
 
@@ -29,6 +31,7 @@ import butterknife.OnClick;
  */
 
 public class StatisticsDialog extends DialogFragment {
+    private static final String TAG = "StatisticsDialog";
     public static int REQ_CODE_LOCATIONS = 22002;
     @BindView(R.id.rv_locations)
     RecyclerView mLocationsRv;
@@ -47,28 +50,27 @@ public class StatisticsDialog extends DialogFragment {
     }
 
     private void initRecyclerView() {
-        mLocationsAdapter = new LocationsAdapter(new DataCallback<View>() {
+        mLocationsAdapter = new LocationsAdapter(getLocationsFromBundle(), new DataCallback<View>() {
             @Override
             public void onResult(View view) {
                 Intent intent = new Intent();
-                intent.
-                int pos = mLocationsRv.getChildAdapterPosition(view);
-                LocationModel model = mLocationsAdapter.getItemByPosition(pos);
-                getTargetFragment().onActivityResult(REQ_CODE_LOCATIONS, Activity.RESULT_OK, null);
+//                int pos = mLocationsRv.getChildAdapterPosition(view);
+//                LocationModel model = mLocationsAdapter.getItemByPosition(pos);
+//                getTargetFragment().onActivityResult(REQ_CODE_LOCATIONS, Activity.RESULT_OK, null);
 
             }
         });
-        mLocationsAdapter.addAll(getLocationsFromBundle());
         mLocationsRv.setLayoutManager(new LinearLayoutManager(getActivity()));
         mLocationsRv.setAdapter(mLocationsAdapter);
     }
 
-    private List<LocationModel> getLocationsFromBundle(){
-        List<LocationModel> locationModels = getArguments().getParcelableArrayList(LocationModel.class.getSimpleName());
-        if (locationModels == null){
-            return new ArrayList<>();
+    private List<LocationGroup> getLocationsFromBundle(){
+        List<LocationGroup> locationsGroup = getArguments().getParcelableArrayList(LocationGroup.class.getSimpleName());
+        if (locationsGroup == null){
+            locationsGroup = new ArrayList<>();
         }
-        return locationModels;
+        Log.d(TAG, "getLocationsFromBundle: size " + locationsGroup.size());
+        return locationsGroup;
     }
 
     @OnClick(R.id.btn_on_map)
@@ -77,5 +79,13 @@ public class StatisticsDialog extends DialogFragment {
         intent.putExtra(LocationModel.class.getSimpleName(), getArguments());
         getTargetFragment().onActivityResult(REQ_CODE_LOCATIONS, Activity.RESULT_OK, intent);
         dismiss();
+    }
+
+    public static StatisticsDialog newInstance(ArrayList<LocationGroup> locationGroups) {
+        StatisticsDialog dialog = new StatisticsDialog();
+        Bundle bundle = new Bundle();
+        bundle.putParcelableArrayList(LocationGroup.class.getSimpleName(), locationGroups);
+        dialog.setArguments(bundle);
+        return dialog;
     }
 }

@@ -18,6 +18,7 @@ import io.realm.RealmResults;
  */
 
 public class LocationModel extends RealmObject implements Parcelable {
+    public static final String DAY_FIELD = "dayInMillis";
     private double latitude;
     private double longitude;
     private long timestamp;

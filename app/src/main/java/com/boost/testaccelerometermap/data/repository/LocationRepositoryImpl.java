@@ -28,8 +28,12 @@ public class LocationRepositoryImpl extends Repository<LocationModel> {
     }
 
     @Override
+    public void getAllById(long id, RepositoryCallback<List<LocationModel>> callback) {
+        mLocationDBDao.getAllById(id, callback);
+    }
+
+    @Override
     public void add(LocationModel item) {
-        Log.d(TAG, "add: " + item);
         mLocationDBDao.save(item);
     }
 

@@ -27,8 +27,16 @@ public class RealmLocationDao implements DBDao<LocationModel> {
 
     @Override
     public void getAllData(final RepositoryCallback<List<LocationModel>> callback) {
+        Log.d(TAG, "getAllData: query");
         Realm realm = Realm.getDefaultInstance();
         RealmResults<LocationModel> realmResults = realm.where(LocationModel.class).findAllAsync();
+        getAllData(realmResults, callback);
+    }
+
+    @Override
+    public void getAllById(long id, RepositoryCallback<List<LocationModel>> callback) {
+        Realm realm = Realm.getDefaultInstance();
+        RealmResults<LocationModel> realmResults = realm.where(LocationModel.class).equalTo(LocationModel.DAY_FIELD, id).findAllAsync();
         getAllData(realmResults, callback);
     }
 
@@ -40,17 +48,19 @@ public class RealmLocationDao implements DBDao<LocationModel> {
     @Override
     public void getAllUnique(final RepositoryCallback<List<LocationModel>> callback) {
         Realm realm = Realm.getDefaultInstance();
-        RealmResults<LocationModel> realmResults = realm.where(LocationModel.class).distinctAsync("dayInMillis");
+        RealmResults<LocationModel> realmResults = realm.where(LocationModel.class).distinctAsync(LocationModel.DAY_FIELD);
         getAllData(realmResults, callback);
     }
 
+    // TODO: 23.06.17 check if close realm not preventing from data  load.
     private void getAllData(final RealmResults<LocationModel> queryResults, final RepositoryCallback<List<LocationModel>> callback){
+        Log.d(TAG, "getAllData: ");
         queryResults.addChangeListener(new RealmChangeListener<RealmResults<LocationModel>>() {
             @Override
             public void onChange(RealmResults<LocationModel> locationModels) {
                 Log.d(TAG, "onChange: ");
                 if(locationModels != null && locationModels.isValid() && locationModels.isLoaded()) {
-                    Log.d(TAG, "onChange: models" + locationModels);
+                    Log.d(TAG, "onChange: models" + locationModels.size());
                     queryResults.removeAllChangeListeners();
                     callback.onResult(locationModels);
                 }

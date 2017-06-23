@@ -35,24 +35,11 @@ public class StatisticPresenterImpl implements StatisticPresenter {
     @Override
     public void onAttachView(BaseView view) {
         mStatisticView = (StatisticView) view;
-        mAccelerometerRepository.getInRange(1497958219483L, System.currentTimeMillis(), new RepositoryCallback<List<AccelerometerData>>() {
-            @Override
-            public void onResult(List<AccelerometerData> data) {
-                for (AccelerometerData accelerometerData : data) {
-                    Log.d(TAG, "onResult:" + accelerometerData);
-                }
-            }
-
-            @Override
-            public void onError(MyError error) {
-
-            }
-        });
     }
 
     @Override
     public void onDetachView() {
-
+        mStatisticView = null;
     }
 
     @Override
@@ -75,6 +62,7 @@ public class StatisticPresenterImpl implements StatisticPresenter {
 
     @Override
     public void getStatistics(){
+        Log.d(TAG, "getStatistics: ");
         mLocationRepository.getAllUnique(new RepositoryCallback<List<LocationModel>>() {
             @Override
             public void onResult(List<LocationModel> data) {
@@ -90,10 +78,11 @@ public class StatisticPresenterImpl implements StatisticPresenter {
 
     @Override
     public void getLocations(long dayInMillis) {
-        mLocationRepository.getAll(new RepositoryCallback<List<LocationModel>>() {
+        Log.d(TAG, "getLocations: " + dayInMillis);
+        mLocationRepository.getAllById(dayInMillis, new RepositoryCallback<List<LocationModel>>() {
             @Override
             public void onResult(List<LocationModel> data) {
-                mStatisticView.onLocations(new ArrayList<>(data));
+                mStatisticView.onLocations(data);
             }
 
             @Override

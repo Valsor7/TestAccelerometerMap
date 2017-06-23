@@ -122,7 +122,7 @@ public class MapFragment extends Fragment implements
 
     @Override
     public void onLocationTriggered(Location location) {
-        Log.d(TAG, "onLocationTriggered: " + location);
+//        Log.d(TAG, "onLocationTriggered: " + location);
         if (mGoogleMap != null) {
             if (mLocationModels.isEmpty()) {
                 Log.d(TAG, "onLocationTriggered: first time");
@@ -131,7 +131,7 @@ public class MapFragment extends Fragment implements
             mMapPresenter.saveLocation(new LocationModel(location));
             mLatLngList.add(LocationToLatLngMapper.convertToLatLng(location));
             if (isSameDay()) {
-                Log.d(TAG, "onLocationTriggered: size " + mLatLngList.size());
+//                Log.d(TAG, "onLocationTriggered: size " + mLatLngList.size());
                 drawTrackLine(mLatLngList);
             }
         }

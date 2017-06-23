@@ -15,5 +15,5 @@ public interface StatisticView extends BaseView{
     void onAccelerometerResult(List<AccelerometerData> data);
     void onStatisticsByDay(List<LocationModel> data);
 
-    void onLocations(ArrayList<LocationModel> data);
+    void onLocations(List<LocationModel> data);
 }

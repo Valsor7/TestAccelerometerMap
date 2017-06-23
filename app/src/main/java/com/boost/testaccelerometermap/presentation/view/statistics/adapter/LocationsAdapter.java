@@ -7,15 +7,17 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.boost.testaccelerometermap.R;
+import com.boost.testaccelerometermap.presentation.model.AccelerometerData;
 import com.boost.testaccelerometermap.presentation.model.DataCallback;
 import com.boost.testaccelerometermap.presentation.model.LocationModel;
-import com.boost.testaccelerometermap.presentation.model.LocationsGroup;
+import com.boost.testaccelerometermap.presentation.model.LocationGroup;
 import com.thoughtbot.expandablerecyclerview.ExpandableRecyclerViewAdapter;
 import com.thoughtbot.expandablerecyclerview.models.ExpandableGroup;
 import com.thoughtbot.expandablerecyclerview.viewholders.ChildViewHolder;
 import com.thoughtbot.expandablerecyclerview.viewholders.GroupViewHolder;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import butterknife.BindView;
@@ -28,19 +30,13 @@ import butterknife.OnClick;
 
 public class LocationsAdapter extends ExpandableRecyclerViewAdapter<LocationsAdapter.LocationsGroupViewHolder, LocationsAdapter.AccelerometerViewHolder> {
     private static final String TAG = "StatisticAdapter";
-    private List<LocationsGroup> mLocationGroups = new ArrayList<>();
-    private List<LocationModel> mLocationModels = new ArrayList<>();
+    private List<LocationGroup> mLocationGroups = new ArrayList<>();
     private DataCallback<View> mCallback;
 
 
-    public LocationsAdapter(List<? extends ExpandableGroup> groups,  DataCallback<View> callback) {
+    public LocationsAdapter(List<LocationGroup> groups,  DataCallback<View> callback) {
         super(groups);
         mCallback = callback;
-    }
-
-    @Override
-    public int getItemCount() {
-        return mLocations.size();
     }
 
     @Override
@@ -57,22 +53,23 @@ public class LocationsAdapter extends ExpandableRecyclerViewAdapter<LocationsAda
 
     @Override
     public void onBindChildViewHolder(AccelerometerViewHolder holder, int flatPosition, ExpandableGroup group, int childIndex) {
-
+        holder.bind((AccelerometerData) group.getItems().get(childIndex));
     }
 
     @Override
     public void onBindGroupViewHolder(LocationsGroupViewHolder holder, int flatPosition, ExpandableGroup group) {
         Log.d(TAG, "onBindGroupViewHolder flatPosition: " + flatPosition);
-        holder.bind(mLocations.get(flatPosition));
+        holder.bind((LocationGroup) group);
     }
 
-    public void addAll(List<LocationModel> data) {
-        mLocations.addAll(data);
+    public void addAll(List<LocationGroup> groupList) {
+        mLocationGroups.clear();
+        mLocationGroups.addAll(groupList);
         notifyDataSetChanged();
     }
 
     class LocationsGroupViewHolder extends GroupViewHolder {
-
+        private static final String TAG = "LocationsGroupViewHolde";
         @BindView(R.id.tv_data)
         TextView mLocationTv;
 
@@ -81,11 +78,9 @@ public class LocationsAdapter extends ExpandableRecyclerViewAdapter<LocationsAda
             ButterKnife.bind(this, itemView);
         }
 
-        public void bind(LocationModel model) {
-            Log.d(TAG, "bind: model lat" + model.getLatitude() + " long " + model.getLongitude());
-
-            String pattern = itemView.getContext().getString(R.string.location_pattern, model.getLatitude(), model.getLongitude());
-            mLocationTv.setText(pattern);
+        public void bind(LocationGroup locationGroup) {
+            Log.d(TAG, "bind: " + locationGroup.getTitle());
+            mLocationTv.setText(locationGroup.getTitle());
         }
 
         @OnClick(R.id.ll_data_container)
@@ -95,8 +90,20 @@ public class LocationsAdapter extends ExpandableRecyclerViewAdapter<LocationsAda
     }
 
     class AccelerometerViewHolder extends ChildViewHolder {
+        private static final String TAG = "AccelerometerViewHolder";
+        @BindView(R.id.tv_data)
+        TextView mAccelerometerTv;
+
         public AccelerometerViewHolder(View itemView) {
             super(itemView);
+            ButterKnife.bind(this, itemView);
+        }
+
+        public void bind(AccelerometerData data){
+            Log.d(TAG, "bind: " + data);
+            if (data != null) {
+                mAccelerometerTv.setText(data.getTitle());
+            }
         }
     }
 }

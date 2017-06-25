@@ -1,6 +1,5 @@
 package com.boost.testaccelerometermap.presentation.view.statistics;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,10 +16,10 @@ import com.boost.testaccelerometermap.R;
 import com.boost.testaccelerometermap.presentation.model.AccelerometerData;
 import com.boost.testaccelerometermap.presentation.model.LocationGroup;
 import com.boost.testaccelerometermap.presentation.model.LocationModel;
+import com.boost.testaccelerometermap.presentation.model.TimestampInRange;
 import com.boost.testaccelerometermap.presentation.presenter.statistics.StatisticPresenterImpl;
 import com.boost.testaccelerometermap.presentation.view.statistics.adapter.StatisticAdapter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -42,6 +41,7 @@ public class DataStatisticFragment extends Fragment implements StatisticView {
     StatisticPresenterImpl mStatisticPresenter;
 
     private StatisticAdapter mStatisticAdapter;
+    private StatisticsDialog mDialog;
 
 
     public static DataStatisticFragment newInstance() {
@@ -91,7 +91,9 @@ public class DataStatisticFragment extends Fragment implements StatisticView {
 
     @Override
     public void onAccelerometerResult(List<AccelerometerData> data) {
-
+        if (mDialog != null){
+            mDialog.onAccelerometerDataLoaded(data);
+        }
     }
 
     @Override
@@ -101,19 +103,23 @@ public class DataStatisticFragment extends Fragment implements StatisticView {
 
     @Override
     public void onLocations(List<LocationModel> data) {
-        StatisticsDialog dialog =
+        mDialog =
                 StatisticsDialog.newInstance(LocationGroup.parseFromLocationsList(data, getString(R.string.location_pattern)));
-        dialog.setTargetFragment(this, StatisticsDialog.REQ_CODE_LOCATIONS);
-        dialog.show(getChildFragmentManager(), StatisticsDialog.class.getSimpleName());
+        mDialog.setTargetFragment(this, StatisticsDialog.REQ_CODE_LOCATIONS);
+        mDialog.show(getChildFragmentManager(), StatisticsDialog.class.getSimpleName());
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == StatisticsDialog.REQ_CODE_LOCATIONS && resultCode == Activity.RESULT_OK){
-            if (data != null){
-                mListener.onStatisticCallback(data.getBundleExtra(LocationModel.class.getSimpleName()));
-            } else {
-//                mStatisticPresenter.getAccelerometerDataInRange();
+        if (data != null) {
+            switch (requestCode) {
+                case StatisticsDialog.REQ_CODE_LOCATIONS:
+                    mListener.onStatisticCallback(data.getBundleExtra(LocationModel.class.getSimpleName()));
+                    break;
+                case StatisticsDialog.REQ_CODE_ACCELEROMETER:
+                    TimestampInRange timestampInRange = data.getParcelableExtra(TimestampInRange.class.getSimpleName());
+                    mStatisticPresenter.getAccelerometerDataInRange(timestampInRange);
+                    break;
             }
         }
     }

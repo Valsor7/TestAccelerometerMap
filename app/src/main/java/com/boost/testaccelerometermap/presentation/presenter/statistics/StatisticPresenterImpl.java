@@ -7,6 +7,7 @@ import com.boost.testaccelerometermap.data.repository.Repository;
 import com.boost.testaccelerometermap.data.repository.RepositoryCallback;
 import com.boost.testaccelerometermap.presentation.model.AccelerometerData;
 import com.boost.testaccelerometermap.presentation.model.LocationModel;
+import com.boost.testaccelerometermap.presentation.model.TimestampInRange;
 import com.boost.testaccelerometermap.presentation.view.BaseView;
 import com.boost.testaccelerometermap.presentation.view.statistics.StatisticView;
 
@@ -42,10 +43,11 @@ public class StatisticPresenterImpl implements StatisticPresenter {
         mStatisticView = null;
     }
 
+
     @Override
-    public void getAccelerometerDataInRange(long timestampFrom, long timestampTo) {
-        Log.d(TAG, "getAccelerometerDataInRange() called with: timestampFrom = [" + timestampFrom + "], timestampTo = [" + timestampTo + "]");
-        mAccelerometerRepository.getInRange(timestampFrom, timestampTo, new RepositoryCallback<List<AccelerometerData>>() {
+    public void getAccelerometerDataInRange(TimestampInRange timestampInRange) {
+        Log.d(TAG, "getAccelerometerDataInRange() called with: timestampInRange = [" + timestampInRange + "]");
+        mAccelerometerRepository.getInRange(timestampInRange.getFromTimestamp(), timestampInRange.getToTimestamp(), new RepositoryCallback<List<AccelerometerData>>() {
             @Override
             public void onResult(List<AccelerometerData> data) {
                 Log.d(TAG, "onAccelerometer data yeah: " + data.size());

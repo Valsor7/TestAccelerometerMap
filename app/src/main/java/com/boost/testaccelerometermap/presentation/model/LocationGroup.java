@@ -13,9 +13,14 @@ public class LocationGroup extends ExpandableGroup<AccelerometerData> {
     public LocationGroup(LocationModel locationModel, String title) {
         super(title, new ArrayList<AccelerometerData>());
         this.locationModel = locationModel;
+        setDummy();
     }
 
-    public static String makeTitle(LocationModel model, String pattern){
+    private void setDummy() {
+        getItems().add(new AccelerometerData());
+    }
+
+    public static String makeTitle(LocationModel model, String pattern) {
         return String.format(pattern, model.getLatitude(), model.getLongitude());
     }
 
@@ -23,7 +28,7 @@ public class LocationGroup extends ExpandableGroup<AccelerometerData> {
         return locationModel;
     }
 
-    public static ArrayList<LocationGroup> parseFromLocationsList(List<LocationModel> locationModels, String pattern){
+    public static ArrayList<LocationGroup> parseFromLocationsList(List<LocationModel> locationModels, String pattern) {
         ArrayList<LocationGroup> locationGroups = new ArrayList<>();
         for (LocationModel locationModel : locationModels) {
             locationGroups.add(new LocationGroup(locationModel, makeTitle(locationModel, pattern)));

@@ -96,4 +96,8 @@ public class AccelerometerData extends RealmObject implements Parcelable {
     public String getTitle(){
         return "x: " + x + "y: " + y + "z: " + z;
     }
+
+    public boolean isEmpty() {
+        return x == 0 && y == 0 && z == 0 && timestamp == 0;
+    }
 }

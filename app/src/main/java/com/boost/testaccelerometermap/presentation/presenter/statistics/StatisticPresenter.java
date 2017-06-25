@@ -1,6 +1,7 @@
 package com.boost.testaccelerometermap.presentation.presenter.statistics;
 
 import com.boost.testaccelerometermap.presentation.model.LocationModel;
+import com.boost.testaccelerometermap.presentation.model.TimestampInRange;
 import com.boost.testaccelerometermap.presentation.presenter.BasePresenter;
 
 /**
@@ -8,9 +9,9 @@ import com.boost.testaccelerometermap.presentation.presenter.BasePresenter;
  */
 
 interface StatisticPresenter extends BasePresenter {
-    void getAccelerometerDataInRange(long timestampFrom, long timestampTo);
-
     void getStatistics();
 
     void getLocations(long dayInMillis);
+
+    void getAccelerometerDataInRange(TimestampInRange timestampInRange);
 }

@@ -55,7 +55,7 @@ public class HomeActivity extends AppCompatActivity implements MapFragment.OnFra
         return true;
     }
 
-    private void setNewFragment(Fragment fragment, boolean addTobackStack) {
+    public void setNewFragment(Fragment fragment, boolean addTobackStack) {
         inject(fragment);
 
         FragmentTransaction transaction = getSupportFragmentManager()

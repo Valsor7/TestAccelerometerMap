@@ -4,6 +4,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.boost.testaccelerometermap.R;
@@ -11,6 +12,7 @@ import com.boost.testaccelerometermap.presentation.model.AccelerometerData;
 import com.boost.testaccelerometermap.presentation.model.DataCallback;
 import com.boost.testaccelerometermap.presentation.model.LocationModel;
 import com.boost.testaccelerometermap.presentation.model.LocationGroup;
+import com.boost.testaccelerometermap.presentation.model.TimestampInRange;
 import com.thoughtbot.expandablerecyclerview.ExpandableRecyclerViewAdapter;
 import com.thoughtbot.expandablerecyclerview.models.ExpandableGroup;
 import com.thoughtbot.expandablerecyclerview.viewholders.ChildViewHolder;
@@ -31,10 +33,11 @@ import butterknife.OnClick;
 public class LocationsAdapter extends ExpandableRecyclerViewAdapter<LocationsAdapter.LocationsGroupViewHolder, LocationsAdapter.AccelerometerViewHolder> {
     private static final String TAG = "StatisticAdapter";
     private List<LocationGroup> mLocationGroups = new ArrayList<>();
-    private DataCallback<View> mCallback;
+    private LocationGroup mExpanded;
+    private DataCallback<TimestampInRange> mCallback;
 
 
-    public LocationsAdapter(List<LocationGroup> groups,  DataCallback<View> callback) {
+    public LocationsAdapter(List<LocationGroup> groups,  DataCallback<TimestampInRange> callback) {
         super(groups);
         mCallback = callback;
     }
@@ -47,12 +50,13 @@ public class LocationsAdapter extends ExpandableRecyclerViewAdapter<LocationsAda
 
     @Override
     public AccelerometerViewHolder onCreateChildViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_statistic, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_accelerometer, parent, false);
         return new AccelerometerViewHolder(view);
     }
 
     @Override
     public void onBindChildViewHolder(AccelerometerViewHolder holder, int flatPosition, ExpandableGroup group, int childIndex) {
+        Log.d(TAG, "onBindChildViewHolder: " + childIndex);
         holder.bind((AccelerometerData) group.getItems().get(childIndex));
     }
 
@@ -68,10 +72,19 @@ public class LocationsAdapter extends ExpandableRecyclerViewAdapter<LocationsAda
         notifyDataSetChanged();
     }
 
+    public void addAccelerometerList(List<AccelerometerData> data) {
+        if (mExpanded != null) {
+            mExpanded.getItems().clear();
+            mExpanded.getItems().addAll(data);
+            notifyDataSetChanged();
+        }
+    }
+
     class LocationsGroupViewHolder extends GroupViewHolder {
         private static final String TAG = "LocationsGroupViewHolde";
         @BindView(R.id.tv_data)
         TextView mLocationTv;
+        private LocationGroup mLocationGroup;
 
         public LocationsGroupViewHolder(View itemView) {
             super(itemView);
@@ -80,30 +93,57 @@ public class LocationsAdapter extends ExpandableRecyclerViewAdapter<LocationsAda
 
         public void bind(LocationGroup locationGroup) {
             Log.d(TAG, "bind: " + locationGroup.getTitle());
+            mLocationGroup = locationGroup;
             mLocationTv.setText(locationGroup.getTitle());
         }
 
-        @OnClick(R.id.ll_data_container)
-        public void onClickLoad(View v){
-            mCallback.onResult(v);
+        @Override
+        public void expand() {
+            super.expand();
+            Log.d(TAG, "expand: ");
+            // TODO: 25.06.17 check if data is already in this list
+            mExpanded = mLocationGroup;
+
+            long fromTimestamp = mLocationGroup.getLocationModel().getTimestamp();
+            long toTimestamp = getNextElementTimestamp(mLocationGroups.indexOf(mLocationGroup));
+
+            mCallback.onResult(new TimestampInRange(fromTimestamp, toTimestamp));
+        }
+
+        private long getNextElementTimestamp(int indexOfElement) {
+            return indexOfElement + 1 < mLocationGroups.size() ?
+                    mLocationGroups.get(indexOfElement + 1).getLocationModel().getTimestamp() :
+                    System.currentTimeMillis();
         }
     }
 
     class AccelerometerViewHolder extends ChildViewHolder {
         private static final String TAG = "AccelerometerViewHolder";
-        @BindView(R.id.tv_data)
+        @BindView(R.id.tv_accelerometer)
         TextView mAccelerometerTv;
+
+        @BindView(R.id.progress_accelerometer)
+        ProgressBar mProgressBar;
 
         public AccelerometerViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
 
-        public void bind(AccelerometerData data){
+        public void bind(AccelerometerData data) {
             Log.d(TAG, "bind: " + data);
-            if (data != null) {
+
+            if (data.isEmpty()) {
+                Log.d(TAG, "bind: empty");
+                mProgressBar.setVisibility(View.VISIBLE);
+            } else {
+                mProgressBar.setVisibility(View.GONE);
                 mAccelerometerTv.setText(data.getTitle());
             }
         }
+    }
+
+    public interface LocationCallback {
+        public void onLocationSelected(long from, long to);
     }
 }

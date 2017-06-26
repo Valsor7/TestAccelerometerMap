@@ -16,6 +16,14 @@ public class TimestampInRange implements Parcelable{
         this.toTimestamp = toTimestamp;
     }
 
+    @Override
+    public String toString() {
+        return "TimestampInRange{" +
+                "fromTimestamp=" + fromTimestamp +
+                ", toTimestamp=" + toTimestamp +
+                '}';
+    }
+
     protected TimestampInRange(Parcel in) {
         fromTimestamp = in.readLong();
         toTimestamp = in.readLong();

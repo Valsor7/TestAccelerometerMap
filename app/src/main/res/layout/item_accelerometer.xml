@@ -11,7 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         tools:text="x:200 y: 300 z: 500"
-        android:text="1"
+        android:layout_margin="10dp"
         />
 
     <ProgressBar

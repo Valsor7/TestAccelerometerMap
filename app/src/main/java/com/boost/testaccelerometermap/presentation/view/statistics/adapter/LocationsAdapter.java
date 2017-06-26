@@ -13,6 +13,7 @@ import com.boost.testaccelerometermap.presentation.model.DataCallback;
 import com.boost.testaccelerometermap.presentation.model.LocationModel;
 import com.boost.testaccelerometermap.presentation.model.LocationGroup;
 import com.boost.testaccelerometermap.presentation.model.TimestampInRange;
+import com.boost.testaccelerometermap.presentation.utils.TimeUtils;
 import com.thoughtbot.expandablerecyclerview.ExpandableRecyclerViewAdapter;
 import com.thoughtbot.expandablerecyclerview.models.ExpandableGroup;
 import com.thoughtbot.expandablerecyclerview.viewholders.ChildViewHolder;
@@ -39,6 +40,7 @@ public class LocationsAdapter extends ExpandableRecyclerViewAdapter<LocationsAda
 
     public LocationsAdapter(List<LocationGroup> groups,  DataCallback<TimestampInRange> callback) {
         super(groups);
+        mLocationGroups = groups;
         mCallback = callback;
     }
 
@@ -100,8 +102,9 @@ public class LocationsAdapter extends ExpandableRecyclerViewAdapter<LocationsAda
         @Override
         public void expand() {
             super.expand();
-            Log.d(TAG, "expand: ");
+            Log.d(TAG, "expand: " + mLocationGroups.size());
             // TODO: 25.06.17 check if data is already in this list
+            // TODO: 25.06.17 last timestamp for that day
             mExpanded = mLocationGroup;
 
             long fromTimestamp = mLocationGroup.getLocationModel().getTimestamp();
@@ -110,10 +113,10 @@ public class LocationsAdapter extends ExpandableRecyclerViewAdapter<LocationsAda
             mCallback.onResult(new TimestampInRange(fromTimestamp, toTimestamp));
         }
 
-        private long getNextElementTimestamp(int indexOfElement) {
-            return indexOfElement + 1 < mLocationGroups.size() ?
-                    mLocationGroups.get(indexOfElement + 1).getLocationModel().getTimestamp() :
-                    System.currentTimeMillis();
+        private long getNextElementTimestamp(int position) {
+            return position + 1 < mLocationGroups.size() ?
+                    mLocationGroups.get(position + 1).getLocationModel().getTimestamp() :
+                    TimeUtils.getLastTimestampOfDay(mLocationGroups.get(position).getLocationModel().getTimestamp());
         }
     }
 

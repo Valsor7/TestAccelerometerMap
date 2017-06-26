@@ -23,10 +23,20 @@ public class TimeUtils {
         return cal.getTimeInMillis();
     }
 
-    public static String getTimeFromMillis(long millis){
+    public static String getFormattedTimeFromMillis(long millis){
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
         Date date = new Date();
         date.setTime(millis);
         return format.format(date);
+    }
+
+    public static long getLastTimestampOfDay(long timestamp){
+        GregorianCalendar cal = (GregorianCalendar) Calendar.getInstance();
+        cal.setTimeInMillis(timestamp);
+        cal.set(Calendar.HOUR_OF_DAY, cal.getActualMaximum(Calendar.HOUR_OF_DAY));
+        cal.set(Calendar.MINUTE,      cal.getActualMaximum(Calendar.MINUTE));
+        cal.set(Calendar.SECOND,      cal.getActualMaximum(Calendar.SECOND));
+        cal.set(Calendar.MILLISECOND, cal.getActualMaximum(Calendar.MILLISECOND));
+        return cal.getTimeInMillis();
     }
 }

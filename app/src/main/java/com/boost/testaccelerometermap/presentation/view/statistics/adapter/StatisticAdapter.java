@@ -1,7 +1,6 @@
 package com.boost.testaccelerometermap.presentation.view.statistics.adapter;
 
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -76,7 +75,7 @@ public class StatisticAdapter extends RecyclerView.Adapter<StatisticAdapter.Stat
         }
 
         public void bind(LocationModel model){
-            String displayTime = TimeUtils.getTimeFromMillis(model.getDayInMillis());
+            String displayTime = TimeUtils.getFormattedTimeFromMillis(model.getDayInMillis());
             Log.d(TAG, "bind: time " + displayTime);
             mPeriodTv.setText(displayTime);
         }

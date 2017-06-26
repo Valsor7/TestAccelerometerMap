@@ -13,11 +13,6 @@ public class LocationGroup extends ExpandableGroup<AccelerometerData> {
     public LocationGroup(LocationModel locationModel, String title) {
         super(title, new ArrayList<AccelerometerData>());
         this.locationModel = locationModel;
-        setDummy();
-    }
-
-    private void setDummy() {
-        getItems().add(new AccelerometerData());
     }
 
     public static String makeTitle(LocationModel model, String pattern) {

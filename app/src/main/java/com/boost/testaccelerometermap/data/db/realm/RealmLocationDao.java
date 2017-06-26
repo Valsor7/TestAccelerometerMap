@@ -52,7 +52,6 @@ public class RealmLocationDao implements DBDao<LocationModel> {
         getAllData(realmResults, callback);
     }
 
-    // TODO: 23.06.17 check if close realm not preventing from data  load.
     private void getAllData(final RealmResults<LocationModel> queryResults, final RepositoryCallback<List<LocationModel>> callback){
         Log.d(TAG, "getAllData: ");
         queryResults.addChangeListener(new RealmChangeListener<RealmResults<LocationModel>>() {

@@ -56,7 +56,6 @@ public class StatisticsDialog extends DialogFragment {
         mLocationsAdapter = new LocationsAdapter(getLocationsFromBundle(), new DataCallback<TimestampInRange>() {
             @Override
             public void onResult(TimestampInRange timestampInRange) {
-                // TODO: 25.06.17 check if model not null (maybe)
                 Log.d(TAG, "onResult:  locationmodel " + timestampInRange);
 
                 Intent intent = new Intent();

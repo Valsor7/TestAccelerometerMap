@@ -20,7 +20,7 @@ import io.realm.RealmConfiguration;
 public class MyApplication extends Application {
     private static MyApplication mApp;
     private UtilsComponent mUtilsComponent;
-    private boolean mServiceStarted;
+    private Intent mIntent;
 
     @Override
     public void onCreate() {
@@ -30,7 +30,6 @@ public class MyApplication extends Application {
         Realm.init(this);
         RealmConfiguration configuration = new RealmConfiguration.Builder().build();
         Realm.setDefaultConfiguration(configuration);
-        initAccelerometerService();
     }
 
     private void initAppComponent(){
@@ -40,8 +39,18 @@ public class MyApplication extends Application {
                 .build();
     }
 
-    private void initAccelerometerService(){
-        startService(new Intent(this, AccelerometerService.class));
+    public void startService(){
+        if (mIntent == null) {
+            mIntent = new Intent(this, AccelerometerService.class);
+            startService(mIntent);
+        }
+    }
+
+    public void stopService(){
+        if (mIntent != null){
+            stopService(mIntent);
+            mIntent = null;
+        }
     }
 
     public UtilsComponent getAppComponent() {
@@ -50,13 +59,5 @@ public class MyApplication extends Application {
 
     public static MyApplication getApp(){
         return mApp;
-    }
-
-    public boolean isServiceStarted() {
-        return mServiceStarted;
-    }
-
-    public void setServiceStarted(boolean serviceStarted) {
-        mServiceStarted = serviceStarted;
     }
 }

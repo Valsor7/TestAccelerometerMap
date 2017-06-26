@@ -51,7 +51,7 @@ public class MapPresenterImpl implements MapPresenter {
 
     @Override
     public void onDetachView() {
-        mMapView = null;
         mLocationHelper.removeLocationListener();
+        mMapView = null;
     }
 }

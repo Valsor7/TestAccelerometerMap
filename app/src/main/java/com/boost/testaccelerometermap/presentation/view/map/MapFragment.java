@@ -50,7 +50,7 @@ public class MapFragment extends Fragment implements
 
     private OnFragmentMapCallback mListener;
     private GoogleMap mGoogleMap;
-    // TODO: 19.06.17 for optimization
+    // for optimization
     private List<LatLng> mLatLngList = new ArrayList<>();
     private Intent mAccelerometerIntent;
     private List<LocationModel> mLocationModels = new ArrayList<>();
@@ -169,20 +169,12 @@ public class MapFragment extends Fragment implements
 
     @OnClick(R.id.btn_start_service)
     public void onClickStart(){
-        if (mAccelerometerIntent == null){
-            mAccelerometerIntent = new Intent(getActivity(), AccelerometerService.class);
-        }
-
-        if (!MyApplication.getApp().isServiceStarted()) {
-            getActivity().startService(mAccelerometerIntent);
-        }
+        MyApplication.getApp().startService();
     }
 
     @OnClick(R.id.btn_stop_service)
     public void onStopService(){
-        if (MyApplication.getApp().isServiceStarted()) {
-            getActivity().stopService(mAccelerometerIntent);
-        }
+        MyApplication.getApp().stopService();
     }
 
     @Override
@@ -211,7 +203,6 @@ public class MapFragment extends Fragment implements
     public void onDestroy() {
         super.onDestroy();
         Log.d(TAG, "onDestroy: ");
-        // TODO: 29.05.17 stop location updates
         mGoogleMapView.onDestroy();
         mMapPresenter.onDetachView();
         mListener = null;

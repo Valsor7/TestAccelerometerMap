@@ -22,17 +22,16 @@ import io.realm.RealmResults;
 public class RealmAccelerometerDao implements DBDao<AccelerometerData> {
     private static final String TAG = "RealmAccelerometerDao";
 
-    private Realm mRealm;
-
     @Inject
     public RealmAccelerometerDao() {
-        mRealm = Realm.getDefaultInstance();
+
     }
 
     @Override
     public void getAllData(final RepositoryCallback<List<AccelerometerData>> callback) {
         Log.d(TAG, "getAllData: ");
-        final RealmResults<AccelerometerData> realmResults = mRealm.where(AccelerometerData.class).findAllAsync();
+        Realm realm = Realm.getDefaultInstance();
+        final RealmResults<AccelerometerData> realmResults = realm.where(AccelerometerData.class).findAllAsync();
         getAllData(realmResults, callback);
     }
 
@@ -43,7 +42,8 @@ public class RealmAccelerometerDao implements DBDao<AccelerometerData> {
 
     @Override
     public void getInRange(final long from, final long to, final RepositoryCallback<List<AccelerometerData>> callback) {
-        final RealmResults<AccelerometerData> realmResults = mRealm.where(AccelerometerData.class).between("timestamp", from, to).findAllAsync();
+        Realm realm = Realm.getDefaultInstance();
+        final RealmResults<AccelerometerData> realmResults = realm.where(AccelerometerData.class).between("timestamp", from, to).findAllAsync();
         getAllData(realmResults, callback);
     }
 
@@ -67,7 +67,8 @@ public class RealmAccelerometerDao implements DBDao<AccelerometerData> {
 
     @Override
     public void saveAll(final List<AccelerometerData> items) {
-        mRealm.executeTransactionAsync(new Realm.Transaction() {
+        Realm realm = Realm.getDefaultInstance();
+        realm.executeTransactionAsync(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
                 realm.copyToRealm(items);
@@ -77,7 +78,8 @@ public class RealmAccelerometerDao implements DBDao<AccelerometerData> {
 
     @Override
     public void save(final AccelerometerData item) {
-        mRealm.executeTransactionAsync(new Realm.Transaction() {
+        Realm realm = Realm.getDefaultInstance();
+        realm.executeTransactionAsync(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
                 realm.copyToRealm(item);

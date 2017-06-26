@@ -38,7 +38,7 @@ public class LocationsAdapter extends ExpandableRecyclerViewAdapter<LocationsAda
     private DataCallback<TimestampInRange> mCallback;
 
 
-    public LocationsAdapter(List<LocationGroup> groups,  DataCallback<TimestampInRange> callback) {
+    public LocationsAdapter(List<LocationGroup> groups, DataCallback<TimestampInRange> callback) {
         super(groups);
         mLocationGroups = groups;
         mCallback = callback;
@@ -104,7 +104,6 @@ public class LocationsAdapter extends ExpandableRecyclerViewAdapter<LocationsAda
             super.expand();
             Log.d(TAG, "expand: " + mLocationGroups.size());
             // TODO: 25.06.17 check if data is already in this list
-            // TODO: 25.06.17 last timestamp for that day
             mExpanded = mLocationGroup;
 
             long fromTimestamp = mLocationGroup.getLocationModel().getTimestamp();
@@ -125,9 +124,6 @@ public class LocationsAdapter extends ExpandableRecyclerViewAdapter<LocationsAda
         @BindView(R.id.tv_accelerometer)
         TextView mAccelerometerTv;
 
-        @BindView(R.id.progress_accelerometer)
-        ProgressBar mProgressBar;
-
         public AccelerometerViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
@@ -135,14 +131,7 @@ public class LocationsAdapter extends ExpandableRecyclerViewAdapter<LocationsAda
 
         public void bind(AccelerometerData data) {
             Log.d(TAG, "bind: " + data);
-
-            if (data.isEmpty()) {
-                Log.d(TAG, "bind: empty");
-                mProgressBar.setVisibility(View.VISIBLE);
-            } else {
-                mProgressBar.setVisibility(View.GONE);
-                mAccelerometerTv.setText(data.getTitle());
-            }
+            mAccelerometerTv.setText(data.getTitle(itemView.getContext().getString(R.string.accelerometer_pattern)));
         }
     }
 

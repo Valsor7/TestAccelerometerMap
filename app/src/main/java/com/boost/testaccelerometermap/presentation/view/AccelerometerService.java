@@ -49,7 +49,6 @@ public class AccelerometerService extends Service implements SensorEventListener
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        MyApplication.getApp().setServiceStarted(true);
         Log.d(TAG, "onStartCommand: service started");
         return super.onStartCommand(intent, flags, startId);
     }
@@ -95,8 +94,7 @@ public class AccelerometerService extends Service implements SensorEventListener
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.d(TAG, "onStartCommand: service stopped");
-        MyApplication.getApp().setServiceStarted(false);
+        Log.d(TAG, "service stopped");
         if (mSensorManager != null) {
             mSensorManager.unregisterListener(this);
         }

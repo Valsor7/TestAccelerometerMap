@@ -84,7 +84,7 @@ public class StatisticPresenterImpl implements StatisticPresenter {
         mLocationRepository.getAllById(dayInMillis, new RepositoryCallback<List<LocationModel>>() {
             @Override
             public void onResult(List<LocationModel> data) {
-                mStatisticView.onLocations(data);
+                mStatisticView.onLocations(new ArrayList<>(data));
             }
 
             @Override

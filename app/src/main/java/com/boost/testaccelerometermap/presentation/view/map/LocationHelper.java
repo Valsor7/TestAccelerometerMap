@@ -148,7 +148,7 @@ public class LocationHelper implements LocationListener, ResultCallback, Permiss
 
     @Override
     public void onConnectionSuspended(int i) {
-        // TODO: 29.05.17 handle it
+
     }
 
     @Override

@@ -14,6 +14,7 @@ public class AccelerometerData extends RealmObject implements Parcelable {
     private float y;
     private float z;
     private long timestamp;
+    private String pattern;
 
     protected AccelerometerData(Parcel in) {
         x = in.readFloat();
@@ -93,8 +94,8 @@ public class AccelerometerData extends RealmObject implements Parcelable {
         dest.writeLong(timestamp);
     }
 
-    public String getTitle(){
-        return "x: " + x + "y: " + y + "z: " + z;
+    public String getTitle(String pattern){
+        return String.format(pattern, x, y, z);
     }
 
     public boolean isEmpty() {

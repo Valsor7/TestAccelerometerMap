@@ -3,6 +3,7 @@ package com.boost.testaccelerometermap.presentation.view.statistics;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -20,6 +21,7 @@ import com.boost.testaccelerometermap.presentation.model.TimestampInRange;
 import com.boost.testaccelerometermap.presentation.presenter.statistics.StatisticPresenterImpl;
 import com.boost.testaccelerometermap.presentation.view.statistics.adapter.StatisticAdapter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -42,6 +44,7 @@ public class DataStatisticFragment extends Fragment implements StatisticView {
 
     private StatisticAdapter mStatisticAdapter;
     private StatisticsDialog mDialog;
+    private List<LocationModel> mLocations;
 
 
     public static DataStatisticFragment newInstance() {
@@ -103,8 +106,8 @@ public class DataStatisticFragment extends Fragment implements StatisticView {
 
     @Override
     public void onLocations(List<LocationModel> data) {
-        mDialog =
-                StatisticsDialog.newInstance(LocationGroup.parseFromLocationsList(data, getString(R.string.location_pattern)));
+        mLocations = data;
+        mDialog = StatisticsDialog.newInstance(LocationGroup.parseFromLocationsList(data, getString(R.string.location_pattern)));
         mDialog.setTargetFragment(this, StatisticsDialog.REQ_CODE_LOCATIONS);
         mDialog.show(getChildFragmentManager(), StatisticsDialog.class.getSimpleName());
     }
@@ -114,7 +117,7 @@ public class DataStatisticFragment extends Fragment implements StatisticView {
         if (data != null) {
             switch (requestCode) {
                 case StatisticsDialog.REQ_CODE_LOCATIONS:
-                    mListener.onStatisticCallback(data.getBundleExtra(LocationModel.class.getSimpleName()));
+                    mListener.onStatisticCallback(getLocationsBundle());
                     break;
                 case StatisticsDialog.REQ_CODE_ACCELEROMETER:
                     TimestampInRange timestampInRange = data.getParcelableExtra(TimestampInRange.class.getSimpleName());
@@ -122,6 +125,14 @@ public class DataStatisticFragment extends Fragment implements StatisticView {
                     break;
             }
         }
+    }
+
+    private Bundle getLocationsBundle() {
+        Bundle bundle = new Bundle();
+        if (mLocations instanceof ArrayList){
+            bundle.putParcelableArrayList(LocationModel.class.getSimpleName(), (ArrayList<? extends Parcelable>) mLocations);
+        }
+        return bundle;
     }
 
     public interface OnFragmentDataStatisticCallback {

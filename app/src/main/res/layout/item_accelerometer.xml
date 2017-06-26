@@ -13,10 +13,4 @@
         tools:text="x:200 y: 300 z: 500"
         android:layout_margin="10dp"
         />
-
-    <ProgressBar
-        android:id="@+id/progress_accelerometer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"/>
 </FrameLayout>

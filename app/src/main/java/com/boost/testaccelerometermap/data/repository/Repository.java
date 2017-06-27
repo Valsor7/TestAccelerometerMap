@@ -1,40 +1,24 @@
 package com.boost.testaccelerometermap.data.repository;
 
-import java.util.List;
+import com.boost.testaccelerometermap.data.repository.specification.Specification;
 
-import javax.security.auth.callback.Callback;
+import java.util.List;
 
 /**
  * Created by yaroslav on 23.05.17.
  */
 
-public abstract class Repository<T> {
+public interface Repository<T> {
 
-    public void get(Object id) {
-    }
-    public void getAllById(long id, RepositoryCallback<List<T>> callback){
-    }
+    public void add(T item);
 
-    public void getInRange(long from, long to, RepositoryCallback<List<T>> callback){
-    }
+    public void addAll(List<T> items);
 
-    public void getAll(RepositoryCallback<List<T>> callback) {
-    }
+    public void remove(T item);
 
-    public void getAllUnique(RepositoryCallback<List<T>> callback) {
-    }
+    public void update(T item);
 
-    public void add(T item) {
-    }
+    public void getAll(RepositoryCallback<List<T>> callback);
 
-    public void addAll(List<T> items) {
-    }
-
-
-
-    public void remove(Object id) {
-    }
-
-    public void update(Object id) {
-    }
+    public void query(Specification specification, RepositoryCallback<List<T>> callback);
 }

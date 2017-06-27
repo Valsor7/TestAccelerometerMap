@@ -1,11 +1,11 @@
-package com.boost.testaccelerometermap.data.db.realm;
+package com.boost.testaccelerometermap.data.repository;
 
 import android.util.Log;
 
-import com.boost.testaccelerometermap.data.db.DBDao;
-import com.boost.testaccelerometermap.data.repository.RepositoryCallback;
+import com.boost.testaccelerometermap.data.Network;
+import com.boost.testaccelerometermap.data.repository.specification.RealmSpecification;
+import com.boost.testaccelerometermap.data.repository.specification.Specification;
 import com.boost.testaccelerometermap.presentation.model.AccelerometerData;
-import com.boost.testaccelerometermap.presentation.model.LocationModel;
 
 import java.util.List;
 
@@ -16,19 +16,19 @@ import io.realm.RealmChangeListener;
 import io.realm.RealmResults;
 
 /**
- * Created by yaroslav on 23.05.17.
+ * Created by yaroslav on 24.05.17.
  */
-
-public class RealmAccelerometerDao implements DBDao<AccelerometerData> {
-    private static final String TAG = "RealmAccelerometerDao";
+public class AccelerometerRealmRepositoryImpl implements Repository<AccelerometerData> {
+    private static final String TAG = "MapRepository";
+    private final Network mNetwork;
 
     @Inject
-    public RealmAccelerometerDao() {
-
+    public AccelerometerRealmRepositoryImpl(Network network) {
+        mNetwork = network;
     }
 
     @Override
-    public void getAllData(final RepositoryCallback<List<AccelerometerData>> callback) {
+    public void getAll(RepositoryCallback<List<AccelerometerData>> callback) {
         Log.d(TAG, "getAllData: ");
         Realm realm = Realm.getDefaultInstance();
         final RealmResults<AccelerometerData> realmResults = realm.where(AccelerometerData.class).findAllAsync();
@@ -36,20 +36,10 @@ public class RealmAccelerometerDao implements DBDao<AccelerometerData> {
     }
 
     @Override
-    public void getAllById(long id, RepositoryCallback<List<AccelerometerData>> callback) {
-
-    }
-
-    @Override
-    public void getInRange(final long from, final long to, final RepositoryCallback<List<AccelerometerData>> callback) {
-        Realm realm = Realm.getDefaultInstance();
-        final RealmResults<AccelerometerData> realmResults = realm.where(AccelerometerData.class).between("timestamp", from, to).findAllAsync();
-        getAllData(realmResults, callback);
-    }
-
-    @Override
-    public void getAllUnique(RepositoryCallback<List<AccelerometerData>> callback) {
-        Log.d(TAG, "getAllUnique: ");
+    public void query(Specification specification, RepositoryCallback<List<AccelerometerData>> callback) {
+            RealmSpecification<RealmResults<AccelerometerData>> realmSpecification =
+                    (RealmSpecification<RealmResults<AccelerometerData>>) specification;
+            getAllData(realmSpecification.query(), callback);
     }
 
     private void getAllData(final RealmResults<AccelerometerData> queryResults, final RepositoryCallback<List<AccelerometerData>> callback){
@@ -66,7 +56,18 @@ public class RealmAccelerometerDao implements DBDao<AccelerometerData> {
     }
 
     @Override
-    public void saveAll(final List<AccelerometerData> items) {
+    public void add(final AccelerometerData item) {
+        Realm realm = Realm.getDefaultInstance();
+        realm.executeTransactionAsync(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                realm.copyToRealm(item);
+            }
+        });
+    }
+
+    @Override
+    public void addAll(final List<AccelerometerData> items) {
         Realm realm = Realm.getDefaultInstance();
         realm.executeTransactionAsync(new Realm.Transaction() {
             @Override
@@ -77,15 +78,12 @@ public class RealmAccelerometerDao implements DBDao<AccelerometerData> {
     }
 
     @Override
-    public void save(final AccelerometerData item) {
-        Realm realm = Realm.getDefaultInstance();
-        realm.executeTransactionAsync(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                realm.copyToRealm(item);
-            }
-        });
+    public void remove(AccelerometerData item) {
+
     }
 
+    @Override
+    public void update(AccelerometerData item) {
 
+    }
 }

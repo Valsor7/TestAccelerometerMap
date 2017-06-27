@@ -5,6 +5,8 @@ import android.util.Log;
 import com.boost.testaccelerometermap.data.MyError;
 import com.boost.testaccelerometermap.data.repository.Repository;
 import com.boost.testaccelerometermap.data.repository.RepositoryCallback;
+import com.boost.testaccelerometermap.data.repository.specification.accelerometer.AccelerometerSpecificationFactory;
+import com.boost.testaccelerometermap.data.repository.specification.location.LocationSpecificationFactory;
 import com.boost.testaccelerometermap.presentation.model.AccelerometerData;
 import com.boost.testaccelerometermap.presentation.model.LocationModel;
 import com.boost.testaccelerometermap.presentation.model.TimestampInRange;
@@ -26,11 +28,18 @@ public class StatisticPresenterImpl implements StatisticPresenter {
     private StatisticView mStatisticView;
     private Repository<LocationModel> mLocationRepository;
     private Repository<AccelerometerData> mAccelerometerRepository;
+    private LocationSpecificationFactory mLocationSpecificationFactory;
+    private AccelerometerSpecificationFactory mAccelerometerSpecificationFactory;
 
     @Inject
-    public StatisticPresenterImpl(Repository<LocationModel> locationRepository, Repository<AccelerometerData> accelerometerRepository) {
+    public StatisticPresenterImpl(Repository<LocationModel> locationRepository,
+                                  Repository<AccelerometerData> accelerometerRepository,
+                                  LocationSpecificationFactory locationSpecificationFactory,
+                                  AccelerometerSpecificationFactory accelerometerSpecificationFactory) {
         mLocationRepository = locationRepository;
         mAccelerometerRepository = accelerometerRepository;
+        mLocationSpecificationFactory = locationSpecificationFactory;
+        mAccelerometerSpecificationFactory = accelerometerSpecificationFactory;
     }
 
     @Override
@@ -47,7 +56,8 @@ public class StatisticPresenterImpl implements StatisticPresenter {
     @Override
     public void getAccelerometerDataInRange(TimestampInRange timestampInRange) {
         Log.d(TAG, "getAccelerometerDataInRange() called with: timestampInRange = [" + timestampInRange + "]");
-        mAccelerometerRepository.getInRange(timestampInRange.getFromTimestamp(), timestampInRange.getToTimestamp(), new RepositoryCallback<List<AccelerometerData>>() {
+        mAccelerometerRepository.query(mAccelerometerSpecificationFactory.createGetInRange(timestampInRange),
+                new RepositoryCallback<List<AccelerometerData>>() {
             @Override
             public void onResult(List<AccelerometerData> data) {
                 Log.d(TAG, "onAccelerometer data yeah: " + data.size());
@@ -65,7 +75,8 @@ public class StatisticPresenterImpl implements StatisticPresenter {
     @Override
     public void getStatistics(){
         Log.d(TAG, "getStatistics: ");
-        mLocationRepository.getAllUnique(new RepositoryCallback<List<LocationModel>>() {
+        mLocationRepository.query(mLocationSpecificationFactory.createGetUniqueLocations(),
+                new RepositoryCallback<List<LocationModel>>() {
             @Override
             public void onResult(List<LocationModel> data) {
                 mStatisticView.onStatisticsByDay(data);
@@ -81,7 +92,8 @@ public class StatisticPresenterImpl implements StatisticPresenter {
     @Override
     public void getLocations(long dayInMillis) {
         Log.d(TAG, "getLocations: " + dayInMillis);
-        mLocationRepository.getAllById(dayInMillis, new RepositoryCallback<List<LocationModel>>() {
+        mLocationRepository.query(mLocationSpecificationFactory.createGetUniqueLocations(dayInMillis),
+                new RepositoryCallback<List<LocationModel>>() {
             @Override
             public void onResult(List<LocationModel> data) {
                 mStatisticView.onLocations(new ArrayList<>(data));

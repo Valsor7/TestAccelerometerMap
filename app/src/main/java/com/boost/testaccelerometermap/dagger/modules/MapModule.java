@@ -3,10 +3,10 @@ package com.boost.testaccelerometermap.dagger.modules;
 import android.app.Activity;
 
 import com.boost.testaccelerometermap.dagger.scopes.LocationScope;
-import com.boost.testaccelerometermap.data.db.DBDao;
-import com.boost.testaccelerometermap.data.db.realm.RealmLocationDao;
 import com.boost.testaccelerometermap.data.repository.LocationRepositoryImpl;
 import com.boost.testaccelerometermap.data.repository.Repository;
+import com.boost.testaccelerometermap.data.repository.specification.location.LocationSpecificationFactory;
+import com.boost.testaccelerometermap.data.repository.specification.location.LocationSpecificationFactoryImpl;
 import com.boost.testaccelerometermap.presentation.model.LocationModel;
 import com.boost.testaccelerometermap.presentation.view.map.LocationHelper;
 
@@ -27,19 +27,19 @@ public class MapModule {
 
     @LocationScope
     @Provides
-    public LocationHelper providesLocationHelper(){
+    public LocationHelper provideLocationHelper(){
         return new LocationHelper(mActivity);
     }
 
     @LocationScope
     @Provides
-    public DBDao<LocationModel> providesLocationDao(RealmLocationDao realmDao){
-        return realmDao;
+    public Repository<LocationModel> provideLocationRepository(LocationRepositoryImpl locationRepository){
+        return locationRepository;
     }
 
     @LocationScope
     @Provides
-    public Repository<LocationModel> providesLocationRepository(LocationRepositoryImpl locationRepository){
-        return locationRepository;
+    public LocationSpecificationFactory prvideLocationSpecificationFactory(){
+        return new LocationSpecificationFactoryImpl();
     }
 }

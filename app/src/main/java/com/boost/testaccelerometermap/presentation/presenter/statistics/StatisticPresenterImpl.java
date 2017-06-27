@@ -6,7 +6,9 @@ import com.boost.testaccelerometermap.data.MyError;
 import com.boost.testaccelerometermap.data.repository.Repository;
 import com.boost.testaccelerometermap.data.repository.RepositoryCallback;
 import com.boost.testaccelerometermap.data.repository.specification.accelerometer.AccelerometerSpecificationFactory;
+import com.boost.testaccelerometermap.data.repository.specification.accelerometer.AccelerometerSpecificationFactoryImpl;
 import com.boost.testaccelerometermap.data.repository.specification.location.LocationSpecificationFactory;
+import com.boost.testaccelerometermap.data.repository.specification.location.LocationSpecificationFactoryImpl;
 import com.boost.testaccelerometermap.presentation.model.AccelerometerData;
 import com.boost.testaccelerometermap.presentation.model.LocationModel;
 import com.boost.testaccelerometermap.presentation.model.TimestampInRange;
@@ -36,6 +38,7 @@ public class StatisticPresenterImpl implements StatisticPresenter {
                                   Repository<AccelerometerData> accelerometerRepository,
                                   LocationSpecificationFactory locationSpecificationFactory,
                                   AccelerometerSpecificationFactory accelerometerSpecificationFactory) {
+
         mLocationRepository = locationRepository;
         mAccelerometerRepository = accelerometerRepository;
         mLocationSpecificationFactory = locationSpecificationFactory;
@@ -92,7 +95,7 @@ public class StatisticPresenterImpl implements StatisticPresenter {
     @Override
     public void getLocations(long dayInMillis) {
         Log.d(TAG, "getLocations: " + dayInMillis);
-        mLocationRepository.query(mLocationSpecificationFactory.createGetUniqueLocations(dayInMillis),
+        mLocationRepository.query(mLocationSpecificationFactory.createGetLocationById(dayInMillis),
                 new RepositoryCallback<List<LocationModel>>() {
             @Override
             public void onResult(List<LocationModel> data) {

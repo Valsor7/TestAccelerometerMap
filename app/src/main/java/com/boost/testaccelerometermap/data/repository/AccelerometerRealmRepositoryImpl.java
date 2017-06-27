@@ -5,54 +5,53 @@ import android.util.Log;
 import com.boost.testaccelerometermap.data.Network;
 import com.boost.testaccelerometermap.data.repository.specification.RealmSpecification;
 import com.boost.testaccelerometermap.data.repository.specification.Specification;
+import com.boost.testaccelerometermap.domain.response.Response;
 import com.boost.testaccelerometermap.presentation.model.AccelerometerData;
 
 import java.util.List;
 
 import javax.inject.Inject;
 
+import io.reactivex.Observable;
 import io.realm.Realm;
-import io.realm.RealmChangeListener;
 import io.realm.RealmResults;
 
 /**
  * Created by yaroslav on 24.05.17.
  */
-public class AccelerometerRealmRepositoryImpl implements Repository<AccelerometerData> {
+public class AccelerometerRealmRepositoryImpl implements AccelerometerRepository<AccelerometerData> {
     private static final String TAG = "MapRepository";
     private final Network mNetwork;
+    private final Realm mRealm;
 
     @Inject
     public AccelerometerRealmRepositoryImpl(Network network) {
         mNetwork = network;
+        mRealm = Realm.getDefaultInstance();
     }
 
     @Override
-    public void getAll(RepositoryCallback<List<AccelerometerData>> callback) {
+    public Observable<Response<AccelerometerData>> getAll() {
         Log.d(TAG, "getAllData: ");
-        Realm realm = Realm.getDefaultInstance();
-        final RealmResults<AccelerometerData> realmResults = realm.where(AccelerometerData.class).findAllAsync();
-        getAllData(realmResults, callback);
+        final RealmResults<AccelerometerData> realmResults = mRealm.where(AccelerometerData.class).findAll();
+        return getObservableData(realmResults).map(Response::new);
     }
 
     @Override
-    public void query(Specification specification, RepositoryCallback<List<AccelerometerData>> callback) {
-            RealmSpecification<RealmResults<AccelerometerData>> realmSpecification =
-                    (RealmSpecification<RealmResults<AccelerometerData>>) specification;
-            getAllData(realmSpecification.query(), callback);
+    public Observable<Response<AccelerometerData>> query(Specification specification) {
+        RealmSpecification<RealmResults<AccelerometerData>> realmSpecification =
+                (RealmSpecification<RealmResults<AccelerometerData>>) specification;
+        return getObservableData(realmSpecification.query(mRealm)).map(Response::new);
     }
 
-    private void getAllData(final RealmResults<AccelerometerData> queryResults, final RepositoryCallback<List<AccelerometerData>> callback){
-        queryResults.addChangeListener(new RealmChangeListener<RealmResults<AccelerometerData>>() {
-            @Override
-            public void onChange(RealmResults<AccelerometerData> accelerometerData) {
-                Log.d(TAG, "onChange: ");
-                if(accelerometerData != null && accelerometerData.isValid() && accelerometerData.isLoaded()) {
-                    queryResults.removeAllChangeListeners();
-                    callback.onResult(accelerometerData);
-                }
-            }
-        });
+    private Observable<List<AccelerometerData>> getObservableData(final RealmResults<AccelerometerData> queryResults) {
+        return Observable.create(e ->
+                queryResults.addChangeListener(accelerometerData -> {
+                    Log.d(TAG, "onChange: ");
+                    e.onNext(queryResults);
+                })
+        );
+
     }
 
     @Override

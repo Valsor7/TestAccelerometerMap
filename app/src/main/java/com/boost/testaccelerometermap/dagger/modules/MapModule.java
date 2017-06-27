@@ -4,7 +4,7 @@ import android.app.Activity;
 
 import com.boost.testaccelerometermap.dagger.scopes.LocationScope;
 import com.boost.testaccelerometermap.data.repository.LocationRepositoryImpl;
-import com.boost.testaccelerometermap.data.repository.Repository;
+import com.boost.testaccelerometermap.data.repository.AccelerometerRepository;
 import com.boost.testaccelerometermap.data.repository.specification.location.LocationSpecificationFactory;
 import com.boost.testaccelerometermap.data.repository.specification.location.LocationSpecificationFactoryImpl;
 import com.boost.testaccelerometermap.presentation.model.LocationModel;
@@ -33,7 +33,7 @@ public class MapModule {
 
     @LocationScope
     @Provides
-    public Repository<LocationModel> provideLocationRepository(LocationRepositoryImpl locationRepository){
+    public AccelerometerRepository<LocationModel> provideLocationRepository(LocationRepositoryImpl locationRepository){
         return locationRepository;
     }
 

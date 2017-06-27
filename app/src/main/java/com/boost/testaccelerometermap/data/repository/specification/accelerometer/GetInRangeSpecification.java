@@ -16,8 +16,7 @@ public class GetInRangeSpecification implements RealmSpecification<RealmResults<
         mTimestampInRange = timestampInRange;
     }
 
-    public RealmResults<AccelerometerData> query() {
-        Realm realm = Realm.getDefaultInstance();
+    public RealmResults<AccelerometerData> query(Realm realm) {
         return realm.where(AccelerometerData.class).between(
                 FIELD_TIMESTAMP,
                 mTimestampInRange.getFromTimestamp(),

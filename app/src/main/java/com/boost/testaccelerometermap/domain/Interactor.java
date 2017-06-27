@@ -1,24 +1,21 @@
 package com.boost.testaccelerometermap.domain;
 
 
-import com.boost.testaccelerometermap.data.repository.specification.Specification;
-
 import dagger.internal.Preconditions;
 import io.reactivex.Observable;
-import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.observers.DisposableObserver;
 import io.reactivex.schedulers.Schedulers;
 
-public abstract class Interactor<T> {
+public abstract class Interactor<T, RM> {
     private final CompositeDisposable disposables = new CompositeDisposable();
 
-    abstract Observable<T> buildUseCaseObservable(Specification specification);
+    abstract Observable<T> buildObservable(RM requestModel);
 
-    public void execute(DisposableObserver<T> observer, Specification specification) {
-        final Observable<T> observable = buildUseCaseObservable(specification)
+    public void execute(DisposableObserver<T> observer, RM requestModel) {
+        final Observable<T> observable = buildObservable(requestModel)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread());
         addDisposable(observable.subscribeWith(observer));

@@ -13,7 +13,7 @@ import android.util.Log;
 
 import com.boost.testaccelerometermap.MyApplication;
 import com.boost.testaccelerometermap.dagger.components.DaggerServiceComponent;
-import com.boost.testaccelerometermap.data.repository.Repository;
+import com.boost.testaccelerometermap.data.repository.AccelerometerRepository;
 import com.boost.testaccelerometermap.presentation.model.AccelerometerData;
 
 import java.util.ArrayList;
@@ -31,7 +31,7 @@ public class AccelerometerService extends Service implements SensorEventListener
     private SensorManager mSensorManager;
     private List<AccelerometerData> mAccelerometerDataList = new ArrayList<>();
     @Inject
-    Repository<AccelerometerData> mRepository;
+    AccelerometerRepository<AccelerometerData> mRepository;
 
     @Override
     public void onCreate() {

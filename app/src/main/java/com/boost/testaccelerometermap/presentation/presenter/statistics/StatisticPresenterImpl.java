@@ -3,12 +3,10 @@ package com.boost.testaccelerometermap.presentation.presenter.statistics;
 import android.util.Log;
 
 import com.boost.testaccelerometermap.data.MyError;
-import com.boost.testaccelerometermap.data.repository.Repository;
 import com.boost.testaccelerometermap.data.repository.RepositoryCallback;
-import com.boost.testaccelerometermap.data.repository.specification.accelerometer.AccelerometerSpecificationFactory;
-import com.boost.testaccelerometermap.data.repository.specification.accelerometer.AccelerometerSpecificationFactoryImpl;
-import com.boost.testaccelerometermap.data.repository.specification.location.LocationSpecificationFactory;
-import com.boost.testaccelerometermap.data.repository.specification.location.LocationSpecificationFactoryImpl;
+import com.boost.testaccelerometermap.domain.AccelerometerInteractor;
+import com.boost.testaccelerometermap.domain.Interactor;
+import com.boost.testaccelerometermap.domain.response.Response;
 import com.boost.testaccelerometermap.presentation.model.AccelerometerData;
 import com.boost.testaccelerometermap.presentation.model.LocationModel;
 import com.boost.testaccelerometermap.presentation.model.TimestampInRange;
@@ -20,29 +18,23 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import io.reactivex.annotations.NonNull;
+import io.reactivex.observers.DisposableObserver;
+
 /**
  * Created by yaroslav on 07.06.17.
  */
 
-public class StatisticPresenterImpl implements StatisticPresenter {
+public class StatisticPresenterImpl extends DisposableObserver<Response<AccelerometerData>> implements StatisticPresenter {
     private static final String TAG = "StatisticPresenterImpl";
 
     private StatisticView mStatisticView;
-    private Repository<LocationModel> mLocationRepository;
-    private Repository<AccelerometerData> mAccelerometerRepository;
-    private LocationSpecificationFactory mLocationSpecificationFactory;
-    private AccelerometerSpecificationFactory mAccelerometerSpecificationFactory;
+    private Interactor<Response<AccelerometerData>, TimestampInRange> mAccelerometerInteractor;
+
 
     @Inject
-    public StatisticPresenterImpl(Repository<LocationModel> locationRepository,
-                                  Repository<AccelerometerData> accelerometerRepository,
-                                  LocationSpecificationFactory locationSpecificationFactory,
-                                  AccelerometerSpecificationFactory accelerometerSpecificationFactory) {
-
-        mLocationRepository = locationRepository;
-        mAccelerometerRepository = accelerometerRepository;
-        mLocationSpecificationFactory = locationSpecificationFactory;
-        mAccelerometerSpecificationFactory = accelerometerSpecificationFactory;
+    public StatisticPresenterImpl(AccelerometerInteractor accelerometerInteractor) {
+        mAccelerometerInteractor = accelerometerInteractor;
     }
 
     @Override
@@ -59,13 +51,14 @@ public class StatisticPresenterImpl implements StatisticPresenter {
     @Override
     public void getAccelerometerDataInRange(TimestampInRange timestampInRange) {
         Log.d(TAG, "getAccelerometerDataInRange() called with: timestampInRange = [" + timestampInRange + "]");
-        mAccelerometerRepository.query(mAccelerometerSpecificationFactory.createGetInRange(timestampInRange),
+        mAccelerometerInteractor.execute(this, timestampInRange);
+
                 new RepositoryCallback<List<AccelerometerData>>() {
             @Override
             public void onResult(List<AccelerometerData> data) {
                 Log.d(TAG, "onAccelerometer data yeah: " + data.size());
                 if (mStatisticView == null) return;
-                mStatisticView.onAccelerometerResult(data);
+
             }
 
             @Override
@@ -107,5 +100,20 @@ public class StatisticPresenterImpl implements StatisticPresenter {
 
             }
         });
+    }
+
+    @Override
+    public void onNext(@NonNull Response response) {
+        mStatisticView.onAccelerometerResult(response.dataList);
+    }
+
+    @Override
+    public void onError(@NonNull Throwable e) {
+
+    }
+
+    @Override
+    public void onComplete() {
+
     }
 }

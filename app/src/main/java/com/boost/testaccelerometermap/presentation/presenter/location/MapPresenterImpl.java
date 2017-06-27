@@ -1,6 +1,6 @@
 package com.boost.testaccelerometermap.presentation.presenter.location;
 
-import com.boost.testaccelerometermap.data.repository.Repository;
+import com.boost.testaccelerometermap.domain.Interactor;
 import com.boost.testaccelerometermap.presentation.model.LocationModel;
 import com.boost.testaccelerometermap.presentation.view.BaseView;
 import com.boost.testaccelerometermap.presentation.view.map.GoogleMapView;
@@ -8,23 +8,29 @@ import com.boost.testaccelerometermap.presentation.view.map.LocationHelper;
 
 import javax.inject.Inject;
 
+import io.reactivex.Observer;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.observers.DisposableObserver;
+
 /**
  * Created by yaroslav on 23.05.17.
  */
 
-public class MapPresenterImpl implements MapPresenter {
+public class MapPresenterImpl extends DisposableObserver<LocationModel>
+        implements MapPresenter {
     private static final String TAG = "MapPresenterImpl";
 
-    Repository<LocationModel> mLocationRepository;
+    private Interactor<LocationModel, LocationModel> mLocationInteractor;
 
     private LocationHelper mLocationHelper;
     private GoogleMapView mMapView;
 
     @Inject
-    public MapPresenterImpl(Repository<LocationModel> locationRepository,
+    public MapPresenterImpl(Interactor<LocationModel, LocationModel> interactor,
                             LocationHelper locationHelper) {
-        mLocationRepository = locationRepository;
         mLocationHelper = locationHelper;
+        mLocationInteractor = interactor;
     }
 
     @Override
@@ -40,7 +46,7 @@ public class MapPresenterImpl implements MapPresenter {
 
     @Override
     public void saveLocation(LocationModel location) {
-        mLocationRepository.add(location);
+        mLocationInteractor.execute(this, location);
     }
 
 
@@ -52,6 +58,22 @@ public class MapPresenterImpl implements MapPresenter {
     @Override
     public void onDetachView() {
         mLocationHelper.removeLocationListener();
+        mLocationInteractor.dispose();
         mMapView = null;
+    }
+
+    @Override
+    public void onNext(@NonNull LocationModel model) {
+
+    }
+
+    @Override
+    public void onError(@NonNull Throwable e) {
+
+    }
+
+    @Override
+    public void onComplete() {
+
     }
 }

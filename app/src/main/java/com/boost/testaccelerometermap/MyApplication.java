@@ -12,6 +12,7 @@ import com.boost.testaccelerometermap.presentation.view.AccelerometerService;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
+import io.realm.rx.RealmObservableFactory;
 
 /**
  * Created by yaroslav on 23.05.17.
@@ -28,7 +29,7 @@ public class MyApplication extends Application {
         mApp = this;
         initAppComponent();
         Realm.init(this);
-        RealmConfiguration configuration = new RealmConfiguration.Builder().build();
+        RealmConfiguration configuration = new RealmConfiguration.Builder().rxFactory(new RealmObservableFactory()).build();
         Realm.setDefaultConfiguration(configuration);
     }
 

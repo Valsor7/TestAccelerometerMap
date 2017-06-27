@@ -1,7 +1,5 @@
 package com.boost.testaccelerometermap.data.repository;
 
-import android.util.Log;
-
 import com.boost.testaccelerometermap.data.repository.specification.RealmSpecification;
 import com.boost.testaccelerometermap.data.repository.specification.Specification;
 import com.boost.testaccelerometermap.presentation.model.LocationModel;
@@ -11,14 +9,13 @@ import java.util.List;
 import javax.inject.Inject;
 
 import io.realm.Realm;
-import io.realm.RealmChangeListener;
 import io.realm.RealmResults;
 
 /**
  * Created by yaroslav on 30.05.17.
  */
 
-public class LocationRepositoryImpl implements Repository<LocationModel> {
+public class LocationRepositoryImpl implements AccelerometerRepository<LocationModel> {
     private static final String TAG = "LocationRepositoryImpl";
 
     @Inject
@@ -53,31 +50,19 @@ public class LocationRepositoryImpl implements Repository<LocationModel> {
     }
 
     @Override
-    public void getAll(RepositoryCallback<List<LocationModel>> callback) {
+    public List<LocationModel> getAll() {
         Realm realm = Realm.getDefaultInstance();
-        RealmResults<LocationModel> realmResults = realm.where(LocationModel.class).findAllAsync();
-        getAllData(realmResults, callback);
+        return realm.where(LocationModel.class).findAll();
     }
 
     @Override
-    public void query(Specification specification, RepositoryCallback<List<LocationModel>> callback) {
+    public List<LocationModel> query(Specification specification) {
         if (specification instanceof RealmSpecification) {
             RealmSpecification<RealmResults<LocationModel>> realmSpecification =
                     (RealmSpecification<RealmResults<LocationModel>>) specification;
-            getAllData(realmSpecification.query(), callback);
+            return realmSpecification.query();
+        } else {
+            return null;
         }
-    }
-
-    private void getAllData(final RealmResults<LocationModel> queryResults, final RepositoryCallback<List<LocationModel>> callback){
-        queryResults.addChangeListener(new RealmChangeListener<RealmResults<LocationModel>>() {
-            @Override
-            public void onChange(RealmResults<LocationModel> locationData) {
-                Log.d(TAG, "onChange: ");
-                if(locationData != null && locationData.isValid() && locationData.isLoaded()) {
-                    queryResults.removeAllChangeListeners();
-                    callback.onResult(locationData);
-                }
-            }
-        });
     }
 }

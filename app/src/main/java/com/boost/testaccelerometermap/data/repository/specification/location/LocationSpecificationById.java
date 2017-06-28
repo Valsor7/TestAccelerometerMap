@@ -16,8 +16,7 @@ public class LocationSpecificationById implements RealmSpecification<RealmResult
     }
 
     @Override
-    public RealmResults<LocationModel> query() {
-        Realm realm = Realm.getDefaultInstance();
-        return realm.where(LocationModel.class).equalTo(LocationModel.DAY_FIELD, mId).findAllAsync();
+    public RealmResults<LocationModel> query(Realm realm) {
+        return realm.where(LocationModel.class).equalTo(LocationModel.DAY_FIELD, mId).findAll();
     }
 }

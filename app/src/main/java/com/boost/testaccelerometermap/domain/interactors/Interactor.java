@@ -1,5 +1,7 @@
-package com.boost.testaccelerometermap.domain;
+package com.boost.testaccelerometermap.domain.interactors;
 
+
+import android.util.Log;
 
 import dagger.internal.Preconditions;
 import io.reactivex.Observable;
@@ -10,15 +12,19 @@ import io.reactivex.observers.DisposableObserver;
 import io.reactivex.schedulers.Schedulers;
 
 public abstract class Interactor<T, RM> {
+    private static final String TAG = "Interactor";
     private final CompositeDisposable disposables = new CompositeDisposable();
 
-    abstract Observable<T> buildObservable(RM requestModel);
+    protected abstract Observable<T> buildObservable(RM requestModel);
+
+
 
     public void execute(DisposableObserver<T> observer, RM requestModel) {
         final Observable<T> observable = buildObservable(requestModel)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread());
         addDisposable(observable.subscribeWith(observer));
+        Log.d(TAG, "execute: ");
     }
 
     public void dispose() {

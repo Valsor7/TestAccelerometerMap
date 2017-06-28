@@ -5,13 +5,13 @@ import com.boost.testaccelerometermap.data.repository.specification.RealmSpecifi
 import com.boost.testaccelerometermap.presentation.model.LocationModel;
 
 import io.realm.Realm;
+import io.realm.RealmResults;
 
-class LocationSpecificationUnique implements RealmSpecification {
+class LocationSpecificationUnique implements RealmSpecification<RealmResults<LocationModel>> {
 
 
     @Override
-    public Object query() {
-        Realm realm = Realm.getDefaultInstance();
-        return realm.where(LocationModel.class).distinctAsync(LocationModel.DAY_FIELD);
+    public RealmResults<LocationModel> query(Realm realm) {
+        return realm.where(LocationModel.class).distinct(LocationModel.DAY_FIELD);
     }
 }

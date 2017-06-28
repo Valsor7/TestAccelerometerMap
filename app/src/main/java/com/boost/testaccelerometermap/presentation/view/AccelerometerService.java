@@ -13,13 +13,16 @@ import android.util.Log;
 
 import com.boost.testaccelerometermap.MyApplication;
 import com.boost.testaccelerometermap.dagger.components.DaggerServiceComponent;
-import com.boost.testaccelerometermap.data.repository.AccelerometerRepository;
+import com.boost.testaccelerometermap.domain.interactors.Interactor;
 import com.boost.testaccelerometermap.presentation.model.AccelerometerData;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import io.reactivex.annotations.NonNull;
+import io.reactivex.observers.DisposableObserver;
 
 /**
  * Created by yaroslav on 24.05.17.
@@ -31,7 +34,7 @@ public class AccelerometerService extends Service implements SensorEventListener
     private SensorManager mSensorManager;
     private List<AccelerometerData> mAccelerometerDataList = new ArrayList<>();
     @Inject
-    AccelerometerRepository<AccelerometerData> mRepository;
+    Interactor<AccelerometerData, List<AccelerometerData>> mAddAccelerometerDataListInteractor;
 
     @Override
     public void onCreate() {
@@ -77,7 +80,22 @@ public class AccelerometerService extends Service implements SensorEventListener
         data.setTimestamp(System.currentTimeMillis());
         mAccelerometerDataList.add(data);
         if (mAccelerometerDataList.size() > THRESHOLD_SIZE) {
-            mRepository.addAll(new ArrayList<>(mAccelerometerDataList));
+            mAddAccelerometerDataListInteractor.execute(new DisposableObserver<AccelerometerData>() {
+                @Override
+                public void onNext(@NonNull AccelerometerData accelerometerData) {
+
+                }
+
+                @Override
+                public void onError(@NonNull Throwable e) {
+
+                }
+
+                @Override
+                public void onComplete() {
+
+                }
+            }, new ArrayList<>(mAccelerometerDataList));
             mAccelerometerDataList.clear();
         }
     }

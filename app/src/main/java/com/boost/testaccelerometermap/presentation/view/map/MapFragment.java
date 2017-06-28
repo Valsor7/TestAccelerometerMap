@@ -36,6 +36,9 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.realm.Realm;
+import io.realm.RealmChangeListener;
+import io.realm.RealmResults;
 
 public class MapFragment extends Fragment implements
         GoogleMapView, OnMapReadyCallback {
@@ -96,6 +99,13 @@ public class MapFragment extends Fragment implements
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         ButterKnife.bind(this, view);
         mMapPresenter.onAttachView(this);
+        Realm realm = Realm.getDefaultInstance();
+       realm.where(LocationModel.class).findAll().addChangeListener(new RealmChangeListener<RealmResults<LocationModel>>() {
+            @Override
+            public void onChange(RealmResults<LocationModel> locationModels) {
+                Log.d(TAG, "onChange: " + locationModels.size());
+            }
+        });
     }
 
     @Override

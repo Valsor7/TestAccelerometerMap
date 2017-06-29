@@ -32,9 +32,8 @@ public class AccelerometerService extends Service implements SensorEventListener
     private static final String TAG = "AccelerometerService";
     private static final int THRESHOLD_SIZE = 20;
     private SensorManager mSensorManager;
-    private List<AccelerometerData> mAccelerometerDataList = new ArrayList<>();
     @Inject
-    Interactor<AccelerometerData, List<AccelerometerData>> mAddAccelerometerDataListInteractor;
+    Interactor<AccelerometerData, AccelerometerData> mAddAccelerometerDataInteractor;
 
     @Override
     public void onCreate() {
@@ -78,35 +77,27 @@ public class AccelerometerService extends Service implements SensorEventListener
         data.setY(event.values[1]);
         data.setZ(event.values[2]);
         data.setTimestamp(System.currentTimeMillis());
-        mAccelerometerDataList.add(data);
-        if (mAccelerometerDataList.size() > THRESHOLD_SIZE) {
-            mAddAccelerometerDataListInteractor.execute(new DisposableObserver<AccelerometerData>() {
-                @Override
-                public void onNext(@NonNull AccelerometerData accelerometerData) {
+        mAddAccelerometerDataInteractor.execute(new DisposableObserver<AccelerometerData>() {
+            @Override
+            public void onNext(@NonNull AccelerometerData accelerometerData) {
 
-                }
+            }
 
-                @Override
-                public void onError(@NonNull Throwable e) {
+            @Override
+            public void onError(@NonNull Throwable e) {
 
-                }
+            }
 
-                @Override
-                public void onComplete() {
+            @Override
+            public void onComplete() {
 
-                }
-            }, new ArrayList<>(mAccelerometerDataList));
-            mAccelerometerDataList.clear();
-        }
+            }
+        }, data);
     }
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
-    }
-
-    public List<AccelerometerData> getData() {
-        return mAccelerometerDataList;
     }
 
     @Override

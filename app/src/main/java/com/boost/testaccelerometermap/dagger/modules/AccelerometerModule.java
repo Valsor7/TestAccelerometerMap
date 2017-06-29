@@ -7,7 +7,7 @@ import com.boost.testaccelerometermap.data.repository.specification.acceleromete
 import com.boost.testaccelerometermap.data.repository.specification.accelerometer.AccelerometerSpecificationFactoryImpl;
 import com.boost.testaccelerometermap.domain.interactors.Interactor;
 import com.boost.testaccelerometermap.domain.interactors.accelerometer.AccelerometerGetInRangeInteractor;
-import com.boost.testaccelerometermap.domain.interactors.accelerometer.AddAccelerometerDataListInteractor;
+import com.boost.testaccelerometermap.domain.interactors.accelerometer.AddAccelerometerDataInteractor;
 import com.boost.testaccelerometermap.presentation.model.AccelerometerData;
 import com.boost.testaccelerometermap.presentation.model.TimestampInRange;
 
@@ -44,8 +44,8 @@ public class AccelerometerModule {
 
     @LocationScope
     @Provides
-    public Interactor<AccelerometerData, List<AccelerometerData>> provideAccelerometerListInteractor(
+    public Interactor<AccelerometerData, AccelerometerData> provideAccelerometerListInteractor(
             Repository<AccelerometerData> accelerometerRepository) {
-        return new AddAccelerometerDataListInteractor(accelerometerRepository);
+        return new AddAccelerometerDataInteractor(accelerometerRepository);
     }
 }

@@ -12,16 +12,16 @@ import io.reactivex.Observable;
  * Created by yaroslav on 28.06.17.
  */
 
-public class AddAccelerometerDataListInteractor extends Interactor<AccelerometerData,List<AccelerometerData>> {
+public class AddAccelerometerDataInteractor extends Interactor<AccelerometerData,AccelerometerData> {
 
     private Repository<AccelerometerData> mAccelerometerDataRepository;
 
-    public AddAccelerometerDataListInteractor(Repository<AccelerometerData> accelerometerDataRepository) {
+    public AddAccelerometerDataInteractor(Repository<AccelerometerData> accelerometerDataRepository) {
         mAccelerometerDataRepository = accelerometerDataRepository;
     }
 
     @Override
-    protected Observable<AccelerometerData> buildObservable(List<AccelerometerData> requestModel) {
-        return mAccelerometerDataRepository.addAll(requestModel);
+    protected Observable<AccelerometerData> buildObservable(AccelerometerData requestModel) {
+        return mAccelerometerDataRepository.add(requestModel);
     }
 }

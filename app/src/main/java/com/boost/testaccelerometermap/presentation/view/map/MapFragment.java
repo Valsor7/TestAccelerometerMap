@@ -55,12 +55,11 @@ public class MapFragment extends Fragment implements
     private GoogleMap mGoogleMap;
     // for optimization
     private List<LatLng> mLatLngList = new ArrayList<>();
-    private Intent mAccelerometerIntent;
     private List<LocationModel> mLocationModels = new ArrayList<>();
     private PolylineOptions mPolylineOptions = new PolylineOptions();
 
     public static MapFragment newInstance() {
-        return newInstance(new ArrayList<LocationModel>());
+        return newInstance(new ArrayList<>());
     }
 
     public static MapFragment newInstance(ArrayList<LocationModel> locations){
@@ -99,9 +98,6 @@ public class MapFragment extends Fragment implements
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         ButterKnife.bind(this, view);
         mMapPresenter.onAttachView(this);
-        Realm realm = Realm.getDefaultInstance();
-       RealmResults<LocationModel> realmResults = realm.where(LocationModel.class).findAll();
-        Log.d(TAG, "onViewCreated: " + realmResults.size());
     }
 
     @Override

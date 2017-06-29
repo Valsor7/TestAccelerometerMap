@@ -10,6 +10,8 @@ import android.widget.TextView;
 import com.boost.testaccelerometermap.R;
 import com.boost.testaccelerometermap.presentation.model.AccelerometerData;
 import com.boost.testaccelerometermap.presentation.model.DataCallback;
+import com.boost.testaccelerometermap.presentation.model.EmptyTitleExpandableElement;
+import com.boost.testaccelerometermap.presentation.model.ExpandableElement;
 import com.boost.testaccelerometermap.presentation.model.LocationModel;
 import com.boost.testaccelerometermap.presentation.model.LocationGroup;
 import com.boost.testaccelerometermap.presentation.model.TimestampInRange;
@@ -32,7 +34,7 @@ import butterknife.OnClick;
  */
 
 public class LocationsAdapter extends ExpandableRecyclerViewAdapter<LocationsAdapter.LocationsGroupViewHolder, LocationsAdapter.AccelerometerViewHolder> {
-    private static final String TAG = "StatisticAdapter";
+    private static final String TAG = "LocationsAdapter";
     private List<LocationGroup> mLocationGroups = new ArrayList<>();
     private LocationGroup mExpanded;
     private DataCallback<TimestampInRange> mCallback;
@@ -59,7 +61,7 @@ public class LocationsAdapter extends ExpandableRecyclerViewAdapter<LocationsAda
     @Override
     public void onBindChildViewHolder(AccelerometerViewHolder holder, int flatPosition, ExpandableGroup group, int childIndex) {
         Log.d(TAG, "onBindChildViewHolder: " + childIndex);
-        holder.bind((AccelerometerData) group.getItems().get(childIndex));
+        holder.bind((ExpandableElement) group.getItems().get(childIndex));
     }
 
     @Override
@@ -75,7 +77,7 @@ public class LocationsAdapter extends ExpandableRecyclerViewAdapter<LocationsAda
     }
 
     public void addAccelerometerList(List<AccelerometerData> data) {
-        if (mExpanded != null) {
+        if (mExpanded != null && !data.isEmpty()) {
             mExpanded.getItems().clear();
             mExpanded.getItems().addAll(data);
             notifyDataSetChanged();
@@ -102,7 +104,7 @@ public class LocationsAdapter extends ExpandableRecyclerViewAdapter<LocationsAda
         @Override
         public void expand() {
             super.expand();
-            Log.d(TAG, "expand: " + mLocationGroups.size());
+            Log.d(TAG, "expand: ");
             // TODO: 25.06.17 check if data is already in this list
             mExpanded = mLocationGroup;
 
@@ -129,9 +131,13 @@ public class LocationsAdapter extends ExpandableRecyclerViewAdapter<LocationsAda
             ButterKnife.bind(this, itemView);
         }
 
-        public void bind(AccelerometerData data) {
+        public void bind(ExpandableElement data) {
             Log.d(TAG, "bind: " + data);
-            mAccelerometerTv.setText(data.getTitle(itemView.getContext().getString(R.string.accelerometer_pattern)));
+            if (data instanceof EmptyTitleExpandableElement){
+                mAccelerometerTv.setText(data.getTitle(itemView.getContext().getString(R.string.empty)));
+            } else if (data instanceof AccelerometerData) {
+                mAccelerometerTv.setText(data.getTitle(itemView.getContext().getString(R.string.accelerometer_pattern)));
+            }
         }
     }
 

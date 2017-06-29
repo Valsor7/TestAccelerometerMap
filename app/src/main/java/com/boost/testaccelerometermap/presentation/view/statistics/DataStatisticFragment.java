@@ -80,13 +80,10 @@ public class DataStatisticFragment extends Fragment implements StatisticView {
     }
 
     private void initRecyclerView() {
-        mStatisticAdapter = new StatisticAdapter(new StatisticAdapter.DateClickCallback() {
-            @Override
-            public void onDateClick(View view) {
-                int pos = mStatisticsRecyclerView.getChildAdapterPosition(view);
-                LocationModel model = mStatisticAdapter.getDataByPosition(pos);
-                mStatisticPresenter.getLocations(model.getDayInMillis());
-            }
+        mStatisticAdapter = new StatisticAdapter(view -> {
+            int pos = mStatisticsRecyclerView.getChildAdapterPosition(view);
+            LocationModel model = mStatisticAdapter.getDataByPosition(pos);
+            mStatisticPresenter.getLocations(model.getDayInMillis());
         });
         mStatisticsRecyclerView.setAdapter(mStatisticAdapter);
         mStatisticsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));

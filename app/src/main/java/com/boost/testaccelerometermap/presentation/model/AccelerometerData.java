@@ -9,12 +9,11 @@ import io.realm.RealmObject;
  * Created by yaroslav on 24.05.17.
  */
 
-public class AccelerometerData extends RealmObject implements Parcelable {
+public class AccelerometerData extends RealmObject implements Parcelable, ExpandableElement {
     private float x;
     private float y;
     private float z;
     private long timestamp;
-    private String pattern;
 
     protected AccelerometerData(Parcel in) {
         x = in.readFloat();
@@ -94,6 +93,7 @@ public class AccelerometerData extends RealmObject implements Parcelable {
         dest.writeLong(timestamp);
     }
 
+    @Override
     public String getTitle(String pattern){
         return String.format(pattern, x, y, z);
     }

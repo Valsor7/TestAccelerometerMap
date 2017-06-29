@@ -9,6 +9,7 @@ import com.boost.testaccelerometermap.presentation.model.TimestampInRange;
 import com.boost.testaccelerometermap.presentation.view.BaseView;
 import com.boost.testaccelerometermap.presentation.view.statistics.StatisticView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -24,7 +25,7 @@ import io.realm.RealmResults;
 public class StatisticPresenterImpl implements StatisticPresenter {
     private static final String TAG = "StatisticPresenterImpl";
     private StatisticView mStatisticView;
-
+    private List<Interactor> mInteractors = new ArrayList<>();
     private Interactor<List<AccelerometerData>, TimestampInRange> mAccelerometerInteractor;
     private Interactor<List<LocationModel>, Long> mLocationByDayInteractor;
     private Interactor<List<LocationModel>, Void> mUniqueLocationInteractor;
@@ -47,7 +48,7 @@ public class StatisticPresenterImpl implements StatisticPresenter {
     @Override
     public void onDetachView() {
         mStatisticView = null;
-        // TODO: 29.06.17 dispose interactors
+        mInteractors.forEach(Interactor::dispose);
     }
 
 
@@ -71,6 +72,7 @@ public class StatisticPresenterImpl implements StatisticPresenter {
 
             }
         }, timestampInRange);
+        mInteractors.add(mAccelerometerInteractor);
     }
 
     @Override
@@ -93,6 +95,7 @@ public class StatisticPresenterImpl implements StatisticPresenter {
 
             }
         }, null);
+        mInteractors.add(mUniqueLocationInteractor);
     }
 
     @Override
@@ -116,5 +119,6 @@ public class StatisticPresenterImpl implements StatisticPresenter {
 
             }
         }, dayInMillis);
+        mInteractors.add(mLocationByDayInteractor);
     }
 }

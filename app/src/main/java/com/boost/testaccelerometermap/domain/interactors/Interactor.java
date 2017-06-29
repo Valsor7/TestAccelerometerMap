@@ -17,8 +17,6 @@ public abstract class Interactor<T, RM> {
 
     protected abstract Observable<T> buildObservable(RM requestModel);
 
-
-
     public void execute(DisposableObserver<T> observer, RM requestModel) {
         final Observable<T> observable = buildObservable(requestModel)
                 .subscribeOn(Schedulers.newThread())

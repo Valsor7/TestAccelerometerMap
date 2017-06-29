@@ -132,7 +132,6 @@ public class LocationHelper implements LocationListener, ResultCallback, Permiss
 
     @Override
     public void onPermissionDenied(PermissionDeniedResponse response) {
-        // TODO: 29.05.17 implement it
     }
 
     @Override
@@ -155,7 +154,6 @@ public class LocationHelper implements LocationListener, ResultCallback, Permiss
     public void onConnectionFailed(@NonNull ConnectionResult result) {
         if (result.hasResolution()) {
             try {
-                // TODO: 29.05.17 handle this in activity
                 result.startResolutionForResult(mActivity, Constants.REQUEST_RESOLVE_ERROR);
             } catch (IntentSender.SendIntentException e) {
                 Log.e(TAG, "onConnectionFailed: " + e.getMessage());

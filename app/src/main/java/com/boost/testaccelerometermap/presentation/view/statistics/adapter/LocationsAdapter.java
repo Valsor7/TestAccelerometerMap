@@ -105,7 +105,6 @@ public class LocationsAdapter extends ExpandableRecyclerViewAdapter<LocationsAda
         public void expand() {
             super.expand();
             Log.d(TAG, "expand: ");
-            // TODO: 25.06.17 check if data is already in this list
             mExpanded = mLocationGroup;
 
             long fromTimestamp = mLocationGroup.getLocationModel().getTimestamp();
@@ -139,9 +138,5 @@ public class LocationsAdapter extends ExpandableRecyclerViewAdapter<LocationsAda
                 mAccelerometerTv.setText(data.getTitle(itemView.getContext().getString(R.string.accelerometer_pattern)));
             }
         }
-    }
-
-    public interface LocationCallback {
-        public void onLocationSelected(long from, long to);
     }
 }

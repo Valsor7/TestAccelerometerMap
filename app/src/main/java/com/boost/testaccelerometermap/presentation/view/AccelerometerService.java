@@ -16,9 +16,6 @@ import com.boost.testaccelerometermap.dagger.components.DaggerServiceComponent;
 import com.boost.testaccelerometermap.domain.interactors.Interactor;
 import com.boost.testaccelerometermap.presentation.model.AccelerometerData;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.inject.Inject;
 
 import io.reactivex.annotations.NonNull;

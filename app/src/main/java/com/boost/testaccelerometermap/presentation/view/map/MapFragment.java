@@ -100,12 +100,8 @@ public class MapFragment extends Fragment implements
         ButterKnife.bind(this, view);
         mMapPresenter.onAttachView(this);
         Realm realm = Realm.getDefaultInstance();
-       realm.where(LocationModel.class).findAll().addChangeListener(new RealmChangeListener<RealmResults<LocationModel>>() {
-            @Override
-            public void onChange(RealmResults<LocationModel> locationModels) {
-                Log.d(TAG, "onChange: " + locationModels.size());
-            }
-        });
+       RealmResults<LocationModel> realmResults = realm.where(LocationModel.class).findAll();
+        Log.d(TAG, "onViewCreated: " + realmResults.size());
     }
 
     @Override

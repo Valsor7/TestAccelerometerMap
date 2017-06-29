@@ -15,6 +15,7 @@ import javax.inject.Inject;
 
 import io.reactivex.annotations.NonNull;
 import io.reactivex.observers.DisposableObserver;
+import io.realm.RealmResults;
 
 /**
  * Created by yaroslav on 07.06.17.
@@ -100,6 +101,8 @@ public class StatisticPresenterImpl implements StatisticPresenter {
         mLocationByDayInteractor.execute(new DisposableObserver<List<LocationModel>>() {
             @Override
             public void onNext(@NonNull List<LocationModel> locationModels) {
+                Log.d(TAG, "onNext: " + locationModels);
+                Log.d(TAG, "onNext: " + locationModels.size());
                 mStatisticView.onLocations(locationModels);
             }
 

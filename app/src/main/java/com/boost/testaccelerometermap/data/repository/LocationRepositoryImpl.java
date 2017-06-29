@@ -7,11 +7,14 @@ import com.boost.testaccelerometermap.data.repository.specification.Specificatio
 import com.boost.testaccelerometermap.presentation.model.AccelerometerData;
 import com.boost.testaccelerometermap.presentation.model.LocationModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
+import io.reactivex.Completable;
 import io.reactivex.Observable;
+import io.reactivex.Single;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
@@ -21,20 +24,18 @@ import io.realm.RealmResults;
 
 public class LocationRepositoryImpl implements Repository<LocationModel> {
     private static final String TAG = "LocationRepositoryImpl";
-    Realm mRealm;
+
     @Inject
     public LocationRepositoryImpl() {
-        mRealm = Realm.getDefaultInstance();
+
     }
 
     @Override
     public Observable<LocationModel> add(final LocationModel item) {
-        Log.d(TAG, "add: ");
-        Realm realm = Realm.getDefaultInstance();
         return Observable.create(subscriber -> {
-            Log.d(TAG, "add: subscribed");
-            realm.copyToRealm(item);
-            Log.d(TAG, "add: saved " + item);
+            Realm realm = Realm.getDefaultInstance();
+            realm.executeTransaction(realm1 -> realm.copyToRealm(item));
+            Log.d(TAG, "add: ");
         });
     }
 
@@ -55,34 +56,16 @@ public class LocationRepositoryImpl implements Repository<LocationModel> {
 
     @Override
     public Observable<List<LocationModel>> getAll() {
-        return getObservableData(mRealm.where(LocationModel.class).findAll());
+      return null;
     }
 
     @Override
     public Observable<List<LocationModel>> query(Specification specification) {
-        if (specification instanceof RealmSpecification) {
-            RealmSpecification<RealmResults<LocationModel>> realmSpecification =
-                    (RealmSpecification<RealmResults<LocationModel>>) specification;
-            return getObservableData(realmSpecification.query(mRealm));
-        } else {
-            return null;
-        }
-    }
+        Realm realm = Realm.getDefaultInstance();
+        RealmSpecification<RealmResults<LocationModel>> realmSpecification =
+                (RealmSpecification<RealmResults<LocationModel>>) specification;
+        RealmResults<LocationModel> realmResults = realmSpecification.query(realm);
 
-    // TODO: 28.06.17 figure out somehow how to create only one listener and also close it
-    private Observable<List<LocationModel>> getObservableData(final RealmResults<LocationModel> queryResults) {
-        return Observable.create(subscriber -> {
-            Log.d(TAG, "getObservableData: " );
-            queryResults.addChangeListener(locations -> {
-                Log.d(TAG, "onChange: ");
-                subscriber.onNext(locations);
-            });
-        });
-
-    }
-
-    @Override
-    public void cleanResources() {
-        mRealm.close();
+        return Observable.just(realm.copyFromRealm(realmResults));
     }
 }

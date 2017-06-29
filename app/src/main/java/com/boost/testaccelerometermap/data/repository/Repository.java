@@ -24,6 +24,4 @@ public interface Repository<T> {
     public Observable<List<T>> getAll();
 
     public Observable<List<T>> query(Specification specification);
-
-    void cleanResources();
 }

@@ -1,7 +1,9 @@
 package com.boost.testaccelerometermap.data.repository;
 
 import android.util.Log;
+import android.view.View;
 
+import com.boost.testaccelerometermap.data.model.response.SuccessResponse;
 import com.boost.testaccelerometermap.data.repository.specification.RealmSpecification;
 import com.boost.testaccelerometermap.data.repository.specification.Specification;
 import com.boost.testaccelerometermap.presentation.model.AccelerometerData;
@@ -9,6 +11,7 @@ import com.boost.testaccelerometermap.presentation.model.LocationModel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
@@ -31,16 +34,15 @@ public class LocationRepositoryImpl implements Repository<LocationModel> {
     }
 
     @Override
-    public Observable<LocationModel> add(final LocationModel item) {
-        return Observable.create(subscriber -> {
-            Realm realm = Realm.getDefaultInstance();
-            realm.executeTransaction(realm1 -> realm.copyToRealm(item));
-            Log.d(TAG, "add: ");
+    public Observable<SuccessResponse> add(final LocationModel item) {
+        return Observable.fromCallable(() -> {
+            Realm.getDefaultInstance().executeTransaction(realm1 -> realm1.copyToRealm(item));
+            return new SuccessResponse();
         });
     }
 
     @Override
-    public Observable<LocationModel> addAll(List<LocationModel> items) {
+    public Observable<SuccessResponse> addAll(List<LocationModel> items) {
         return null;
     }
 
@@ -56,16 +58,17 @@ public class LocationRepositoryImpl implements Repository<LocationModel> {
 
     @Override
     public Observable<List<LocationModel>> getAll() {
-      return null;
+        return null;
     }
 
     @Override
     public Observable<List<LocationModel>> query(Specification specification) {
         Realm realm = Realm.getDefaultInstance();
-        RealmSpecification<RealmResults<LocationModel>> realmSpecification =
-                (RealmSpecification<RealmResults<LocationModel>>) specification;
-        RealmResults<LocationModel> realmResults = realmSpecification.query(realm);
-
-        return Observable.just(realm.copyFromRealm(realmResults));
+        if (specification instanceof RealmSpecification) {
+            RealmSpecification<RealmResults<LocationModel>> realmSpecification =
+                    (RealmSpecification<RealmResults<LocationModel>>) specification;
+            return Observable.just(realm.copyFromRealm(realmSpecification.query(realm)));
+        } else
+            return Observable.error(new Throwable());
     }
 }

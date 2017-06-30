@@ -1,5 +1,6 @@
 package com.boost.testaccelerometermap.presentation.presenter.location;
 
+import com.boost.testaccelerometermap.data.model.response.SuccessResponse;
 import com.boost.testaccelerometermap.domain.interactors.Interactor;
 import com.boost.testaccelerometermap.presentation.model.LocationModel;
 import com.boost.testaccelerometermap.presentation.view.BaseView;
@@ -18,13 +19,13 @@ import io.reactivex.observers.DisposableObserver;
 public class MapPresenterImpl implements MapPresenter {
     private static final String TAG = "MapPresenterImpl";
 
-    private Interactor<LocationModel, LocationModel> mLocationInteractor;
+    private Interactor<SuccessResponse, LocationModel> mLocationInteractor;
 
     private LocationHelper mLocationHelper;
     private GoogleMapView mMapView;
 
     @Inject
-    public MapPresenterImpl(Interactor<LocationModel, LocationModel> interactor,
+    public MapPresenterImpl(Interactor<SuccessResponse, LocationModel> interactor,
                             LocationHelper locationHelper) {
         mLocationHelper = locationHelper;
         mLocationInteractor = interactor;
@@ -37,9 +38,9 @@ public class MapPresenterImpl implements MapPresenter {
 
     @Override
     public void saveLocation(LocationModel location) {
-        mLocationInteractor.execute(new DisposableObserver<LocationModel>() {
+        mLocationInteractor.execute(new DisposableObserver<SuccessResponse>() {
             @Override
-            public void onNext(@NonNull LocationModel locationModel) {
+            public void onNext(@NonNull SuccessResponse successResponse) {
 
             }
 

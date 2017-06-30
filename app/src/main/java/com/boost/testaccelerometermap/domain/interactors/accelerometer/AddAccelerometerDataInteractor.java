@@ -1,5 +1,6 @@
 package com.boost.testaccelerometermap.domain.interactors.accelerometer;
 
+import com.boost.testaccelerometermap.data.model.response.SuccessResponse;
 import com.boost.testaccelerometermap.data.repository.Repository;
 import com.boost.testaccelerometermap.domain.interactors.Interactor;
 import com.boost.testaccelerometermap.presentation.model.AccelerometerData;
@@ -12,7 +13,7 @@ import io.reactivex.Observable;
  * Created by yaroslav on 28.06.17.
  */
 
-public class AddAccelerometerDataInteractor extends Interactor<AccelerometerData,AccelerometerData> {
+public class AddAccelerometerDataInteractor extends Interactor<SuccessResponse, AccelerometerData> {
 
     private Repository<AccelerometerData> mAccelerometerDataRepository;
 
@@ -21,7 +22,7 @@ public class AddAccelerometerDataInteractor extends Interactor<AccelerometerData
     }
 
     @Override
-    protected Observable<AccelerometerData> buildObservable(AccelerometerData requestModel) {
+    protected Observable<SuccessResponse> buildObservable(AccelerometerData requestModel) {
         return mAccelerometerDataRepository.add(requestModel);
     }
 }

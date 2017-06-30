@@ -1,5 +1,6 @@
 package com.boost.testaccelerometermap.data.repository;
 
+import com.boost.testaccelerometermap.data.model.response.SuccessResponse;
 import com.boost.testaccelerometermap.data.repository.specification.Specification;
 
 import java.util.List;
@@ -13,9 +14,9 @@ import io.reactivex.Observable;
 
 public interface Repository<T> {
 
-    public Observable<T> add(T item);
+    public Observable<SuccessResponse> add(T item);
 
-    public Observable<T> addAll(List<T> items);
+    public Observable<SuccessResponse> addAll(List<T> items);
 
     public Observable<T> remove(T item);
 

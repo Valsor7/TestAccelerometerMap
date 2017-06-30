@@ -3,6 +3,7 @@ package com.boost.testaccelerometermap.dagger.modules;
 import android.app.Activity;
 
 import com.boost.testaccelerometermap.dagger.scopes.LocationScope;
+import com.boost.testaccelerometermap.data.model.response.SuccessResponse;
 import com.boost.testaccelerometermap.data.repository.LocationRepositoryImpl;
 import com.boost.testaccelerometermap.data.repository.Repository;
 import com.boost.testaccelerometermap.data.repository.specification.location.LocationSpecificationFactory;
@@ -59,7 +60,7 @@ public class MapModule {
 
     @LocationScope
     @Provides
-    public Interactor<LocationModel, LocationModel> prvideSaveLocationInteractor(Repository<LocationModel> locationModelRepository){
+    public Interactor<SuccessResponse, LocationModel> prvideSaveLocationInteractor(Repository<LocationModel> locationModelRepository){
         return new SaveLoactionInteractor(locationModelRepository);
     }
 

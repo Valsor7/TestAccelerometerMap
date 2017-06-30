@@ -3,6 +3,7 @@ package com.boost.testaccelerometermap.data.repository;
 import android.util.Log;
 
 import com.boost.testaccelerometermap.data.Network;
+import com.boost.testaccelerometermap.data.model.response.SuccessResponse;
 import com.boost.testaccelerometermap.data.repository.specification.RealmSpecification;
 import com.boost.testaccelerometermap.data.repository.specification.Specification;
 import com.boost.testaccelerometermap.presentation.model.AccelerometerData;
@@ -22,12 +23,12 @@ import io.realm.RealmResults;
 public class AccelerometerRealmRepositoryImpl implements Repository<AccelerometerData> {
     private static final String TAG = "MapRepository";
     private final Network mNetwork;
-//    private final Realm mRealm;
+    private final Realm mRealm;
 
     @Inject
     public AccelerometerRealmRepositoryImpl(Network network) {
         mNetwork = network;
-//        mRealm = Realm.getDefaultInstance();
+        mRealm = Realm.getDefaultInstance();
     }
 
     @Override
@@ -38,29 +39,29 @@ public class AccelerometerRealmRepositoryImpl implements Repository<Acceleromete
     @Override
     public Observable<List<AccelerometerData>> query(Specification specification) {
         Realm realm = Realm.getDefaultInstance();
-        RealmSpecification<RealmResults<AccelerometerData>> realmSpecification =
-                (RealmSpecification<RealmResults<AccelerometerData>>) specification;
-
-        RealmResults<AccelerometerData> realmResults = realmSpecification.query(realm);
-        return Observable.just(realm.copyFromRealm(realmResults));
+        if (specification instanceof RealmSpecification) {
+            RealmSpecification<RealmResults<AccelerometerData>> realmSpecification =
+                    (RealmSpecification<RealmResults<AccelerometerData>>) specification;
+            RealmResults<AccelerometerData> realmResults = realmSpecification.query(realm);
+            return Observable.just(realm.copyFromRealm(realmResults));
+        } else
+            return Observable.error(new Throwable());
     }
 
     @Override
-    public Observable<AccelerometerData> add(final AccelerometerData item) {
-        return Observable.create(subscriber -> {
-                    Realm realm = Realm.getDefaultInstance();
-                    realm.executeTransaction(realm1 -> realm.copyToRealm(item));
-                }
-        );
+    public Observable<SuccessResponse> add(final AccelerometerData item) {
+        return Observable.fromCallable(() -> {
+            Realm.getDefaultInstance().executeTransaction(realm1 -> realm1.copyToRealm(item));
+            return new SuccessResponse();
+        });
     }
 
     @Override
-    public Observable<AccelerometerData> addAll(final List<AccelerometerData> items) {
-        return Observable.create(subscriber -> {
-                    Realm realm = Realm.getDefaultInstance();
-                    realm.executeTransaction(realm1 -> realm.copyToRealm(items));
-                }
-        );
+    public Observable<SuccessResponse> addAll(final List<AccelerometerData> items) {
+        return Observable.fromCallable(() -> {
+            Realm.getDefaultInstance().executeTransaction(realm1 -> realm1.copyToRealm(items));
+            return new SuccessResponse();
+        });
     }
 
     @Override

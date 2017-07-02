@@ -14,6 +14,10 @@ import android.view.ViewGroup;
 
 import com.boost.testaccelerometermap.MyApplication;
 import com.boost.testaccelerometermap.R;
+import com.boost.testaccelerometermap.dagger.components.DaggerLocationComponent;
+import com.boost.testaccelerometermap.dagger.modules.AccelerometerModule;
+import com.boost.testaccelerometermap.dagger.modules.InteractorsModule;
+import com.boost.testaccelerometermap.dagger.modules.MapModule;
 import com.boost.testaccelerometermap.presentation.model.AccelerometerData;
 import com.boost.testaccelerometermap.presentation.model.LocationModel;
 import com.boost.testaccelerometermap.presentation.model.LocationToLatLngMapper;
@@ -88,6 +92,17 @@ public class MapFragment extends Fragment implements
         }
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        DaggerLocationComponent.builder()
+                .utilsComponent(MyApplication.getApp().getAppComponent())
+                .mapModule(new MapModule(getActivity()))
+                .build()
+                .plusDomain(new InteractorsModule())
+                .inject(this);
+
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

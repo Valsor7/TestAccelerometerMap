@@ -16,7 +16,6 @@ import javax.inject.Inject;
 
 import io.reactivex.annotations.NonNull;
 import io.reactivex.observers.DisposableObserver;
-import io.realm.RealmResults;
 
 /**
  * Created by yaroslav on 07.06.17.
@@ -48,7 +47,10 @@ public class StatisticPresenterImpl implements StatisticPresenter {
     @Override
     public void onDetachView() {
         mStatisticView = null;
-        mInteractors.forEach(Interactor::dispose);
+        for (Interactor inter :
+                mInteractors) {
+            inter.dispose();
+        }
     }
 
 

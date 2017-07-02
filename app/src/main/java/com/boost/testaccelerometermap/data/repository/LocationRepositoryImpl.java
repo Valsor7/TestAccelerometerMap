@@ -64,11 +64,8 @@ public class LocationRepositoryImpl implements Repository<LocationModel> {
     @Override
     public Observable<List<LocationModel>> query(Specification specification) {
         Realm realm = Realm.getDefaultInstance();
-        if (specification instanceof RealmSpecification) {
             RealmSpecification<RealmResults<LocationModel>> realmSpecification =
                     (RealmSpecification<RealmResults<LocationModel>>) specification;
             return Observable.just(realm.copyFromRealm(realmSpecification.query(realm)));
-        } else
-            return Observable.error(new Throwable());
     }
 }

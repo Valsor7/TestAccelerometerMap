@@ -13,7 +13,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.boost.testaccelerometermap.MyApplication;
 import com.boost.testaccelerometermap.R;
+import com.boost.testaccelerometermap.dagger.components.DaggerLocationComponent;
+import com.boost.testaccelerometermap.dagger.modules.InteractorsModule;
+import com.boost.testaccelerometermap.dagger.modules.MapModule;
 import com.boost.testaccelerometermap.presentation.model.AccelerometerData;
 import com.boost.testaccelerometermap.presentation.model.LocationGroup;
 import com.boost.testaccelerometermap.presentation.model.LocationModel;
@@ -63,6 +67,18 @@ public class DataStatisticFragment extends Fragment implements StatisticView {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
         }
+    }
+
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        DaggerLocationComponent.builder()
+                .utilsComponent(MyApplication.getApp().getAppComponent())
+                .mapModule(new MapModule(getActivity()))
+                .build()
+                .plusDomain(new InteractorsModule())
+                .inject(this);
     }
 
     @Override

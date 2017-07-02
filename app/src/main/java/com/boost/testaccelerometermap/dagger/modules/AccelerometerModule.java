@@ -5,13 +5,7 @@ import com.boost.testaccelerometermap.data.repository.AccelerometerRealmReposito
 import com.boost.testaccelerometermap.data.repository.Repository;
 import com.boost.testaccelerometermap.data.repository.specification.accelerometer.AccelerometerSpecificationFactory;
 import com.boost.testaccelerometermap.data.repository.specification.accelerometer.AccelerometerSpecificationFactoryImpl;
-import com.boost.testaccelerometermap.domain.interactors.Interactor;
-import com.boost.testaccelerometermap.domain.interactors.accelerometer.AccelerometerGetInRangeInteractor;
-import com.boost.testaccelerometermap.domain.interactors.accelerometer.AddAccelerometerDataInteractor;
 import com.boost.testaccelerometermap.presentation.model.AccelerometerData;
-import com.boost.testaccelerometermap.presentation.model.TimestampInRange;
-
-import java.util.List;
 
 import dagger.Module;
 import dagger.Provides;
@@ -32,20 +26,5 @@ public class AccelerometerModule {
     @Provides
     public AccelerometerSpecificationFactory provideAccelerometerSpecificationFactory() {
         return new AccelerometerSpecificationFactoryImpl();
-    }
-
-    @LocationScope
-    @Provides
-    public Interactor<List<AccelerometerData>, TimestampInRange> provideAccelerometerInRangeInteractor(
-            Repository<AccelerometerData> accelerometerRepository,
-            AccelerometerSpecificationFactory accelerometerSpecificationFactory) {
-        return new AccelerometerGetInRangeInteractor(accelerometerRepository, accelerometerSpecificationFactory);
-    }
-
-    @LocationScope
-    @Provides
-    public Interactor<AccelerometerData, AccelerometerData> provideAccelerometerListInteractor(
-            Repository<AccelerometerData> accelerometerRepository) {
-        return new AddAccelerometerDataInteractor(accelerometerRepository);
     }
 }

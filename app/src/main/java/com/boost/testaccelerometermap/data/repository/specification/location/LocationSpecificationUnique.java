@@ -12,7 +12,6 @@ class LocationSpecificationUnique implements RealmSpecification<RealmResults<Loc
 
     @Override
     public RealmResults<LocationModel> query(Realm realm) {
-        RealmResults<LocationModel> realmResults = realm.where(LocationModel.class).distinct(LocationModel.DAY_FIELD);
-        return realmResults;
+        return realm.where(LocationModel.class).distinct(LocationModel.DAY_FIELD);
     }
 }

@@ -1,7 +1,5 @@
 package com.boost.testaccelerometermap.dagger.modules;
 
-import android.content.Context;
-
 import com.boost.testaccelerometermap.MyApplication;
 
 import javax.inject.Singleton;

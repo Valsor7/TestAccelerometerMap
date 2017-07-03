@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.boost.testaccelerometermap.R;
-import com.boost.testaccelerometermap.presentation.model.LocationModel;
+import com.boost.testaccelerometermap.data.model.Location;
 import com.boost.testaccelerometermap.presentation.utils.TimeUtils;
 
 import java.util.ArrayList;
@@ -23,7 +23,7 @@ import butterknife.ButterKnife;
 
 public class StatisticAdapter extends RecyclerView.Adapter<StatisticAdapter.StatisticViewHolder> {
     private static final String TAG = "StatisticAdapter";
-    private List<LocationModel> mDays = new ArrayList<>();
+    private List<Location> mDays = new ArrayList<>();
     private DateClickCallback mCallback;
 
     public StatisticAdapter(DateClickCallback callback) {
@@ -52,16 +52,16 @@ public class StatisticAdapter extends RecyclerView.Adapter<StatisticAdapter.Stat
         return mDays.size();
     }
 
-    public void addAll(List<LocationModel> data) {
+    public void addAll(List<Location> data) {
         mDays.addAll(data);
         notifyDataSetChanged();
     }
 
-    public LocationModel getDataByPosition(int pos) {
+    public Location getDataByPosition(int pos) {
         if (mDays.size() > pos && pos >= 0) {
             return mDays.get(pos);
         }
-        return new LocationModel();
+        return new Location();
     }
 
     class StatisticViewHolder extends RecyclerView.ViewHolder {
@@ -74,7 +74,7 @@ public class StatisticAdapter extends RecyclerView.Adapter<StatisticAdapter.Stat
             ButterKnife.bind(this, itemView);
         }
 
-        public void bind(LocationModel model){
+        public void bind(Location model){
             String displayTime = TimeUtils.getFormattedTimeFromMillis(model.getDayInMillis());
             Log.d(TAG, "bind: time " + displayTime);
             mPeriodTv.setText(displayTime);

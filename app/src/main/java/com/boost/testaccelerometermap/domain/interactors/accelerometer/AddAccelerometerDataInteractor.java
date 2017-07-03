@@ -1,11 +1,9 @@
 package com.boost.testaccelerometermap.domain.interactors.accelerometer;
 
 import com.boost.testaccelerometermap.data.model.response.SuccessResponse;
-import com.boost.testaccelerometermap.data.repository.Repository;
+import com.boost.testaccelerometermap.domain.Repository;
 import com.boost.testaccelerometermap.domain.interactors.Interactor;
-import com.boost.testaccelerometermap.presentation.model.AccelerometerData;
-
-import java.util.List;
+import com.boost.testaccelerometermap.data.model.AccelerometerData;
 
 import io.reactivex.Observable;
 

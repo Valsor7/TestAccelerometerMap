@@ -5,4 +5,5 @@ package com.boost.testaccelerometermap.presentation.view;
  */
 
 public interface BaseView {
+    void onError(Object error);
 }

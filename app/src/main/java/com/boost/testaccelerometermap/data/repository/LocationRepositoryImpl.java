@@ -1,23 +1,16 @@
 package com.boost.testaccelerometermap.data.repository;
 
-import android.util.Log;
-import android.view.View;
-
+import com.boost.testaccelerometermap.data.model.Location;
 import com.boost.testaccelerometermap.data.model.response.SuccessResponse;
 import com.boost.testaccelerometermap.data.repository.specification.RealmSpecification;
 import com.boost.testaccelerometermap.data.repository.specification.Specification;
-import com.boost.testaccelerometermap.presentation.model.AccelerometerData;
-import com.boost.testaccelerometermap.presentation.model.LocationModel;
+import com.boost.testaccelerometermap.domain.Repository;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
-import io.reactivex.Completable;
 import io.reactivex.Observable;
-import io.reactivex.Single;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
@@ -25,7 +18,7 @@ import io.realm.RealmResults;
  * Created by yaroslav on 30.05.17.
  */
 
-public class LocationRepositoryImpl implements Repository<LocationModel> {
+public class LocationRepositoryImpl implements Repository<Location> {
     private static final String TAG = "LocationRepositoryImpl";
 
     @Inject
@@ -34,7 +27,7 @@ public class LocationRepositoryImpl implements Repository<LocationModel> {
     }
 
     @Override
-    public Observable<SuccessResponse> add(final LocationModel item) {
+    public Observable<SuccessResponse> add(final Location item) {
         return Observable.fromCallable(() -> {
             Realm.getDefaultInstance().executeTransaction(realm1 -> realm1.copyToRealm(item));
             return new SuccessResponse();
@@ -42,30 +35,30 @@ public class LocationRepositoryImpl implements Repository<LocationModel> {
     }
 
     @Override
-    public Observable<SuccessResponse> addAll(List<LocationModel> items) {
+    public Observable<SuccessResponse> addAll(List<Location> items) {
         return null;
     }
 
     @Override
-    public Observable<LocationModel> remove(LocationModel item) {
+    public Observable<Location> remove(Location item) {
         return null;
     }
 
     @Override
-    public Observable<LocationModel> update(LocationModel item) {
+    public Observable<Location> update(Location item) {
         return null;
     }
 
     @Override
-    public Observable<List<LocationModel>> getAll() {
+    public Observable<List<Location>> getAll() {
         return null;
     }
 
     @Override
-    public Observable<List<LocationModel>> query(Specification specification) {
+    public Observable<List<Location>> query(Specification specification) {
         Realm realm = Realm.getDefaultInstance();
-            RealmSpecification<RealmResults<LocationModel>> realmSpecification =
-                    (RealmSpecification<RealmResults<LocationModel>>) specification;
+            RealmSpecification<RealmResults<Location>> realmSpecification =
+                    (RealmSpecification<RealmResults<Location>>) specification;
             return Observable.just(realm.copyFromRealm(realmSpecification.query(realm)));
     }
 }

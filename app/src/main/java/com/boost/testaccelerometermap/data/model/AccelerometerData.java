@@ -1,7 +1,9 @@
-package com.boost.testaccelerometermap.presentation.model;
+package com.boost.testaccelerometermap.data.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import com.boost.testaccelerometermap.presentation.model.ExpandableElement;
 
 import io.realm.RealmObject;
 

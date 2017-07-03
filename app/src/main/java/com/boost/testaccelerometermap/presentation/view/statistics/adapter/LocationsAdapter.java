@@ -4,15 +4,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.boost.testaccelerometermap.R;
-import com.boost.testaccelerometermap.presentation.model.AccelerometerData;
+import com.boost.testaccelerometermap.data.model.AccelerometerData;
 import com.boost.testaccelerometermap.presentation.model.DataCallback;
 import com.boost.testaccelerometermap.presentation.model.EmptyTitleExpandableElement;
 import com.boost.testaccelerometermap.presentation.model.ExpandableElement;
-import com.boost.testaccelerometermap.presentation.model.LocationModel;
 import com.boost.testaccelerometermap.presentation.model.LocationGroup;
 import com.boost.testaccelerometermap.presentation.model.TimestampInRange;
 import com.boost.testaccelerometermap.presentation.utils.TimeUtils;
@@ -22,12 +20,10 @@ import com.thoughtbot.expandablerecyclerview.viewholders.ChildViewHolder;
 import com.thoughtbot.expandablerecyclerview.viewholders.GroupViewHolder;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 /**
  * Created by yaroslav on 08.06.17.

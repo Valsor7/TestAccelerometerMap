@@ -1,11 +1,10 @@
 package com.boost.testaccelerometermap.dagger.app.module;
 
-import com.boost.testaccelerometermap.dagger.scopes.LocationScope;
 import com.boost.testaccelerometermap.data.repository.AccelerometerRealmRepositoryImpl;
-import com.boost.testaccelerometermap.data.repository.Repository;
+import com.boost.testaccelerometermap.domain.Repository;
 import com.boost.testaccelerometermap.data.repository.specification.accelerometer.AccelerometerSpecificationFactory;
 import com.boost.testaccelerometermap.data.repository.specification.accelerometer.AccelerometerSpecificationFactoryImpl;
-import com.boost.testaccelerometermap.presentation.model.AccelerometerData;
+import com.boost.testaccelerometermap.data.model.AccelerometerData;
 
 import javax.inject.Singleton;
 

@@ -14,10 +14,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.boost.testaccelerometermap.R;
-import com.boost.testaccelerometermap.presentation.model.AccelerometerData;
+import com.boost.testaccelerometermap.data.model.AccelerometerData;
+import com.boost.testaccelerometermap.data.model.Location;
 import com.boost.testaccelerometermap.presentation.model.DataCallback;
 import com.boost.testaccelerometermap.presentation.model.LocationGroup;
-import com.boost.testaccelerometermap.presentation.model.LocationModel;
 import com.boost.testaccelerometermap.presentation.model.TimestampInRange;
 import com.boost.testaccelerometermap.presentation.view.statistics.adapter.LocationsAdapter;
 
@@ -79,7 +79,7 @@ public class StatisticsDialog extends DialogFragment {
     @OnClick(R.id.btn_on_map)
     public void onClickShowOnMap() {
         Intent intent = new Intent();
-        intent.putExtra(LocationModel.class.getSimpleName(), getArguments());
+        intent.putExtra(Location.class.getSimpleName(), getArguments());
         getTargetFragment().onActivityResult(REQ_CODE_LOCATIONS, Activity.RESULT_OK, intent);
         dismiss();
     }

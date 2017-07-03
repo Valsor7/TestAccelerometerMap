@@ -2,7 +2,7 @@ package com.boost.testaccelerometermap.data.repository.specification.acceleromet
 
 
 import com.boost.testaccelerometermap.data.repository.specification.RealmSpecification;
-import com.boost.testaccelerometermap.presentation.model.AccelerometerData;
+import com.boost.testaccelerometermap.data.model.AccelerometerData;
 import com.boost.testaccelerometermap.presentation.model.TimestampInRange;
 
 import io.realm.Realm;

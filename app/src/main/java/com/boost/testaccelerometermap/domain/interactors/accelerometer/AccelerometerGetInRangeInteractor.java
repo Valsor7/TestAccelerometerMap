@@ -1,10 +1,10 @@
 package com.boost.testaccelerometermap.domain.interactors.accelerometer;
 
 
-import com.boost.testaccelerometermap.data.repository.Repository;
+import com.boost.testaccelerometermap.domain.Repository;
 import com.boost.testaccelerometermap.data.repository.specification.accelerometer.AccelerometerSpecificationFactory;
 import com.boost.testaccelerometermap.domain.interactors.Interactor;
-import com.boost.testaccelerometermap.presentation.model.AccelerometerData;
+import com.boost.testaccelerometermap.data.model.AccelerometerData;
 import com.boost.testaccelerometermap.presentation.model.TimestampInRange;
 
 import java.util.List;

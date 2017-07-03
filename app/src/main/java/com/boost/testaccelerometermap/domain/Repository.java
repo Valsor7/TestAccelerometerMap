@@ -1,4 +1,4 @@
-package com.boost.testaccelerometermap.data.repository;
+package com.boost.testaccelerometermap.domain;
 
 import com.boost.testaccelerometermap.data.model.response.SuccessResponse;
 import com.boost.testaccelerometermap.data.repository.specification.Specification;

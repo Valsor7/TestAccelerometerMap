@@ -1,13 +1,11 @@
 package com.boost.testaccelerometermap.data.repository;
 
-import android.util.Log;
-
 import com.boost.testaccelerometermap.data.Network;
 import com.boost.testaccelerometermap.data.model.response.SuccessResponse;
 import com.boost.testaccelerometermap.data.repository.specification.RealmSpecification;
 import com.boost.testaccelerometermap.data.repository.specification.Specification;
-import com.boost.testaccelerometermap.presentation.model.AccelerometerData;
-import com.boost.testaccelerometermap.presentation.model.LocationModel;
+import com.boost.testaccelerometermap.domain.Repository;
+import com.boost.testaccelerometermap.data.model.AccelerometerData;
 
 import java.util.List;
 

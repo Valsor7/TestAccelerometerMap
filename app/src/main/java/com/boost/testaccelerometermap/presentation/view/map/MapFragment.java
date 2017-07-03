@@ -2,7 +2,6 @@ package com.boost.testaccelerometermap.presentation.view.map;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -12,7 +11,8 @@ import android.view.ViewGroup;
 
 import com.boost.testaccelerometermap.MyApplication;
 import com.boost.testaccelerometermap.R;
-import com.boost.testaccelerometermap.presentation.model.AccelerometerData;
+import com.boost.testaccelerometermap.data.model.AccelerometerData;
+import com.boost.testaccelerometermap.data.model.Location;
 import com.boost.testaccelerometermap.presentation.model.LocationModel;
 import com.boost.testaccelerometermap.presentation.model.LocationToLatLngMapper;
 import com.boost.testaccelerometermap.presentation.presenter.location.MapPresenterImpl;
@@ -57,12 +57,12 @@ public class MapFragment extends BaseFragment implements
         return newInstance(new ArrayList<>());
     }
 
-    public static MapFragment newInstance(ArrayList<LocationModel> locations){
+    public static MapFragment newInstance(ArrayList<Location> locations){
         if (locations == null){
             locations = new ArrayList<>();
         }
         Bundle args = new Bundle();
-        args.putParcelableArrayList(LocationModel.class.getSimpleName(), locations);
+        args.putParcelableArrayList(Location.class.getSimpleName(), locations);
         return newInstance(args);
     }
 
@@ -124,20 +124,26 @@ public class MapFragment extends BaseFragment implements
     }
 
     @Override
-    public void onLocationTriggered(Location location) {
+    public void onLocationTriggered(android.location.Location location) {
 //        Log.d(TAG, "onLocationTriggered: " + location);
         if (mGoogleMap != null) {
             if (mLocationModels.isEmpty()) {
                 Log.d(TAG, "onLocationTriggered: first time");
-                mLocationModels.add(new LocationModel(location));
+                mLocationModels.add(new Location(location));
             }
-            mMapPresenter.saveLocation(new LocationModel(location));
+
+            mMapPresenter.saveLocation(new Location(location));
             mLatLngList.add(LocationToLatLngMapper.convertToLatLng(location));
             if (isSameDay()) {
 //                Log.d(TAG, "onLocationTriggered: size " + mLatLngList.size());
                 drawTrackLine(mLatLngList);
             }
         }
+    }
+
+    @Override
+    public void onLocationParsed(List<LatLng> latLngList) {
+        drawTrackLine(latLngList);
     }
 
     private boolean isSameDay() {
@@ -163,10 +169,10 @@ public class MapFragment extends BaseFragment implements
 
     private void showHistory() {
         mLocationModels.clear();
-        mLocationModels = getArguments().getParcelableArrayList(LocationModel.class.getSimpleName());
+        mLocationModels = getArguments().getParcelableArrayList(Location.class.getSimpleName());
         if (mLocationModels != null && !mLocationModels.isEmpty()) {
             Log.d(TAG, "showHistory: " + mLocationModels.size());
-            drawTrackLine(LocationToLatLngMapper.convertToLatLngList(mLocationModels));
+            mMapPresenter.parseLocationsModel(mLocationModels);
         }
     }
 
@@ -219,6 +225,11 @@ public class MapFragment extends BaseFragment implements
 
     public void onSettingsAccepted() {
         mMapPresenter.createLocationRequest();
+    }
+
+    @Override
+    public void onError(Object error) {
+
     }
 
     public interface OnFragmentMapCallback {

@@ -1,4 +1,4 @@
-package com.boost.testaccelerometermap.dagger.modules;
+package com.boost.testaccelerometermap.dagger.interactors;
 
 import com.boost.testaccelerometermap.dagger.scopes.DomainScope;
 import com.boost.testaccelerometermap.data.model.response.SuccessResponse;

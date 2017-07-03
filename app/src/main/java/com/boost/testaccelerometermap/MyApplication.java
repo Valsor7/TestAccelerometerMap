@@ -3,10 +3,10 @@ package com.boost.testaccelerometermap;
 import android.app.Application;
 import android.content.Intent;
 
-import com.boost.testaccelerometermap.dagger.components.AppComponent;
+import com.boost.testaccelerometermap.dagger.app.AppComponent;
 import com.boost.testaccelerometermap.dagger.components.DaggerAppComponent;
-import com.boost.testaccelerometermap.dagger.modules.AppModule;
-import com.boost.testaccelerometermap.dagger.modules.UtilsModule;
+import com.boost.testaccelerometermap.dagger.app.module.AppModule;
+import com.boost.testaccelerometermap.dagger.app.module.UtilsModule;
 import com.boost.testaccelerometermap.presentation.view.AccelerometerService;
 
 import io.realm.Realm;

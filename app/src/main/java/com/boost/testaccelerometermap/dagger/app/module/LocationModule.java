@@ -1,6 +1,4 @@
-package com.boost.testaccelerometermap.dagger.modules;
-
-import android.app.Activity;
+package com.boost.testaccelerometermap.dagger.app.module;
 
 import com.boost.testaccelerometermap.dagger.scopes.LocationScope;
 import com.boost.testaccelerometermap.data.repository.LocationRepositoryImpl;
@@ -8,30 +6,23 @@ import com.boost.testaccelerometermap.data.repository.Repository;
 import com.boost.testaccelerometermap.data.repository.specification.location.LocationSpecificationFactory;
 import com.boost.testaccelerometermap.data.repository.specification.location.LocationSpecificationFactoryImpl;
 import com.boost.testaccelerometermap.presentation.model.LocationModel;
-import com.boost.testaccelerometermap.presentation.view.map.LocationHelper;
 
 import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
 
-/**
- * Created by yaroslav on 24.05.17.
- */
 @Module
-public class MapModule {
-
-    private Activity mActivity;
-
-    public MapModule(Activity activity) {
-        mActivity = activity;
-    }
-
-    @LocationScope
+public class LocationModule {
+    @Singleton
     @Provides
-    public LocationHelper provideLocationHelper(){
-        return new LocationHelper(mActivity);
+    public Repository<LocationModel> provideLocationRepository(LocationRepositoryImpl locationRepository){
+        return locationRepository;
     }
 
-
+    @Singleton
+    @Provides
+    public LocationSpecificationFactory provideLocationSpecificationFactory(){
+        return new LocationSpecificationFactoryImpl();
+    }
 }

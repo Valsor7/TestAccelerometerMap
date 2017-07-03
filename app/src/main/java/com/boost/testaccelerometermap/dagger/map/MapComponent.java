@@ -1,11 +1,9 @@
-package com.boost.testaccelerometermap.dagger.components;
+package com.boost.testaccelerometermap.dagger.map;
 
-import com.boost.testaccelerometermap.dagger.modules.AccelerometerModule;
-import com.boost.testaccelerometermap.dagger.modules.InteractorsModule;
-import com.boost.testaccelerometermap.dagger.modules.MapModule;
+import com.boost.testaccelerometermap.dagger.interactors.DomainComponent;
+import com.boost.testaccelerometermap.dagger.interactors.InteractorsModule;
 import com.boost.testaccelerometermap.dagger.scopes.LocationScope;
 
-import dagger.Component;
 import dagger.Subcomponent;
 
 /**

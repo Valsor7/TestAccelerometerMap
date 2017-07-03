@@ -6,9 +6,9 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 
 import com.boost.testaccelerometermap.MyApplication;
-import com.boost.testaccelerometermap.dagger.components.DomainComponent;
-import com.boost.testaccelerometermap.dagger.modules.InteractorsModule;
-import com.boost.testaccelerometermap.dagger.modules.MapModule;
+import com.boost.testaccelerometermap.dagger.interactors.DomainComponent;
+import com.boost.testaccelerometermap.dagger.interactors.InteractorsModule;
+import com.boost.testaccelerometermap.dagger.map.MapModule;
 
 public class BaseFragment extends Fragment {
 

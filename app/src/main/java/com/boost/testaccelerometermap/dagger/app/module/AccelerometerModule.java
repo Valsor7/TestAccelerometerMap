@@ -1,4 +1,4 @@
-package com.boost.testaccelerometermap.dagger.modules;
+package com.boost.testaccelerometermap.dagger.app.module;
 
 import com.boost.testaccelerometermap.dagger.scopes.LocationScope;
 import com.boost.testaccelerometermap.data.repository.AccelerometerRealmRepositoryImpl;

@@ -1,6 +1,5 @@
-package com.boost.testaccelerometermap.dagger.components;
+package com.boost.testaccelerometermap.dagger.interactors;
 
-import com.boost.testaccelerometermap.dagger.modules.InteractorsModule;
 import com.boost.testaccelerometermap.dagger.scopes.DomainScope;
 import com.boost.testaccelerometermap.presentation.view.map.MapFragment;
 import com.boost.testaccelerometermap.presentation.view.statistics.DataStatisticFragment;

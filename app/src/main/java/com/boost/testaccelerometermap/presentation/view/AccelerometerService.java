@@ -12,7 +12,7 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.boost.testaccelerometermap.MyApplication;
-import com.boost.testaccelerometermap.dagger.modules.ServiceModule;
+import com.boost.testaccelerometermap.dagger.service.ServiceModule;
 import com.boost.testaccelerometermap.data.model.response.SuccessResponse;
 import com.boost.testaccelerometermap.domain.interactors.Interactor;
 import com.boost.testaccelerometermap.presentation.model.AccelerometerData;

@@ -7,6 +7,8 @@ import com.boost.testaccelerometermap.data.repository.specification.acceleromete
 import com.boost.testaccelerometermap.data.repository.specification.accelerometer.AccelerometerSpecificationFactoryImpl;
 import com.boost.testaccelerometermap.presentation.model.AccelerometerData;
 
+import javax.inject.Singleton;
+
 import dagger.Module;
 import dagger.Provides;
 
@@ -16,13 +18,13 @@ import dagger.Provides;
 @Module
 public class AccelerometerModule {
 
-    @LocationScope
+    @Singleton
     @Provides
     public Repository<AccelerometerData> provideAccelerometerRepository(AccelerometerRealmRepositoryImpl accelerometerRepository) {
         return accelerometerRepository;
     }
 
-    @LocationScope
+    @Singleton
     @Provides
     public AccelerometerSpecificationFactory provideAccelerometerSpecificationFactory() {
         return new AccelerometerSpecificationFactoryImpl();

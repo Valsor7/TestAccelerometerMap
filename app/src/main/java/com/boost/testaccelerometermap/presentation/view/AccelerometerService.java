@@ -12,10 +12,7 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.boost.testaccelerometermap.MyApplication;
-import com.boost.testaccelerometermap.dagger.components.DaggerLocationComponent;
-import com.boost.testaccelerometermap.dagger.components.DaggerServiceComponent;
-import com.boost.testaccelerometermap.dagger.modules.InteractorsModule;
-import com.boost.testaccelerometermap.dagger.modules.MapModule;
+import com.boost.testaccelerometermap.dagger.modules.ServiceModule;
 import com.boost.testaccelerometermap.data.model.response.SuccessResponse;
 import com.boost.testaccelerometermap.domain.interactors.Interactor;
 import com.boost.testaccelerometermap.presentation.model.AccelerometerData;
@@ -44,9 +41,8 @@ public class AccelerometerService extends Service implements SensorEventListener
     }
 
     private void initDI() {
-        DaggerServiceComponent.builder()
-                .utilsComponent(MyApplication.getApp().getAppComponent())
-                .build()
+        MyApplication.getApp().getAppComponent()
+                .plusServiceComponent(new ServiceModule())
                 .inject(this);
     }
 

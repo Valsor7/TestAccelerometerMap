@@ -3,9 +3,8 @@ package com.boost.testaccelerometermap;
 import android.app.Application;
 import android.content.Intent;
 
-
-import com.boost.testaccelerometermap.dagger.components.DaggerUtilsComponent;
-import com.boost.testaccelerometermap.dagger.components.UtilsComponent;
+import com.boost.testaccelerometermap.dagger.components.AppComponent;
+import com.boost.testaccelerometermap.dagger.components.DaggerAppComponent;
 import com.boost.testaccelerometermap.dagger.modules.AppModule;
 import com.boost.testaccelerometermap.dagger.modules.UtilsModule;
 import com.boost.testaccelerometermap.presentation.view.AccelerometerService;
@@ -20,7 +19,7 @@ import io.realm.rx.RealmObservableFactory;
 
 public class MyApplication extends Application {
     private static MyApplication mApp;
-    private UtilsComponent mUtilsComponent;
+    private AppComponent mAppComponent;
     private Intent mIntent;
 
     @Override
@@ -34,7 +33,7 @@ public class MyApplication extends Application {
     }
 
     private void initAppComponent(){
-        mUtilsComponent = DaggerUtilsComponent.builder()
+        mAppComponent = DaggerAppComponent.builder()
                 .appModule(new AppModule(this))
                 .utilsModule(new UtilsModule())
                 .build();
@@ -54,8 +53,8 @@ public class MyApplication extends Application {
         }
     }
 
-    public UtilsComponent getAppComponent() {
-        return mUtilsComponent;
+    public AppComponent getAppComponent() {
+        return mAppComponent;
     }
 
     public static MyApplication getApp(){

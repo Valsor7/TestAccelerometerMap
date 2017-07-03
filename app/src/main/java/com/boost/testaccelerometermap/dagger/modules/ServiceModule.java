@@ -16,11 +16,7 @@ import dagger.Provides;
  */
 @Module
 public class ServiceModule {
-    @ServiceScope
-    @Provides
-    public Repository<AccelerometerData> provideAccelerometerRepository(AccelerometerRealmRepositoryImpl accelerometerRepository) {
-        return accelerometerRepository;
-    }
+
     @ServiceScope
     @Provides
     public Interactor<SuccessResponse, AccelerometerData> provideAccelerometerListInteractor(

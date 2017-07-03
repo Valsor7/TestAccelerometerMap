@@ -1,12 +1,10 @@
 package com.boost.testaccelerometermap.presentation.view.map;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,16 +12,12 @@ import android.view.ViewGroup;
 
 import com.boost.testaccelerometermap.MyApplication;
 import com.boost.testaccelerometermap.R;
-import com.boost.testaccelerometermap.dagger.components.DaggerLocationComponent;
-import com.boost.testaccelerometermap.dagger.modules.AccelerometerModule;
-import com.boost.testaccelerometermap.dagger.modules.InteractorsModule;
-import com.boost.testaccelerometermap.dagger.modules.MapModule;
 import com.boost.testaccelerometermap.presentation.model.AccelerometerData;
 import com.boost.testaccelerometermap.presentation.model.LocationModel;
 import com.boost.testaccelerometermap.presentation.model.LocationToLatLngMapper;
 import com.boost.testaccelerometermap.presentation.presenter.location.MapPresenterImpl;
 import com.boost.testaccelerometermap.presentation.utils.TimeUtils;
-import com.boost.testaccelerometermap.presentation.view.AccelerometerService;
+import com.boost.testaccelerometermap.presentation.view.BaseFragment;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -40,11 +34,8 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import io.realm.Realm;
-import io.realm.RealmChangeListener;
-import io.realm.RealmResults;
 
-public class MapFragment extends Fragment implements
+public class MapFragment extends BaseFragment implements
         GoogleMapView, OnMapReadyCallback {
     private static final String TAG = "MapFragment";
     private static final float STREET_ZOOM = 15;
@@ -95,14 +86,9 @@ public class MapFragment extends Fragment implements
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        DaggerLocationComponent.builder()
-                .utilsComponent(MyApplication.getApp().getAppComponent())
-                .mapModule(new MapModule(getActivity()))
-                .build()
-                .plusDomain(new InteractorsModule())
-                .inject(this);
-
+        mDomainComponent.inject(this);
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

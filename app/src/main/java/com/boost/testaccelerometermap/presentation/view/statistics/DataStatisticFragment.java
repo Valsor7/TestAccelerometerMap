@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -13,16 +12,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.boost.testaccelerometermap.MyApplication;
 import com.boost.testaccelerometermap.R;
-import com.boost.testaccelerometermap.dagger.components.DaggerLocationComponent;
-import com.boost.testaccelerometermap.dagger.modules.InteractorsModule;
-import com.boost.testaccelerometermap.dagger.modules.MapModule;
 import com.boost.testaccelerometermap.presentation.model.AccelerometerData;
 import com.boost.testaccelerometermap.presentation.model.LocationGroup;
 import com.boost.testaccelerometermap.presentation.model.LocationModel;
 import com.boost.testaccelerometermap.presentation.model.TimestampInRange;
 import com.boost.testaccelerometermap.presentation.presenter.statistics.StatisticPresenterImpl;
+import com.boost.testaccelerometermap.presentation.view.BaseFragment;
 import com.boost.testaccelerometermap.presentation.view.statistics.adapter.StatisticAdapter;
 
 import java.util.ArrayList;
@@ -37,7 +33,7 @@ import butterknife.ButterKnife;
  * Created by yaroslav on 07.06.17.
  */
 
-public class DataStatisticFragment extends Fragment implements StatisticView {
+public class DataStatisticFragment extends BaseFragment implements StatisticView {
     private static final String TAG = "DataStatisticFragment";
     @BindView(R.id.rv_statistics)
     RecyclerView mStatisticsRecyclerView;
@@ -73,12 +69,7 @@ public class DataStatisticFragment extends Fragment implements StatisticView {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        DaggerLocationComponent.builder()
-                .utilsComponent(MyApplication.getApp().getAppComponent())
-                .mapModule(new MapModule(getActivity()))
-                .build()
-                .plusDomain(new InteractorsModule())
-                .inject(this);
+        mDomainComponent.inject(this);
     }
 
     @Override

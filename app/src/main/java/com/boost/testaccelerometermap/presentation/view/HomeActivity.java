@@ -16,6 +16,12 @@ import com.boost.testaccelerometermap.R;
 import com.boost.testaccelerometermap.presentation.view.map.MapFragment;
 import com.boost.testaccelerometermap.presentation.view.statistics.DataStatisticFragment;
 import com.google.android.gms.maps.GoogleMap;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionDeniedResponse;
+import com.karumi.dexter.listener.PermissionGrantedResponse;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.single.PermissionListener;
 
 public class HomeActivity extends AppCompatActivity implements MapFragment.OnFragmentMapCallback, DataStatisticFragment.OnFragmentDataStatisticCallback {
     private static final String TAG = "HomeActivity";
@@ -27,7 +33,6 @@ public class HomeActivity extends AppCompatActivity implements MapFragment.OnFra
         setContentView(R.layout.activity_home);
         setNewFragment(MapFragment.newInstance(), false);
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

@@ -20,7 +20,7 @@ public class AddAccelerometerDataInteractor extends Interactor<SuccessResponse, 
     }
 
     @Override
-    protected Observable<SuccessResponse> buildObservable(AccelerometerData requestModel) {
+    public Observable<SuccessResponse> execute(AccelerometerData requestModel) {
         return mAccelerometerDataRepository.add(requestModel);
     }
 }

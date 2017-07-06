@@ -5,6 +5,7 @@ import android.util.Log;
 import com.boost.testaccelerometermap.data.model.Location;
 import com.boost.testaccelerometermap.domain.interactors.Interactor;
 import com.boost.testaccelerometermap.data.model.AccelerometerData;
+import com.boost.testaccelerometermap.presentation.model.LocationModel;
 import com.boost.testaccelerometermap.presentation.model.TimestampInRange;
 import com.boost.testaccelerometermap.presentation.view.BaseView;
 import com.boost.testaccelerometermap.presentation.view.statistics.StatisticView;
@@ -28,16 +29,16 @@ import io.reactivex.observers.DisposableObserver;
 public class StatisticPresenterImpl implements StatisticPresenter {
     private static final String TAG = "StatisticPresenterImpl";
     private StatisticView mStatisticView;
-    private List<Interactor> mInteractors = new ArrayList<>();
+
     private Interactor<List<AccelerometerData>, TimestampInRange> mAccelerometerInteractor;
-    private Interactor<List<Location>, Long> mLocationByDayInteractor;
-    private Interactor<List<Location>, Void> mUniqueLocationInteractor;
+    private Interactor<List<LocationModel>, Long> mLocationByDayInteractor;
+    private Interactor<List<LocationModel>, Void> mUniqueLocationInteractor;
     private CompositeDisposable mDisposables;
 
     @Inject
     public StatisticPresenterImpl(Interactor<List<AccelerometerData>, TimestampInRange> accelerometerInteractor,
-                                  Interactor<List<Location>, Long> locationByDayInteractor,
-                                  Interactor<List<Location>, Void> uniqueLocationsInteractor) {
+                                  Interactor<List<LocationModel>, Long> locationByDayInteractor,
+                                  Interactor<List<LocationModel>, Void> uniqueLocationsInteractor) {
         mAccelerometerInteractor = accelerometerInteractor;
         mUniqueLocationInteractor = uniqueLocationsInteractor;
         mLocationByDayInteractor = locationByDayInteractor;

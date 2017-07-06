@@ -19,6 +19,7 @@ import com.boost.testaccelerometermap.data.model.AccelerometerData;
 
 import javax.inject.Inject;
 
+import io.reactivex.Observable;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.observers.DisposableObserver;
 
@@ -74,22 +75,8 @@ public class AccelerometerService extends Service implements SensorEventListener
         data.setY(event.values[1]);
         data.setZ(event.values[2]);
         data.setTimestamp(System.currentTimeMillis());
-        mAddAccelerometerDataInteractor.execute(new DisposableObserver<SuccessResponse>() {
-            @Override
-            public void onNext(@NonNull SuccessResponse successResponse) {
-
-            }
-
-            @Override
-            public void onError(@NonNull Throwable e) {
-
-            }
-
-            @Override
-            public void onComplete() {
-
-            }
-        }, data);
+        // TODO: 06.07.17 remake add disposable
+        mAddAccelerometerDataInteractor.execute(data).subscribe();
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.boost.testaccelerometermap.presentation.view.map;
 
+import android.Manifest;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -25,6 +26,13 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.DexterBuilder;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionDeniedResponse;
+import com.karumi.dexter.listener.PermissionGrantedResponse;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.single.PermissionListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,7 +65,7 @@ public class MapFragment extends BaseFragment implements
         return newInstance(new ArrayList<>());
     }
 
-    public static MapFragment newInstance(ArrayList<Location> locations){
+    public static MapFragment newInstance(ArrayList<LocationModel> locations){
         if (locations == null){
             locations = new ArrayList<>();
         }
@@ -112,10 +120,35 @@ public class MapFragment extends BaseFragment implements
         mGoogleMapView.getMapAsync(this);
     }
 
+
+
+
     @Override
     public void onStart() {
         super.onStart();
-        mMapPresenter.createLocationRequest();
+        checkPermission(Manifest.permission.ACCESS_FINE_LOCATION);
+    }
+
+    public void checkPermission(String permission) {
+        Dexter.withActivity(getActivity()).withPermission(permission)
+                .withListener(new PermissionListener() {
+                    @Override
+                    public void onPermissionGranted(PermissionGrantedResponse response) {
+                        Log.d(TAG, "onPermissionGranted: ");
+                        mMapPresenter.createLocationRequest();
+                    }
+
+                    @Override
+                    public void onPermissionDenied(PermissionDeniedResponse response) {
+
+                    }
+
+                    @Override
+                    public void onPermissionRationaleShouldBeShown(PermissionRequest permission, PermissionToken token) {
+                        token.continuePermissionRequest();
+                    }
+                })
+                .check();
     }
 
     @Override
@@ -125,14 +158,14 @@ public class MapFragment extends BaseFragment implements
 
     @Override
     public void onLocationTriggered(android.location.Location location) {
-//        Log.d(TAG, "onLocationTriggered: " + location);
+        Log.d(TAG, "onLocationTriggered: " + location);
         if (mGoogleMap != null) {
             if (mLocationModels.isEmpty()) {
                 Log.d(TAG, "onLocationTriggered: first time");
-                mLocationModels.add(new Location(location));
+//                mLocationModels.add(new LocationModel(location));
             }
 
-            mMapPresenter.saveLocation(new Location(location));
+//            mMapPresenter.saveLocation(new Location(location));
             mLatLngList.add(LocationToLatLngMapper.convertToLatLng(location));
             if (isSameDay()) {
 //                Log.d(TAG, "onLocationTriggered: size " + mLatLngList.size());
@@ -206,6 +239,7 @@ public class MapFragment extends BaseFragment implements
     @Override
     public void onStop() {
         super.onStop();
+        mMapPresenter.onDetachView();
     }
 
     @Override

@@ -1,26 +1,14 @@
 package com.boost.testaccelerometermap.domain.interactors.location;
 
-import com.boost.testaccelerometermap.data.model.Location;
-import com.boost.testaccelerometermap.domain.Mapper;
 import com.boost.testaccelerometermap.domain.Repository;
 import com.boost.testaccelerometermap.data.repository.specification.location.LocationSpecificationFactory;
 import com.boost.testaccelerometermap.domain.interactors.Interactor;
-import com.boost.testaccelerometermap.domain.locationmappers.LocationToLocationModel;
 import com.boost.testaccelerometermap.presentation.model.LocationModel;
-import com.boost.testaccelerometermap.presentation.model.LocationToLatLngMapper;
 
 import java.util.List;
 
-import io.reactivex.Flowable;
 import io.reactivex.Observable;
 import io.reactivex.ObservableTransformer;
-import io.reactivex.Observer;
-import io.reactivex.Single;
-import io.reactivex.SingleObserver;
-import io.reactivex.SingleTransformer;
-import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.observers.DisposableObserver;
 
 /**
  * Created by yaroslav on 28.06.17.

@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.boost.testaccelerometermap.R;
 import com.boost.testaccelerometermap.data.model.Location;
+import com.boost.testaccelerometermap.presentation.model.LocationModel;
 import com.boost.testaccelerometermap.presentation.utils.TimeUtils;
 
 import java.util.ArrayList;
@@ -23,7 +24,7 @@ import butterknife.ButterKnife;
 
 public class StatisticAdapter extends RecyclerView.Adapter<StatisticAdapter.StatisticViewHolder> {
     private static final String TAG = "StatisticAdapter";
-    private List<Location> mDays = new ArrayList<>();
+    private List<LocationModel> mDays = new ArrayList<>();
     private DateClickCallback mCallback;
 
     public StatisticAdapter(DateClickCallback callback) {
@@ -33,12 +34,7 @@ public class StatisticAdapter extends RecyclerView.Adapter<StatisticAdapter.Stat
     @Override
     public StatisticViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_statistic, parent, false);
-        view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mCallback.onDateClick(v);
-            }
-        });
+        view.setOnClickListener(v -> mCallback.onDateClick(v));
         return new StatisticViewHolder(view);
     }
 
@@ -52,16 +48,16 @@ public class StatisticAdapter extends RecyclerView.Adapter<StatisticAdapter.Stat
         return mDays.size();
     }
 
-    public void addAll(List<Location> data) {
+    public void addAll(List<LocationModel> data) {
         mDays.addAll(data);
         notifyDataSetChanged();
     }
 
-    public Location getDataByPosition(int pos) {
+    public LocationModel getDataByPosition(int pos) {
         if (mDays.size() > pos && pos >= 0) {
             return mDays.get(pos);
         }
-        return new Location();
+        return new LocationModel();
     }
 
     class StatisticViewHolder extends RecyclerView.ViewHolder {
@@ -74,7 +70,7 @@ public class StatisticAdapter extends RecyclerView.Adapter<StatisticAdapter.Stat
             ButterKnife.bind(this, itemView);
         }
 
-        public void bind(Location model){
+        public void bind(LocationModel model){
             String displayTime = TimeUtils.getFormattedTimeFromMillis(model.getDayInMillis());
             Log.d(TAG, "bind: time " + displayTime);
             mPeriodTv.setText(displayTime);

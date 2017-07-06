@@ -18,13 +18,12 @@ public class AccelerometerGetInRangeInteractor extends Interactor<List<Accelerom
 
     public AccelerometerGetInRangeInteractor(Repository<AccelerometerData> accelerometerRepository,
                                              AccelerometerSpecificationFactory accelerometerSpecificationFactory) {
-
         mAccelerometerRepository = accelerometerRepository;
         mAccelerometerSpecificationFactory = accelerometerSpecificationFactory;
     }
 
     @Override
-    protected Observable<List<AccelerometerData>> buildObservable(TimestampInRange timestampInRange) {
-        return mAccelerometerRepository.query(mAccelerometerSpecificationFactory.createGetInRange(timestampInRange));
+    public Observable<List<AccelerometerData>> execute(TimestampInRange requestModel) {
+        return mAccelerometerRepository.query(mAccelerometerSpecificationFactory.createGetInRange(requestModel));
     }
 }

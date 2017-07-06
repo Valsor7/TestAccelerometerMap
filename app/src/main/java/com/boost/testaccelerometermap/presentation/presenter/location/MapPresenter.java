@@ -1,6 +1,7 @@
 package com.boost.testaccelerometermap.presentation.presenter.location;
 
 import com.boost.testaccelerometermap.data.model.Location;
+import com.boost.testaccelerometermap.presentation.model.LocationModel;
 import com.boost.testaccelerometermap.presentation.presenter.BasePresenter;
 
 /**
@@ -11,5 +12,5 @@ public interface MapPresenter extends BasePresenter {
 
     void createLocationRequest();
 
-    void saveLocation(Location location);
+    void saveLocation(LocationModel location);
 }

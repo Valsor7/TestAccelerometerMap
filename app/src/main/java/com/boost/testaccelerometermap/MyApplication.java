@@ -4,7 +4,7 @@ import android.app.Application;
 import android.content.Intent;
 
 import com.boost.testaccelerometermap.dagger.app.AppComponent;
-import com.boost.testaccelerometermap.dagger.components.DaggerAppComponent;
+import com.boost.testaccelerometermap.dagger.app.DaggerAppComponent;
 import com.boost.testaccelerometermap.dagger.app.module.AppModule;
 import com.boost.testaccelerometermap.dagger.app.module.UtilsModule;
 import com.boost.testaccelerometermap.presentation.view.AccelerometerService;

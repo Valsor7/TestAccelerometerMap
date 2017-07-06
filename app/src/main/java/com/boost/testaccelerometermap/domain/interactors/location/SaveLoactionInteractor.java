@@ -4,6 +4,7 @@ import com.boost.testaccelerometermap.data.model.response.SuccessResponse;
 import com.boost.testaccelerometermap.domain.Repository;
 import com.boost.testaccelerometermap.domain.interactors.Interactor;
 import com.boost.testaccelerometermap.data.model.Location;
+import com.boost.testaccelerometermap.presentation.model.LocationModel;
 
 import io.reactivex.Observable;
 
@@ -11,16 +12,16 @@ import io.reactivex.Observable;
  * Created by yaroslav on 28.06.17.
  */
 
-public class SaveLoactionInteractor extends Interactor<SuccessResponse, Location> {
+public class SaveLoactionInteractor extends Interactor<SuccessResponse, LocationModel> {
 
-    private Repository<Location> mLocationRepository;
+    private Repository<LocationModel> mLocationRepository;
 
-    public SaveLoactionInteractor(Repository<Location> locationRepository) {
+    public SaveLoactionInteractor(Repository<LocationModel> locationRepository) {
         mLocationRepository = locationRepository;
     }
 
     @Override
-    protected Observable<SuccessResponse> buildObservable(Location requestModel) {
+    public Observable<SuccessResponse> execute(LocationModel requestModel) {
         return mLocationRepository.add(requestModel);
     }
 }

@@ -4,21 +4,17 @@ import com.boost.testaccelerometermap.data.model.Location;
 import com.boost.testaccelerometermap.data.model.response.SuccessResponse;
 import com.boost.testaccelerometermap.domain.interactors.Interactor;
 import com.boost.testaccelerometermap.presentation.model.LocationModel;
-import com.boost.testaccelerometermap.presentation.model.LocationToLatLngMapper;
 import com.boost.testaccelerometermap.presentation.view.BaseView;
 import com.boost.testaccelerometermap.presentation.view.map.GoogleMapView;
-import com.boost.testaccelerometermap.presentation.view.map.LocationHelper;
+import com.boost.testaccelerometermap.data.hardware.LocationHelper;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.List;
 
 import javax.inject.Inject;
 
-import io.reactivex.Observable;
-import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.observers.DisposableObserver;
 
 /**
  * Created by yaroslav on 23.05.17.
@@ -27,29 +23,31 @@ import io.reactivex.observers.DisposableObserver;
 public class MapPresenterImpl implements MapPresenter {
     private static final String TAG = "MapPresenterImpl";
 
-    private Interactor<SuccessResponse, Location> mLocationInteractor;
+    private Interactor<SuccessResponse, LocationModel> mLocationInteractor;
 
     private Interactor<List<LatLng>, List<LocationModel>> mParseLocationInteractor;
-    private LocationHelper mLocationHelper;
+    private Interactor<android.location.Location, Void> mLocationUpdatesInteractor;
     private GoogleMapView mMapView;
     private CompositeDisposable mDisposables = new CompositeDisposable();
 
     @Inject
-    public MapPresenterImpl(Interactor<SuccessResponse, Location> interactor,
+    public MapPresenterImpl(Interactor<SuccessResponse, LocationModel> interactor,
                             Interactor<List<LatLng>, List<LocationModel>> parseLocationInteractor,
-                            LocationHelper locationHelper) {
+                            Interactor<android.location.Location, Void> LocationUpdatesInteractor) {
         mParseLocationInteractor = parseLocationInteractor;
-        mLocationHelper = locationHelper;
+        mLocationUpdatesInteractor = LocationUpdatesInteractor;
         mLocationInteractor = interactor;
     }
 
     @Override
     public void createLocationRequest() {
-        mLocationHelper.requestLocation(mMapView::onLocationTriggered);
+        Disposable disposable = mLocationUpdatesInteractor.execute(null)
+                .subscribe(mMapView::onLocationTriggered, mMapView::onError);
+        mDisposables.add(disposable);
     }
 
     @Override
-    public void saveLocation(Location location) {
+    public void saveLocation(LocationModel location) {
         Disposable disposable = mLocationInteractor.execute(location)
                 .subscribe(successResponse -> {});
         mDisposables.add(disposable);
@@ -69,7 +67,6 @@ public class MapPresenterImpl implements MapPresenter {
 
     @Override
     public void onDetachView() {
-        mLocationHelper.removeLocationListener();
         dispose();
         mMapView = null;
     }

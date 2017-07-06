@@ -16,6 +16,7 @@ import com.boost.testaccelerometermap.R;
 import com.boost.testaccelerometermap.data.model.AccelerometerData;
 import com.boost.testaccelerometermap.data.model.Location;
 import com.boost.testaccelerometermap.presentation.model.LocationGroup;
+import com.boost.testaccelerometermap.presentation.model.LocationModel;
 import com.boost.testaccelerometermap.presentation.model.TimestampInRange;
 import com.boost.testaccelerometermap.presentation.presenter.statistics.StatisticPresenterImpl;
 import com.boost.testaccelerometermap.presentation.view.BaseFragment;
@@ -44,7 +45,7 @@ public class DataStatisticFragment extends BaseFragment implements StatisticView
 
     private StatisticAdapter mStatisticAdapter;
     private StatisticsDialog mDialog;
-    private List<Location> mLocations;
+    private List<LocationModel> mLocations;
 
 
     public static DataStatisticFragment newInstance() {
@@ -89,7 +90,7 @@ public class DataStatisticFragment extends BaseFragment implements StatisticView
     private void initRecyclerView() {
         mStatisticAdapter = new StatisticAdapter(view -> {
             int pos = mStatisticsRecyclerView.getChildAdapterPosition(view);
-            Location model = mStatisticAdapter.getDataByPosition(pos);
+            LocationModel model = mStatisticAdapter.getDataByPosition(pos);
             mStatisticPresenter.getLocations(model.getDayInMillis());
         });
         mStatisticsRecyclerView.setAdapter(mStatisticAdapter);
@@ -104,12 +105,12 @@ public class DataStatisticFragment extends BaseFragment implements StatisticView
     }
 
     @Override
-    public void onStatisticsByDay(List<Location> data) {
+    public void onStatisticsByDay(List<LocationModel> data) {
         mStatisticAdapter.addAll(data);
     }
 
     @Override
-    public void onLocations(List<Location> data) {
+    public void onLocations(List<LocationModel> data) {
         mLocations = data;
         mDialog = StatisticsDialog.newInstance(LocationGroup.parseFromLocationsList(data, getString(R.string.location_pattern)));
         mDialog.setTargetFragment(this, StatisticsDialog.REQ_CODE_LOCATIONS);
@@ -137,6 +138,11 @@ public class DataStatisticFragment extends BaseFragment implements StatisticView
             bundle.putParcelableArrayList(Location.class.getSimpleName(), (ArrayList<? extends Parcelable>) mLocations);
         }
         return bundle;
+    }
+
+    @Override
+    public void onError(Object error) {
+
     }
 
     public interface OnFragmentDataStatisticCallback {

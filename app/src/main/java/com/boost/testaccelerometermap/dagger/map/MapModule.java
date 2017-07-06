@@ -3,7 +3,7 @@ package com.boost.testaccelerometermap.dagger.map;
 import android.app.Activity;
 
 import com.boost.testaccelerometermap.dagger.scopes.LocationScope;
-import com.boost.testaccelerometermap.presentation.view.map.LocationHelper;
+import com.boost.testaccelerometermap.data.hardware.LocationHelper;
 
 import dagger.Module;
 import dagger.Provides;

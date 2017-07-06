@@ -1,23 +1,32 @@
 package com.boost.testaccelerometermap.dagger.interactors;
 
 import com.boost.testaccelerometermap.dagger.scopes.DomainScope;
+import com.boost.testaccelerometermap.data.hardware.LocationHelper;
 import com.boost.testaccelerometermap.data.model.Location;
 import com.boost.testaccelerometermap.data.model.response.SuccessResponse;
+import com.boost.testaccelerometermap.domain.Mapper;
 import com.boost.testaccelerometermap.domain.Repository;
 import com.boost.testaccelerometermap.data.repository.specification.accelerometer.AccelerometerSpecificationFactory;
 import com.boost.testaccelerometermap.data.repository.specification.location.LocationSpecificationFactory;
 import com.boost.testaccelerometermap.domain.interactors.Interactor;
 import com.boost.testaccelerometermap.domain.interactors.accelerometer.AccelerometerGetInRangeInteractor;
 import com.boost.testaccelerometermap.domain.interactors.location.LocationsByDayInteractor;
+import com.boost.testaccelerometermap.domain.interactors.location.ParseLocationInteractor;
 import com.boost.testaccelerometermap.domain.interactors.location.SaveLoactionInteractor;
 import com.boost.testaccelerometermap.domain.interactors.location.UniqueLocationsInteractor;
 import com.boost.testaccelerometermap.data.model.AccelerometerData;
+import com.boost.testaccelerometermap.domain.interactors.location.UpdateLocationsInteractor;
+import com.boost.testaccelerometermap.presentation.model.LocationModel;
+import com.boost.testaccelerometermap.presentation.model.LocationToLatLngMapper;
 import com.boost.testaccelerometermap.presentation.model.TimestampInRange;
+import com.boost.testaccelerometermap.utils.RxUtils;
+import com.google.android.gms.maps.model.LatLng;
 
 import java.util.List;
 
 import dagger.Module;
 import dagger.Provides;
+import io.reactivex.ObservableTransformer;
 
 /**
  * Created by yaroslav on 02.07.17.
@@ -27,22 +36,22 @@ public class InteractorsModule {
 
     @DomainScope
     @Provides
-    public Interactor<List<Location>, Long> provideLocationsByDayInteractor(
-            Repository<Location> locationModelRepository,
+    public Interactor<List<LocationModel>, Long> provideLocationsByDayInteractor(
+            Repository<LocationModel> locationModelRepository,
             LocationSpecificationFactory locationSpecificationFactory){
-        return new LocationsByDayInteractor(locationModelRepository, locationSpecificationFactory);
+        return new LocationsByDayInteractor(locationModelRepository, locationSpecificationFactory, RxUtils.async());
     }
 
     @DomainScope
     @Provides
-    public Interactor<SuccessResponse, Location> provideSaveLocationInteractor(Repository<Location> locationModelRepository){
+    public Interactor<SuccessResponse, LocationModel> provideSaveLocationInteractor(Repository<LocationModel> locationModelRepository){
         return new SaveLoactionInteractor(locationModelRepository);
     }
 
     @DomainScope
     @Provides
-    public Interactor<List<Location>, Void> provideUniqueLocationsInteractor(
-            Repository<Location> locationModelRepository,
+    public Interactor<List<LocationModel>, Void> provideUniqueLocationsInteractor(
+            Repository<LocationModel> locationModelRepository,
             LocationSpecificationFactory locationSpecificationFactory){
         return new UniqueLocationsInteractor(locationModelRepository, locationSpecificationFactory);
     }
@@ -53,5 +62,17 @@ public class InteractorsModule {
             Repository<AccelerometerData> accelerometerRepository,
             AccelerometerSpecificationFactory accelerometerSpecificationFactory) {
         return new AccelerometerGetInRangeInteractor(accelerometerRepository, accelerometerSpecificationFactory);
+    }
+
+    @DomainScope
+    @Provides
+    public Interactor<List<LatLng>, List<LocationModel>> provideParseLocationInteractor() {
+        return new ParseLocationInteractor(new LocationToLatLngMapper(), RxUtils.async());
+    }
+
+    @DomainScope
+    @Provides
+    public Interactor<android.location.Location, Void> provideUpdateLocationsInteractor(LocationHelper helper) {
+        return new UpdateLocationsInteractor(helper);
     }
 }

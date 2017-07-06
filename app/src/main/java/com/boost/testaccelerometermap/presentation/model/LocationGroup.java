@@ -8,14 +8,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LocationGroup extends ExpandableGroup<ExpandableElement> {
-    private Location locationModel;
+    private LocationModel locationModel;
 
-    public LocationGroup(Location locationModel, String title) {
+    public LocationGroup(LocationModel locationModel, String title) {
         super(title, setListWithEmptyTitle());
         this.locationModel = locationModel;
     }
 
-    public static String makeTitle(Location model, String pattern) {
+    public static String makeTitle(LocationModel model, String pattern) {
         return String.format(pattern, model.getLatitude(), model.getLongitude());
     }
 
@@ -25,13 +25,13 @@ public class LocationGroup extends ExpandableGroup<ExpandableElement> {
         return emptyTitleList;
     }
 
-    public Location getLocationModel() {
+    public LocationModel getLocationModel() {
         return locationModel;
     }
 
-    public static ArrayList<LocationGroup> parseFromLocationsList(List<Location> locationModels, String pattern) {
+    public static ArrayList<LocationGroup> parseFromLocationsList(List<LocationModel> locationModels, String pattern) {
         ArrayList<LocationGroup> locationGroups = new ArrayList<>();
-        for (Location locationModel : locationModels) {
+        for (LocationModel locationModel : locationModels) {
             locationGroups.add(new LocationGroup(locationModel, makeTitle(locationModel, pattern)));
         }
         return locationGroups;

@@ -27,7 +27,7 @@ public class StatisticPresenterImpl implements StatisticPresenter {
     private Interactor<List<AccelerometerData>, TimestampInRange> mAccelerometerInteractor;
     private Interactor<List<LocationModel>, Long> mLocationByDayInteractor;
     private Interactor<List<LocationModel>, Void> mUniqueLocationInteractor;
-    private CompositeDisposable mDisposables;
+    private CompositeDisposable mDisposables = new CompositeDisposable();
 
     @Inject
     public StatisticPresenterImpl(Interactor<List<AccelerometerData>, TimestampInRange> accelerometerInteractor,

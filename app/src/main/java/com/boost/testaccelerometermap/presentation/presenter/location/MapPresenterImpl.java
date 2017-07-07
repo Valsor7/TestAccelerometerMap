@@ -27,7 +27,7 @@ public class MapPresenterImpl implements MapPresenter {
     private Interactor<List<LatLng>, List<LocationModel>> mParseLocationInteractor;
     private Interactor<LatLangDate, Void> mLocationUpdatesInteractor;
     private GoogleMapView mMapView;
-    private CompositeDisposable mDisposables = new CompositeDisposable();
+    private CompositeDisposable mDisposables;
 
     @Inject
     public MapPresenterImpl(Interactor<SuccessResponse, LatLangDate> interactor,
@@ -55,6 +55,7 @@ public class MapPresenterImpl implements MapPresenter {
 
     @Override
     public void onAttachView(BaseView view) {
+        mDisposables = new CompositeDisposable();
         mMapView = (GoogleMapView) view;
     }
 

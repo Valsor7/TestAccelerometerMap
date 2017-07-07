@@ -3,6 +3,7 @@ package com.boost.testaccelerometermap.data.hardware;
 import android.content.Context;
 import android.location.Location;
 import android.os.Looper;
+import android.util.Log;
 
 import com.boost.testaccelerometermap.data.model.ErrorUtils;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -49,7 +50,10 @@ public class LocationHelper {
                         ))
                 .addOnFailureListener(exception -> emitter.onError(ErrorUtils.parseLocationError(exception)));
 
-        emitter.setCancellable(() -> mFusedLocationClient.removeLocationUpdates(mLocationCallback));
+        emitter.setCancellable(() -> {
+            Log.d(TAG, "remove callback");
+            mFusedLocationClient.removeLocationUpdates(mLocationCallback);
+        });
     };
 
 
@@ -75,6 +79,7 @@ public class LocationHelper {
     }
 
     public Observable<Location> subscribeToLocationEmitter() {
+        Log.d(TAG, "subscribeToLocationEmitter: ");
         return Observable.create(mLocationObservableOnSubscribe);
     }
 }

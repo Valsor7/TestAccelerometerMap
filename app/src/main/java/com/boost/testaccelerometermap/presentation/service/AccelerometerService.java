@@ -1,4 +1,4 @@
-package com.boost.testaccelerometermap.presentation.view;
+package com.boost.testaccelerometermap.presentation.service;
 
 import android.app.Service;
 import android.content.Context;

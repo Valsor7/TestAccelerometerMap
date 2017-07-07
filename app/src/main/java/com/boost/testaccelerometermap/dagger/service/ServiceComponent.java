@@ -1,7 +1,7 @@
 package com.boost.testaccelerometermap.dagger.service;
 
 import com.boost.testaccelerometermap.dagger.scopes.ServiceScope;
-import com.boost.testaccelerometermap.presentation.view.AccelerometerService;
+import com.boost.testaccelerometermap.presentation.service.AccelerometerService;
 
 import dagger.Subcomponent;
 

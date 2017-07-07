@@ -104,6 +104,7 @@ public class MapFragment extends BaseFragment implements
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         ButterKnife.bind(this, view);
+        Log.d(TAG, "onViewCreated: ");
         mMapPresenter.onAttachView(this);
     }
 
@@ -226,14 +227,12 @@ public class MapFragment extends BaseFragment implements
     @Override
     public void onStop() {
         super.onStop();
-        mMapPresenter.onDetachView();
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-        Log.d(TAG, "onDestroy: ");
-        mGoogleMapView.onDestroy();
+    public void onDestroyView() {
+        super.onDestroyView();
+        Log.d(TAG, "onDestroyView: ");
         mMapPresenter.onDetachView();
         mListener = null;
     }
@@ -244,13 +243,19 @@ public class MapFragment extends BaseFragment implements
         mGoogleMapView.onLowMemory();
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mGoogleMapView.onDestroy();
+    }
+
     public void onSettingsAccepted() {
         mMapPresenter.createLocationRequest();
     }
 
     @Override
     public void onError(Object error) {
-
+        Log.d(TAG, "onError: " + error);
     }
 
     public interface OnFragmentMapCallback {

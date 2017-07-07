@@ -1,7 +1,9 @@
 package com.boost.testaccelerometermap.dagger.app.module;
 
 import com.boost.testaccelerometermap.MyApplication;
+import com.boost.testaccelerometermap.dagger.scopes.PerActivityScope;
 import com.boost.testaccelerometermap.data.Network;
+import com.boost.testaccelerometermap.data.hardware.LocationHelper;
 
 import javax.inject.Singleton;
 
@@ -17,5 +19,11 @@ public class UtilsModule {
     @Provides
     public Network provideNetworkChecker(MyApplication application){
         return new Network(application);
+    }
+
+    @Singleton
+    @Provides
+    public LocationHelper provideLocationHelper(MyApplication application){
+        return new LocationHelper(application);
     }
 }

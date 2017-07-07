@@ -7,7 +7,7 @@ import com.boost.testaccelerometermap.dagger.app.AppComponent;
 import com.boost.testaccelerometermap.dagger.app.DaggerAppComponent;
 import com.boost.testaccelerometermap.dagger.app.module.AppModule;
 import com.boost.testaccelerometermap.dagger.app.module.UtilsModule;
-import com.boost.testaccelerometermap.presentation.view.AccelerometerService;
+import com.boost.testaccelerometermap.presentation.service.AccelerometerService;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;

@@ -12,7 +12,6 @@ import dagger.Subcomponent;
 @DomainScope
 @Subcomponent(modules = InteractorsModule.class)
 public interface DomainComponent {
-
     public void inject(MapFragment mapFragment);
     public void inject(DataStatisticFragment statisticFragment);
 }

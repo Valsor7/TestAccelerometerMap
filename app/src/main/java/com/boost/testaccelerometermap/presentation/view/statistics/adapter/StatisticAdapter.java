@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.boost.testaccelerometermap.R;
-import com.boost.testaccelerometermap.data.model.Location;
 import com.boost.testaccelerometermap.presentation.model.LocationModel;
 import com.boost.testaccelerometermap.presentation.utils.TimeUtils;
 

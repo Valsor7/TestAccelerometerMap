@@ -3,7 +3,6 @@ package com.boost.testaccelerometermap.domain.interactors.location;
 import com.boost.testaccelerometermap.data.model.response.SuccessResponse;
 import com.boost.testaccelerometermap.domain.Repository;
 import com.boost.testaccelerometermap.domain.interactors.Interactor;
-import com.boost.testaccelerometermap.data.model.Location;
 import com.boost.testaccelerometermap.presentation.model.LocationModel;
 
 import io.reactivex.Observable;

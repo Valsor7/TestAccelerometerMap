@@ -14,7 +14,7 @@ import android.view.ViewGroup;
 
 import com.boost.testaccelerometermap.R;
 import com.boost.testaccelerometermap.data.model.AccelerometerData;
-import com.boost.testaccelerometermap.data.model.Location;
+import com.boost.testaccelerometermap.data.model.LocationDate;
 import com.boost.testaccelerometermap.presentation.model.LocationGroup;
 import com.boost.testaccelerometermap.presentation.model.LocationModel;
 import com.boost.testaccelerometermap.presentation.model.TimestampInRange;
@@ -135,7 +135,7 @@ public class DataStatisticFragment extends BaseFragment implements StatisticView
     private Bundle getLocationsBundle() {
         Bundle bundle = new Bundle();
         if (mLocations instanceof ArrayList){
-            bundle.putParcelableArrayList(Location.class.getSimpleName(), (ArrayList<? extends Parcelable>) mLocations);
+            bundle.putParcelableArrayList(LocationDate.class.getSimpleName(), (ArrayList<? extends Parcelable>) mLocations);
         }
         return bundle;
     }

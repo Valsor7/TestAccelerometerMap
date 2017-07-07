@@ -1,6 +1,6 @@
 package com.boost.testaccelerometermap.presentation.model;
 
-import com.boost.testaccelerometermap.data.model.Location;
+import com.boost.testaccelerometermap.data.model.LocationDate;
 import com.boost.testaccelerometermap.domain.Mapper;
 import com.google.android.gms.maps.model.LatLng;
 
@@ -16,13 +16,13 @@ public class LocationToLatLngMapper implements Mapper<LocationModel, LatLng>{
         return new LatLng(location.getLatitude(), location.getLongitude());
     }
 
-    public static List<LatLng> convertToLatLngList(List<Location> locationModels) {
+    public static List<LatLng> convertToLatLngList(List<LocationDate> locationDateModels) {
         List<LatLng> latLngList = new ArrayList<>();
-        if (locationModels == null){
+        if (locationDateModels == null){
             return latLngList;
         }
 
-        for (Location locationModel : locationModels) {
+        for (LocationDate locationModel : locationDateModels) {
             latLngList.add(new LatLng(locationModel.getLatitude(), locationModel.getLongitude()));
         }
         return latLngList;

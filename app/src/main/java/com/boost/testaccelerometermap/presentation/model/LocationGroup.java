@@ -1,7 +1,6 @@
 package com.boost.testaccelerometermap.presentation.model;
 
 
-import com.boost.testaccelerometermap.data.model.Location;
 import com.thoughtbot.expandablerecyclerview.models.ExpandableGroup;
 
 import java.util.ArrayList;

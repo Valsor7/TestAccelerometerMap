@@ -1,6 +1,6 @@
 package com.boost.testaccelerometermap.data.repository;
 
-import com.boost.testaccelerometermap.data.model.Location;
+import com.boost.testaccelerometermap.data.model.LocationDate;
 import com.boost.testaccelerometermap.data.model.response.SuccessResponse;
 import com.boost.testaccelerometermap.data.repository.specification.RealmSpecification;
 import com.boost.testaccelerometermap.data.repository.specification.Specification;
@@ -22,12 +22,12 @@ import io.realm.RealmResults;
 
 public class LocationRepositoryImpl implements Repository<LocationModel> {
     private static final String TAG = "LocationRepositoryImpl";
-    private Mapper<Location, LocationModel> mLocationToLocationModelMapper;
-    private Mapper<LocationModel, Location> mLocationModelToLocationMapper;
+    private Mapper<LocationDate, LocationModel> mLocationToLocationModelMapper;
+    private Mapper<LocationModel, LocationDate> mLocationModelToLocationMapper;
 
     @Inject
-    public LocationRepositoryImpl(Mapper<Location, LocationModel> locationToLocationModelMapper,
-                                  Mapper<LocationModel, Location> locationModelToLocationMapper) {
+    public LocationRepositoryImpl(Mapper<LocationDate, LocationModel> locationToLocationModelMapper,
+                                  Mapper<LocationModel, LocationDate> locationModelToLocationMapper) {
         mLocationToLocationModelMapper = locationToLocationModelMapper;
         mLocationModelToLocationMapper = locationModelToLocationMapper;
     }
@@ -65,8 +65,8 @@ public class LocationRepositoryImpl implements Repository<LocationModel> {
     @Override
     public Observable<List<LocationModel>> query(Specification specification) {
         Realm realm = Realm.getDefaultInstance();
-            RealmSpecification<RealmResults<Location>> realmSpecification =
-                    (RealmSpecification<RealmResults<Location>>) specification;
+            RealmSpecification<RealmResults<LocationDate>> realmSpecification =
+                    (RealmSpecification<RealmResults<LocationDate>>) specification;
 
         return Observable.just(realm.copyFromRealm(realmSpecification.query(realm)))
                 .flatMap(Observable::fromIterable)

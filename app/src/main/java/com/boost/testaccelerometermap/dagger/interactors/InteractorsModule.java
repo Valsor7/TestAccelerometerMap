@@ -2,9 +2,7 @@ package com.boost.testaccelerometermap.dagger.interactors;
 
 import com.boost.testaccelerometermap.dagger.scopes.DomainScope;
 import com.boost.testaccelerometermap.data.hardware.LocationHelper;
-import com.boost.testaccelerometermap.data.model.Location;
 import com.boost.testaccelerometermap.data.model.response.SuccessResponse;
-import com.boost.testaccelerometermap.domain.Mapper;
 import com.boost.testaccelerometermap.domain.Repository;
 import com.boost.testaccelerometermap.data.repository.specification.accelerometer.AccelerometerSpecificationFactory;
 import com.boost.testaccelerometermap.data.repository.specification.location.LocationSpecificationFactory;
@@ -16,6 +14,8 @@ import com.boost.testaccelerometermap.domain.interactors.location.SaveLoactionIn
 import com.boost.testaccelerometermap.domain.interactors.location.UniqueLocationsInteractor;
 import com.boost.testaccelerometermap.data.model.AccelerometerData;
 import com.boost.testaccelerometermap.domain.interactors.location.UpdateLocationsInteractor;
+import com.boost.testaccelerometermap.domain.locationmappers.LocationToLatLangDateMapper;
+import com.boost.testaccelerometermap.presentation.model.LatLangDate;
 import com.boost.testaccelerometermap.presentation.model.LocationModel;
 import com.boost.testaccelerometermap.presentation.model.LocationToLatLngMapper;
 import com.boost.testaccelerometermap.presentation.model.TimestampInRange;
@@ -26,7 +26,6 @@ import java.util.List;
 
 import dagger.Module;
 import dagger.Provides;
-import io.reactivex.ObservableTransformer;
 
 /**
  * Created by yaroslav on 02.07.17.
@@ -72,7 +71,7 @@ public class InteractorsModule {
 
     @DomainScope
     @Provides
-    public Interactor<android.location.Location, Void> provideUpdateLocationsInteractor(LocationHelper helper) {
-        return new UpdateLocationsInteractor(helper);
+    public Interactor<LatLangDate, Void> provideUpdateLocationsInteractor(LocationHelper helper) {
+        return new UpdateLocationsInteractor(helper, new LocationToLatLangDateMapper());
     }
 }

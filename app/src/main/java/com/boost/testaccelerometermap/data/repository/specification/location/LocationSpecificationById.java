@@ -1,13 +1,13 @@
 package com.boost.testaccelerometermap.data.repository.specification.location;
 
 
-import com.boost.testaccelerometermap.data.model.Location;
+import com.boost.testaccelerometermap.data.model.LocationDate;
 import com.boost.testaccelerometermap.data.repository.specification.RealmSpecification;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
 
-public class LocationSpecificationById implements RealmSpecification<RealmResults<Location>> {
+public class LocationSpecificationById implements RealmSpecification<RealmResults<LocationDate>> {
 
     private long mId;
 
@@ -16,7 +16,7 @@ public class LocationSpecificationById implements RealmSpecification<RealmResult
     }
 
     @Override
-    public RealmResults<Location> query(Realm realm) {
-        return realm.where(Location.class).equalTo(Location.DAY_FIELD, mId).findAll();
+    public RealmResults<LocationDate> query(Realm realm) {
+        return realm.where(LocationDate.class).equalTo(LocationDate.DAY_FIELD, mId).findAll();
     }
 }

@@ -1,12 +1,11 @@
 package com.boost.testaccelerometermap.presentation.presenter.location;
 
-import com.boost.testaccelerometermap.data.model.Location;
 import com.boost.testaccelerometermap.data.model.response.SuccessResponse;
 import com.boost.testaccelerometermap.domain.interactors.Interactor;
+import com.boost.testaccelerometermap.presentation.model.LatLangDate;
 import com.boost.testaccelerometermap.presentation.model.LocationModel;
 import com.boost.testaccelerometermap.presentation.view.BaseView;
 import com.boost.testaccelerometermap.presentation.view.map.GoogleMapView;
-import com.boost.testaccelerometermap.data.hardware.LocationHelper;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.List;
@@ -26,14 +25,14 @@ public class MapPresenterImpl implements MapPresenter {
     private Interactor<SuccessResponse, LocationModel> mLocationInteractor;
 
     private Interactor<List<LatLng>, List<LocationModel>> mParseLocationInteractor;
-    private Interactor<android.location.Location, Void> mLocationUpdatesInteractor;
+    private Interactor<LatLangDate, Void> mLocationUpdatesInteractor;
     private GoogleMapView mMapView;
     private CompositeDisposable mDisposables = new CompositeDisposable();
 
     @Inject
     public MapPresenterImpl(Interactor<SuccessResponse, LocationModel> interactor,
                             Interactor<List<LatLng>, List<LocationModel>> parseLocationInteractor,
-                            Interactor<android.location.Location, Void> LocationUpdatesInteractor) {
+                            Interactor<LatLangDate, Void> LocationUpdatesInteractor) {
         mParseLocationInteractor = parseLocationInteractor;
         mLocationUpdatesInteractor = LocationUpdatesInteractor;
         mLocationInteractor = interactor;

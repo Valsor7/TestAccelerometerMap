@@ -6,6 +6,8 @@ import android.os.Looper;
 import android.util.Log;
 
 import com.boost.testaccelerometermap.data.model.ErrorUtils;
+import com.boost.testaccelerometermap.data.model.LocationDate;
+import com.boost.testaccelerometermap.domain.Repository;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -23,21 +25,13 @@ import io.reactivex.functions.Cancellable;
 /**
  * Created by yaroslav on 29.05.17.
  */
-//Log.i(TAG, "Location settings are not satisfied. Attempting to upgrade " +
-//        "location settings ");
-//        ResolvableApiException rae = (ResolvableApiException) e;
-////                            rae.startResolutionForResult(MainActivity.this, REQUEST_CHECK_SETTINGS);
-
-//         String errorMessage = "Location settings are inadequate, and cannot be " +
-//                 "fixed here. Fix in Settings.";
-//                 Log.e(TAG, errorMessage);
-
 
 public class LocationHelper {
     private static final String TAG = "LocationHelper";
     private static final long UPDATE_LOCATION_DELAY = 1000;
     private static final long MINIMUM_UPDATE_LOCATION_DELAY = 100;
     private SettingsClient mSettingsClient = null;
+    private Repository<LocationDate> mLocationRepository;
     private FusedLocationProviderClient mFusedLocationClient = null;
     private LocationRequest mLocationRequest;
     private LocationSettingsRequest mLocationSettingsRequest;
@@ -47,8 +41,6 @@ public class LocationHelper {
     private LocationCallback mLocationCallback = new LocationCallback() {
         @Override
         public void onLocationResult(LocationResult locationResult) {
-            super.onLocationResult(locationResult);
-            Log.d(TAG, "onLocationResult: " + locationResult.getLastLocation());
             mLocationEmitter.onNext(locationResult.getLastLocation());
         }
     };
@@ -61,20 +53,21 @@ public class LocationHelper {
                         mFusedLocationClient.requestLocationUpdates(
                                 mLocationRequest, mLocationCallback, Looper.myLooper()
                         ))
-                .addOnFailureListener(exception -> emitter.onError(ErrorUtils.parseError(exception)));
+                .addOnFailureListener(exception -> emitter.onError(ErrorUtils.parseLocationError(exception)));
 
-        emitter.setCancellable(this::removeLocationListener);
+        emitter.setCancellable(() -> mFusedLocationClient.removeLocationUpdates(mLocationCallback));
     };
 
 
-    public LocationHelper(Context context) {
+    public LocationHelper(Context context, Repository<LocationDate> locationRepository) {
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(context);
         mSettingsClient = LocationServices.getSettingsClient(context);
-        initLocationRequestIfNull();
-        initLocationSettingsIfNull(mLocationRequest);
+        mLocationRepository = locationRepository;
+        initLocationRequest();
+        initLocationSettings(mLocationRequest);
     }
 
-    private void initLocationRequestIfNull() {
+    private void initLocationRequest() {
         mLocationRequest = new LocationRequest()
                 .setInterval(UPDATE_LOCATION_DELAY)
                 .setFastestInterval(MINIMUM_UPDATE_LOCATION_DELAY)
@@ -82,19 +75,13 @@ public class LocationHelper {
     }
 
     //set parameter just to point that this method need to be called after mLocationRequest is initialized
-    private void initLocationSettingsIfNull(LocationRequest request) {
+    private void initLocationSettings(LocationRequest request) {
         mLocationSettingsRequest = new LocationSettingsRequest.Builder()
                 .addLocationRequest(request)
                 .build();
     }
 
-
     public Observable<Location> subscribeToLocationEmitter() {
         return Observable.create(mLocationObservableOnSubscribe);
-    }
-
-    public void removeLocationListener() {
-        Log.d(TAG, "removeLocationListener: ");
-        mFusedLocationClient.removeLocationUpdates(mLocationCallback);
     }
 }

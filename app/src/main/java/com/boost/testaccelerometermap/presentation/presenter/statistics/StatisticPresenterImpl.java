@@ -2,25 +2,19 @@ package com.boost.testaccelerometermap.presentation.presenter.statistics;
 
 import android.util.Log;
 
-import com.boost.testaccelerometermap.data.model.Location;
 import com.boost.testaccelerometermap.domain.interactors.Interactor;
 import com.boost.testaccelerometermap.data.model.AccelerometerData;
 import com.boost.testaccelerometermap.presentation.model.LocationModel;
 import com.boost.testaccelerometermap.presentation.model.TimestampInRange;
 import com.boost.testaccelerometermap.presentation.view.BaseView;
 import com.boost.testaccelerometermap.presentation.view.statistics.StatisticView;
-import com.boost.testaccelerometermap.utils.SimpleObserver;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
-import io.reactivex.Observable;
-import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.observers.DisposableObserver;
 
 /**
  * Created by yaroslav on 07.06.17.

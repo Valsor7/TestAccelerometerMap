@@ -6,14 +6,14 @@ import io.realm.RealmObject;
  * Created by yaroslav on 30.05.17.
  */
 
-public class Location extends RealmObject {
+public class LocationDate extends RealmObject {
     public static final String DAY_FIELD = "dayInMillis";
     private double latitude;
     private double longitude;
     private long timestamp;
     private long dayInMillis;
 
-    public Location() {
+    public LocationDate() {
     }
 
     public double getLatitude() {

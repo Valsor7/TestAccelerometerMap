@@ -3,7 +3,6 @@ package com.boost.testaccelerometermap.domain.interactors.location;
 
 import android.util.Log;
 
-import com.boost.testaccelerometermap.data.model.Location;
 import com.boost.testaccelerometermap.domain.Repository;
 import com.boost.testaccelerometermap.data.repository.specification.location.LocationSpecificationFactory;
 import com.boost.testaccelerometermap.domain.interactors.Interactor;

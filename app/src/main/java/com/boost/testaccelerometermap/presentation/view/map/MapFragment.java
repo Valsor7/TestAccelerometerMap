@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,10 +13,9 @@ import android.view.ViewGroup;
 
 import com.boost.testaccelerometermap.MyApplication;
 import com.boost.testaccelerometermap.R;
-import com.boost.testaccelerometermap.data.model.AccelerometerData;
-import com.boost.testaccelerometermap.data.model.Location;
+import com.boost.testaccelerometermap.data.model.LocationDate;
+import com.boost.testaccelerometermap.presentation.model.LatLangDate;
 import com.boost.testaccelerometermap.presentation.model.LocationModel;
-import com.boost.testaccelerometermap.presentation.model.LocationToLatLngMapper;
 import com.boost.testaccelerometermap.presentation.presenter.location.MapPresenterImpl;
 import com.boost.testaccelerometermap.presentation.utils.TimeUtils;
 import com.boost.testaccelerometermap.presentation.view.BaseFragment;
@@ -27,7 +27,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.karumi.dexter.Dexter;
-import com.karumi.dexter.DexterBuilder;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionDeniedResponse;
 import com.karumi.dexter.listener.PermissionGrantedResponse;
@@ -70,7 +69,7 @@ public class MapFragment extends BaseFragment implements
             locations = new ArrayList<>();
         }
         Bundle args = new Bundle();
-        args.putParcelableArrayList(Location.class.getSimpleName(), locations);
+        args.putParcelableArrayList(LocationDate.class.getSimpleName(), locations);
         return newInstance(args);
     }
 
@@ -120,9 +119,6 @@ public class MapFragment extends BaseFragment implements
         mGoogleMapView.getMapAsync(this);
     }
 
-
-
-
     @Override
     public void onStart() {
         super.onStart();
@@ -152,35 +148,21 @@ public class MapFragment extends BaseFragment implements
     }
 
     @Override
-    public void showAll(List<AccelerometerData> markers) {
-        Log.d(TAG, "showAll: " + markers.get(0));
-    }
-
-    @Override
-    public void onLocationTriggered(android.location.Location location) {
-        Log.d(TAG, "onLocationTriggered: " + location);
+    public void onLocationTriggered(LatLangDate latLangDate) {
+        Log.d(TAG, "onLocationTriggered: " + latLangDate);
         if (mGoogleMap != null) {
-            if (mLocationModels.isEmpty()) {
-                Log.d(TAG, "onLocationTriggered: first time");
-//                mLocationModels.add(new LocationModel(location));
-            }
-
-//            mMapPresenter.saveLocation(new Location(location));
-            mLatLngList.add(LocationToLatLngMapper.convertToLatLng(location));
-            if (isSameDay()) {
+            mLatLngList.add(latLangDate.getLatLng());
+            if (isSameDay(latLangDate)) {
 //                Log.d(TAG, "onLocationTriggered: size " + mLatLngList.size());
                 drawTrackLine(mLatLngList);
             }
         }
     }
 
-    @Override
-    public void onLocationParsed(List<LatLng> latLngList) {
-        drawTrackLine(latLngList);
-    }
-
-    private boolean isSameDay() {
-        return !mLocationModels.isEmpty() && mLocationModels.get(0).getDayInMillis() == TimeUtils.getResetedDayInMillis();
+    private boolean isSameDay(LatLangDate latLangDate) {
+        return latLangDate != null
+                && TimeUtils.getResetedDayInMillis(latLangDate.getTimeStamp())
+                == TimeUtils.getResetedDayInMillis();
     }
 
     private void drawTrackLine(List<LatLng> latLngList){
@@ -202,11 +184,16 @@ public class MapFragment extends BaseFragment implements
 
     private void showHistory() {
         mLocationModels.clear();
-        mLocationModels = getArguments().getParcelableArrayList(Location.class.getSimpleName());
+        mLocationModels = getArguments().getParcelableArrayList(LocationDate.class.getSimpleName());
         if (mLocationModels != null && !mLocationModels.isEmpty()) {
             Log.d(TAG, "showHistory: " + mLocationModels.size());
             mMapPresenter.parseLocationsModel(mLocationModels);
         }
+    }
+
+    @Override
+    public void onLocationParsed(List<LatLng> latLngList) {
+        drawTrackLine(latLngList);
     }
 
     @OnClick(R.id.btn_start_service)

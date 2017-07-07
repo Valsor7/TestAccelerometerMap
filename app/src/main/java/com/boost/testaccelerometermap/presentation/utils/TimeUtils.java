@@ -15,7 +15,12 @@ import java.util.Locale;
 public class TimeUtils {
 
     public static long getResetedDayInMillis(){
+        return getResetedDayInMillis(System.currentTimeMillis());
+    }
+
+    public static long getResetedDayInMillis(long timestamp){
         GregorianCalendar cal = (GregorianCalendar) Calendar.getInstance();
+        cal.setTimeInMillis(timestamp);
         cal.set(Calendar.HOUR_OF_DAY, cal.getActualMinimum(Calendar.HOUR_OF_DAY));
         cal.set(Calendar.MINUTE,      cal.getActualMinimum(Calendar.MINUTE));
         cal.set(Calendar.SECOND,      cal.getActualMinimum(Calendar.SECOND));

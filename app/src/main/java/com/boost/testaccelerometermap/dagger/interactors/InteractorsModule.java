@@ -10,10 +10,11 @@ import com.boost.testaccelerometermap.domain.interactors.Interactor;
 import com.boost.testaccelerometermap.domain.interactors.accelerometer.AccelerometerGetInRangeInteractor;
 import com.boost.testaccelerometermap.domain.interactors.location.LocationsByDayInteractor;
 import com.boost.testaccelerometermap.domain.interactors.location.ParseLocationInteractor;
-import com.boost.testaccelerometermap.domain.interactors.location.SaveLoactionInteractor;
+import com.boost.testaccelerometermap.domain.interactors.location.SaveLocationInteractor;
 import com.boost.testaccelerometermap.domain.interactors.location.UniqueLocationsInteractor;
 import com.boost.testaccelerometermap.data.model.AccelerometerData;
 import com.boost.testaccelerometermap.domain.interactors.location.UpdateLocationsInteractor;
+import com.boost.testaccelerometermap.domain.locationmappers.LatLangDateToLocationModel;
 import com.boost.testaccelerometermap.domain.locationmappers.LocationToLatLangDateMapper;
 import com.boost.testaccelerometermap.presentation.model.LatLangDate;
 import com.boost.testaccelerometermap.presentation.model.LocationModel;
@@ -43,8 +44,8 @@ public class InteractorsModule {
 
     @DomainScope
     @Provides
-    public Interactor<SuccessResponse, LocationModel> provideSaveLocationInteractor(Repository<LocationModel> locationModelRepository){
-        return new SaveLoactionInteractor(locationModelRepository);
+    public Interactor<SuccessResponse, LatLangDate> provideSaveLocationInteractor(Repository<LocationModel> locationModelRepository){
+        return new SaveLocationInteractor(locationModelRepository, new LatLangDateToLocationModel());
     }
 
     @DomainScope

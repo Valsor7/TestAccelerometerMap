@@ -3,11 +3,8 @@ package com.boost.testaccelerometermap.data.hardware;
 import android.content.Context;
 import android.location.Location;
 import android.os.Looper;
-import android.util.Log;
 
 import com.boost.testaccelerometermap.data.model.ErrorUtils;
-import com.boost.testaccelerometermap.data.model.LocationDate;
-import com.boost.testaccelerometermap.domain.Repository;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -19,8 +16,6 @@ import com.google.android.gms.location.SettingsClient;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Cancellable;
 
 /**
  * Created by yaroslav on 29.05.17.
@@ -31,7 +26,6 @@ public class LocationHelper {
     private static final long UPDATE_LOCATION_DELAY = 1000;
     private static final long MINIMUM_UPDATE_LOCATION_DELAY = 100;
     private SettingsClient mSettingsClient = null;
-    private Repository<LocationDate> mLocationRepository;
     private FusedLocationProviderClient mFusedLocationClient = null;
     private LocationRequest mLocationRequest;
     private LocationSettingsRequest mLocationSettingsRequest;
@@ -59,10 +53,9 @@ public class LocationHelper {
     };
 
 
-    public LocationHelper(Context context, Repository<LocationDate> locationRepository) {
+    public LocationHelper(Context context) {
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(context);
         mSettingsClient = LocationServices.getSettingsClient(context);
-        mLocationRepository = locationRepository;
         initLocationRequest();
         initLocationSettings(mLocationRequest);
     }

@@ -55,7 +55,6 @@ public class MapFragment extends BaseFragment implements
 
     private OnFragmentMapCallback mListener;
     private GoogleMap mGoogleMap;
-    // for optimization
     private List<LatLng> mLatLngList = new ArrayList<>();
     private List<LocationModel> mLocationModels = new ArrayList<>();
     private PolylineOptions mPolylineOptions = new PolylineOptions();
@@ -152,6 +151,7 @@ public class MapFragment extends BaseFragment implements
         Log.d(TAG, "onLocationTriggered: " + latLangDate);
         if (mGoogleMap != null) {
             mLatLngList.add(latLangDate.getLatLng());
+            mMapPresenter.saveLocation(latLangDate);
             if (isSameDay(latLangDate)) {
 //                Log.d(TAG, "onLocationTriggered: size " + mLatLngList.size());
                 drawTrackLine(mLatLngList);

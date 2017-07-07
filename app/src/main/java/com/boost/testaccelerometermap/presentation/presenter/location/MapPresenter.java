@@ -1,5 +1,6 @@
 package com.boost.testaccelerometermap.presentation.presenter.location;
 
+import com.boost.testaccelerometermap.presentation.model.LatLangDate;
 import com.boost.testaccelerometermap.presentation.model.LocationModel;
 import com.boost.testaccelerometermap.presentation.presenter.BasePresenter;
 
@@ -11,5 +12,5 @@ public interface MapPresenter extends BasePresenter {
 
     void createLocationRequest();
 
-    void saveLocation(LocationModel location);
+    void saveLocation(LatLangDate latLangDate);
 }

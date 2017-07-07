@@ -22,7 +22,7 @@ import io.reactivex.disposables.Disposable;
 public class MapPresenterImpl implements MapPresenter {
     private static final String TAG = "MapPresenterImpl";
 
-    private Interactor<SuccessResponse, LocationModel> mLocationInteractor;
+    private Interactor<SuccessResponse, LatLangDate> mSaveLocationInteractor;
 
     private Interactor<List<LatLng>, List<LocationModel>> mParseLocationInteractor;
     private Interactor<LatLangDate, Void> mLocationUpdatesInteractor;
@@ -30,12 +30,12 @@ public class MapPresenterImpl implements MapPresenter {
     private CompositeDisposable mDisposables = new CompositeDisposable();
 
     @Inject
-    public MapPresenterImpl(Interactor<SuccessResponse, LocationModel> interactor,
+    public MapPresenterImpl(Interactor<SuccessResponse, LatLangDate> interactor,
                             Interactor<List<LatLng>, List<LocationModel>> parseLocationInteractor,
                             Interactor<LatLangDate, Void> LocationUpdatesInteractor) {
         mParseLocationInteractor = parseLocationInteractor;
         mLocationUpdatesInteractor = LocationUpdatesInteractor;
-        mLocationInteractor = interactor;
+        mSaveLocationInteractor = interactor;
     }
 
     @Override
@@ -46,8 +46,8 @@ public class MapPresenterImpl implements MapPresenter {
     }
 
     @Override
-    public void saveLocation(LocationModel location) {
-        Disposable disposable = mLocationInteractor.execute(location)
+    public void saveLocation(LatLangDate latLangDate) {
+        Disposable disposable = mSaveLocationInteractor.execute(latLangDate)
                 .subscribe(successResponse -> {});
         mDisposables.add(disposable);
     }

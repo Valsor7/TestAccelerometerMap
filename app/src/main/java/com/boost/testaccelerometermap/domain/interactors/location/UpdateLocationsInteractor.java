@@ -4,24 +4,34 @@ package com.boost.testaccelerometermap.domain.interactors.location;
 import android.location.Location;
 
 import com.boost.testaccelerometermap.data.hardware.LocationHelper;
+import com.boost.testaccelerometermap.data.model.response.SuccessResponse;
 import com.boost.testaccelerometermap.domain.Mapper;
+import com.boost.testaccelerometermap.domain.Repository;
 import com.boost.testaccelerometermap.domain.interactors.Interactor;
 import com.boost.testaccelerometermap.presentation.model.LatLangDate;
+import com.boost.testaccelerometermap.presentation.model.LocationModel;
 
 import io.reactivex.Observable;
 
-public class UpdateLocationsInteractor extends Interactor<LatLangDate,Void> {
+public class UpdateLocationsInteractor extends Interactor<SuccessResponse,Void> {
 
+    private Repository<LocationModel> mLocationRepositiory;
     private LocationHelper mHelper;
-    private Mapper<Location, LatLangDate> mLatLangDateMapper;
+    private Mapper<Location, LocationModel> mLocationToLocationModelMapper;
 
-    public UpdateLocationsInteractor(LocationHelper helper, Mapper<Location, LatLangDate> latLangDateMapper) {
+    public UpdateLocationsInteractor(Repository<LocationModel> locationRepositiory,
+                                     LocationHelper helper,
+                                     Mapper<Location, LocationModel> locationToLocationModelMapper) {
+        mLocationRepositiory = locationRepositiory;
         mHelper = helper;
-        mLatLangDateMapper = latLangDateMapper;
+        mLocationToLocationModelMapper = locationToLocationModelMapper;
+        mLocationRepositiory = locationRepositiory;
     }
 
+    // TODO: 09.07.17 add di
     @Override
-    public Observable<LatLangDate> execute(Void requestModel) {
-        return mHelper.subscribeToLocationEmitter().map(mLatLangDateMapper::map);
+    public Observable<SuccessResponse> execute(Void requestModel) {
+        return mHelper.subscribeToLocationEmitter().map(mLocationToLocationModelMapper::map)
+                .flatMap(locationModel -> mLocationRepositiory.add(locationModel));
     }
 }

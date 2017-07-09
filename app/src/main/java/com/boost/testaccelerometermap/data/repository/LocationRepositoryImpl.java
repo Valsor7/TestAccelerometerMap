@@ -1,5 +1,7 @@
 package com.boost.testaccelerometermap.data.repository;
 
+import android.location.Location;
+
 import com.boost.testaccelerometermap.data.model.LocationDate;
 import com.boost.testaccelerometermap.data.model.response.SuccessResponse;
 import com.boost.testaccelerometermap.data.repository.specification.RealmSpecification;
@@ -13,7 +15,11 @@ import java.util.List;
 import javax.inject.Inject;
 
 import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.functions.Cancellable;
 import io.realm.Realm;
+import io.realm.RealmChangeListener;
 import io.realm.RealmResults;
 
 /**
@@ -24,6 +30,12 @@ public class LocationRepositoryImpl implements Repository<LocationModel> {
     private static final String TAG = "LocationRepositoryImpl";
     private Mapper<LocationDate, LocationModel> mLocationToLocationModelMapper;
     private Mapper<LocationModel, LocationDate> mLocationModelToLocationMapper;
+
+    private ObservableEmitter<List<LocationModel>> mEmitter;
+
+    private RealmChangeListener<RealmResults<LocationDate>> mListener = locationDates -> {
+        mEmitter.onNext(locationDates);
+    };
 
     @Inject
     public LocationRepositoryImpl(Mapper<LocationDate, LocationModel> locationToLocationModelMapper,
@@ -64,13 +76,19 @@ public class LocationRepositoryImpl implements Repository<LocationModel> {
 
     @Override
     public Observable<List<LocationModel>> query(Specification specification) {
-        Realm realm = Realm.getDefaultInstance();
+//        return
+            Observable.create(emitter -> {
+            Realm realm = Realm.getDefaultInstance();
             RealmSpecification<RealmResults<LocationDate>> realmSpecification =
                     (RealmSpecification<RealmResults<LocationDate>>) specification;
+            RealmResults<LocationDate> realmResults = realmSpecification.query(realm);
 
-        return Observable.just(realm.copyFromRealm(realmSpecification.query(realm)))
-                .flatMap(Observable::fromIterable)
-                .map(mLocationToLocationModelMapper::map)
+            realmResults.addChangeListener(emitter::onNext);
+            emitter.setCancellable(realm::close);
+        }).flatMap(locations -> {
+                return Observable.fromIterable(locations);
+            })
+                    .map()
                 .toList()
                 .toObservable();
     }

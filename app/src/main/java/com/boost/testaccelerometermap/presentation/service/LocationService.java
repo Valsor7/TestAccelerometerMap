@@ -15,14 +15,16 @@ import com.boost.testaccelerometermap.presentation.model.LocationModel;
 
 import javax.inject.Inject;
 
-public class LocationService extends Service{
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+
+public class LocationService extends Service {
     private static final String TAG = "LocationService";
 
     @Inject
     UpdateLocationsInteractor mUpdatesInteractor;
 
-    @Inject
-    Repository<LocationModel> mLocationRepository;
+    CompositeDisposable mDisposibles;
 
     @Override
     public void onCreate() {
@@ -37,7 +39,13 @@ public class LocationService extends Service{
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(TAG, "onStartCommand: service started");
+        subscribeToLocationsProvider();
         return super.onStartCommand(intent, flags, startId);
+    }
+
+    private void subscribeToLocationsProvider() {
+        Disposable disposable = mUpdatesInteractor.execute(null).subscribe(response -> Log.d(TAG, "subscribeToLocationsProvider: "));
+        mDisposibles.add(disposable);
     }
 
     @Nullable
@@ -46,5 +54,9 @@ public class LocationService extends Service{
         return null;
     }
 
-
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mDisposibles.dispose();
+    }
 }

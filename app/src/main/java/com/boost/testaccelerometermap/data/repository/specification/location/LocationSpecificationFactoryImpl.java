@@ -6,12 +6,17 @@ import com.boost.testaccelerometermap.data.repository.specification.Specificatio
 public class LocationSpecificationFactoryImpl implements LocationSpecificationFactory{
 
     @Override
-    public Specification createGetLocationById(long id){
-        return new LocationSpecificationById(id);
+    public Specification createGetLocationByDay(long day){
+        return new LocationSpecificationById(day);
     }
 
     @Override
     public Specification createGetUniqueLocations(){
         return new LocationSpecificationUnique();
+    }
+
+    @Override
+    public Specification createGetFreshLocations(long timestamp){
+        return new LocationSpecificationGetFreshLocation(timestamp);
     }
 }

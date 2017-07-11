@@ -20,6 +20,7 @@ import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.functions.Cancellable;
 import io.realm.Realm;
 import io.realm.RealmChangeListener;
+import io.realm.RealmObject;
 import io.realm.RealmResults;
 
 /**
@@ -30,12 +31,6 @@ public class LocationRepositoryImpl implements Repository<LocationModel> {
     private static final String TAG = "LocationRepositoryImpl";
     private Mapper<LocationDate, LocationModel> mLocationToLocationModelMapper;
     private Mapper<LocationModel, LocationDate> mLocationModelToLocationMapper;
-
-    private ObservableEmitter<List<LocationModel>> mEmitter;
-
-    private RealmChangeListener<RealmResults<LocationDate>> mListener = locationDates -> {
-        mEmitter.onNext(locationDates);
-    };
 
     @Inject
     public LocationRepositoryImpl(Mapper<LocationDate, LocationModel> locationToLocationModelMapper,
@@ -76,20 +71,40 @@ public class LocationRepositoryImpl implements Repository<LocationModel> {
 
     @Override
     public Observable<List<LocationModel>> query(Specification specification) {
-//        return
-            Observable.create(emitter -> {
-            Realm realm = Realm.getDefaultInstance();
-            RealmSpecification<RealmResults<LocationDate>> realmSpecification =
-                    (RealmSpecification<RealmResults<LocationDate>>) specification;
-            RealmResults<LocationDate> realmResults = realmSpecification.query(realm);
+        Realm realm = Realm.getDefaultInstance();
+        RealmSpecification<RealmResults<LocationDate>> realmSpecification =
+                (RealmSpecification<RealmResults<LocationDate>>) specification;
+        RealmResults<LocationDate> realmResults = realmSpecification.query(realm);
 
-            realmResults.addChangeListener(emitter::onNext);
-            emitter.setCancellable(realm::close);
-        }).flatMap(locations -> {
-                return Observable.fromIterable(locations);
-            })
-                    .map()
-                .toList()
-                .toObservable();
+        return Observable.create(new RealmResultsObservable<>(realmResults))
+                        .flatMap(Observable::fromIterable)
+                        .map(mLocationToLocationModelMapper::map)
+                        .toList()
+                        .toObservable();
+    }
+
+    public static class RealmResultsObservable<T extends RealmObject> implements ObservableOnSubscribe<RealmResults<T>> {
+
+        public static <T extends RealmObject> Observable<RealmResults<T>> from(RealmResults<T> realmResults) {
+            return Observable.create(new RealmResultsObservable<>(realmResults));
+        }
+
+        private final RealmResults<T> realmResults;
+
+        private RealmResultsObservable(RealmResults<T> realmResults) {
+            this.realmResults = realmResults;
+        }
+
+        @Override
+        public void subscribe(ObservableEmitter<RealmResults<T>> emitter) throws Exception {
+            // Initial element
+            emitter.onNext(realmResults);
+
+            RealmChangeListener<RealmResults<T>> changeListener = emitter::onNext;
+
+            realmResults.addChangeListener(changeListener);
+
+            emitter.setCancellable(() -> realmResults.removeChangeListener(changeListener));
+        }
     }
 }

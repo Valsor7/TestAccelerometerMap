@@ -4,6 +4,7 @@ import android.location.Location;
 
 import com.boost.testaccelerometermap.data.model.AccelerometerData;
 import com.boost.testaccelerometermap.presentation.model.LatLangDate;
+import com.boost.testaccelerometermap.presentation.model.LocationModel;
 import com.boost.testaccelerometermap.presentation.view.BaseView;
 import com.google.android.gms.maps.model.LatLng;
 
@@ -14,7 +15,7 @@ import java.util.List;
  */
 
 public interface GoogleMapView extends BaseView {
-    void onLocationTriggered(LatLangDate location);
+    void onLocationTriggered(List<LocationModel> location);
 
     public void onLocationParsed(List<LatLng> latLngList);
 }

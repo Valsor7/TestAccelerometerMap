@@ -2,6 +2,7 @@ package com.boost.testaccelerometermap.presentation.view.map;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.SystemClock;
@@ -17,6 +18,7 @@ import com.boost.testaccelerometermap.data.model.LocationDate;
 import com.boost.testaccelerometermap.presentation.model.LatLangDate;
 import com.boost.testaccelerometermap.presentation.model.LocationModel;
 import com.boost.testaccelerometermap.presentation.presenter.location.MapPresenterImpl;
+import com.boost.testaccelerometermap.presentation.service.LocationService;
 import com.boost.testaccelerometermap.presentation.utils.TimeUtils;
 import com.boost.testaccelerometermap.presentation.view.BaseFragment;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -131,6 +133,7 @@ public class MapFragment extends BaseFragment implements
                     @Override
                     public void onPermissionGranted(PermissionGrantedResponse response) {
                         Log.d(TAG, "onPermissionGranted: ");
+                        getActivity().startService(new Intent(getContext(), LocationService.class));
                         mMapPresenter.createLocationRequest();
                     }
 
@@ -148,16 +151,16 @@ public class MapFragment extends BaseFragment implements
     }
 
     @Override
-    public void onLocationTriggered(LatLangDate latLangDate) {
-        Log.d(TAG, "onLocationTriggered: " + latLangDate);
-        if (mGoogleMap != null) {
-            mLatLngList.add(latLangDate.getLatLng());
-            mMapPresenter.saveLocation(latLangDate);
-            if (isSameDay(latLangDate)) {
-//                Log.d(TAG, "onLocationTriggered: size " + mLatLngList.size());
-                drawTrackLine(mLatLngList);
-            }
-        }
+    public void onLocationTriggered(List<LocationModel> latLangDate) {
+       latLangDate.forEach(e ->  Log.d(TAG, "onLocationTriggered: " + e));
+//        if (mGoogleMap != null) {
+//            mLatLngList.add(latLangDate.getLatLng());
+//            mMapPresenter.saveLocation(latLangDate);
+//            if (isSameDay(latLangDate)) {
+////                Log.d(TAG, "onLocationTriggered: size " + mLatLngList.size());
+//                drawTrackLine(mLatLngList);
+//            }
+//        }
     }
 
     private boolean isSameDay(LatLangDate latLangDate) {

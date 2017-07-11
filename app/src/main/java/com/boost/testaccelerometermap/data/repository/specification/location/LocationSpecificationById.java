@@ -9,14 +9,14 @@ import io.realm.RealmResults;
 
 public class LocationSpecificationById implements RealmSpecification<RealmResults<LocationDate>> {
 
-    private long mId;
+    private long mDay;
 
-    public LocationSpecificationById(long id) {
-        mId = id;
+    public LocationSpecificationById(long day) {
+        mDay = day;
     }
 
     @Override
     public RealmResults<LocationDate> query(Realm realm) {
-        return realm.where(LocationDate.class).equalTo(LocationDate.DAY_FIELD, mId).findAll();
+        return realm.where(LocationDate.class).equalTo(LocationDate.DAY_FIELD, mDay).findAll();
     }
 }

@@ -8,6 +8,7 @@ import io.realm.RealmObject;
 
 public class LocationDate extends RealmObject {
     public static final String DAY_FIELD = "dayInMillis";
+    public static final String TIMESTAMP = "timestamp";
     private double latitude;
     private double longitude;
     private long timestamp;

@@ -21,12 +21,10 @@ import io.realm.RealmResults;
 public class AccelerometerRealmRepositoryImpl implements Repository<AccelerometerData> {
     private static final String TAG = "MapRepository";
     private final Network mNetwork;
-    private final Realm mRealm;
 
     @Inject
     public AccelerometerRealmRepositoryImpl(Network network) {
         mNetwork = network;
-        mRealm = Realm.getDefaultInstance();
     }
 
     @Override

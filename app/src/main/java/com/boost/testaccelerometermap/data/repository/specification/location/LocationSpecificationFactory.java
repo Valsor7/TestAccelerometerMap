@@ -5,7 +5,9 @@ import com.boost.testaccelerometermap.data.repository.specification.Specificatio
 
 public interface LocationSpecificationFactory {
 
-    Specification createGetLocationById(long id);
+    Specification createGetLocationByDay(long day);
 
     Specification createGetUniqueLocations();
+
+    Specification createGetFreshLocations(long timestamp);
 }

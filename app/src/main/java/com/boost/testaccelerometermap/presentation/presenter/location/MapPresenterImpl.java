@@ -22,36 +22,24 @@ import io.reactivex.disposables.Disposable;
 public class MapPresenterImpl implements MapPresenter {
     private static final String TAG = "MapPresenterImpl";
 
-    private Interactor<SuccessResponse, LatLangDate> mSaveLocationInteractor;
-
     private Interactor<List<LatLng>, List<LocationModel>> mParseLocationInteractor;
-    private Interactor<LatLangDate, Void> mLocationUpdatesInteractor;
+    private Interactor<List<LocationModel>, Long> mLocationByDayInteractor;
     private GoogleMapView mMapView;
     private CompositeDisposable mDisposables;
 
     @Inject
-    public MapPresenterImpl(Interactor<SuccessResponse, LatLangDate> interactor,
-                            Interactor<List<LatLng>, List<LocationModel>> parseLocationInteractor,
-                            Interactor<LatLangDate, Void> LocationUpdatesInteractor) {
+    public MapPresenterImpl(Interactor<List<LatLng>, List<LocationModel>> parseLocationInteractor,
+                            Interactor<List<LocationModel>, Long> locationByDayInteractor) {
         mParseLocationInteractor = parseLocationInteractor;
-        mLocationUpdatesInteractor = LocationUpdatesInteractor;
-        mSaveLocationInteractor = interactor;
+        mLocationByDayInteractor = locationByDayInteractor;
     }
 
     @Override
     public void createLocationRequest() {
-        Disposable disposable = mLocationUpdatesInteractor.execute(null)
+        Disposable disposable = mLocationByDayInteractor.execute(System.currentTimeMillis())
                 .subscribe(mMapView::onLocationTriggered, mMapView::onError);
         mDisposables.add(disposable);
     }
-
-    @Override
-    public void saveLocation(LatLangDate latLangDate) {
-        Disposable disposable = mSaveLocationInteractor.execute(latLangDate)
-                .subscribe(successResponse -> {});
-        mDisposables.add(disposable);
-    }
-
 
     @Override
     public void onAttachView(BaseView view) {

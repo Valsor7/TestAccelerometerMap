@@ -12,5 +12,4 @@ public interface MapPresenter extends BasePresenter {
 
     void createLocationRequest();
 
-    void saveLocation(LatLangDate latLangDate);
 }

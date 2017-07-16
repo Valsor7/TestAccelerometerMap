@@ -41,6 +41,7 @@
         </activity>
 
         <service android:name=".presentation.service.AccelerometerService"/>
+        <service android:name=".presentation.service.LocationService"/>
     </application>
 
 </manifest>

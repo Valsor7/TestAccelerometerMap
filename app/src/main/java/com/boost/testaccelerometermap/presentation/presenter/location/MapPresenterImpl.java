@@ -1,5 +1,8 @@
 package com.boost.testaccelerometermap.presentation.presenter.location;
 
+import android.util.Log;
+
+import com.boost.testaccelerometermap.Constants;
 import com.boost.testaccelerometermap.data.model.response.SuccessResponse;
 import com.boost.testaccelerometermap.domain.interactors.Interactor;
 import com.boost.testaccelerometermap.presentation.model.LatLangDate;
@@ -11,9 +14,15 @@ import com.google.android.gms.maps.model.LatLng;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
+import io.reactivex.Scheduler;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.observers.DisposableObserver;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by yaroslav on 23.05.17.
@@ -23,21 +32,39 @@ public class MapPresenterImpl implements MapPresenter {
     private static final String TAG = "MapPresenterImpl";
 
     private Interactor<List<LatLng>, List<LocationModel>> mParseLocationInteractor;
-    private Interactor<List<LocationModel>, Long> mLocationByDayInteractor;
+    private Interactor<List<LocationModel>, Long> mFreshLocationsInteractor;
     private GoogleMapView mMapView;
     private CompositeDisposable mDisposables;
 
     @Inject
     public MapPresenterImpl(Interactor<List<LatLng>, List<LocationModel>> parseLocationInteractor,
-                            Interactor<List<LocationModel>, Long> locationByDayInteractor) {
+                            @Named(Constants.QUALIFIER_FRESH)
+                                    Interactor<List<LocationModel>, Long> freshLocationsInteractor) {
         mParseLocationInteractor = parseLocationInteractor;
-        mLocationByDayInteractor = locationByDayInteractor;
+        mFreshLocationsInteractor = freshLocationsInteractor;
     }
 
     @Override
     public void createLocationRequest() {
-        Disposable disposable = mLocationByDayInteractor.execute(System.currentTimeMillis())
-                .subscribe(mMapView::onLocationTriggered, mMapView::onError);
+        Disposable disposable = mFreshLocationsInteractor.execute(System.currentTimeMillis())
+                .subscribeWith(new DisposableObserver<List<LocationModel>>() {
+
+                    @Override
+                    public void onNext(@NonNull List<LocationModel> locationModels) {
+                        Log.d(TAG, "onNext: " + Thread.currentThread().getName());
+                        Log.d(TAG, "createLocationRequest: result " + locationModels.size());
+                    }
+
+                    @Override
+                    public void onError(@NonNull Throwable e) {
+                        Log.d(TAG, "onError: ");
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        Log.d(TAG, "createLocationRequest: ");
+                    }
+                });
         mDisposables.add(disposable);
     }
 

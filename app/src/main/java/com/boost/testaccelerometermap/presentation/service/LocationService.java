@@ -9,7 +9,9 @@ import android.util.Log;
 
 import com.boost.testaccelerometermap.MyApplication;
 import com.boost.testaccelerometermap.dagger.service.ServiceModule;
+import com.boost.testaccelerometermap.data.model.response.SuccessResponse;
 import com.boost.testaccelerometermap.domain.Repository;
+import com.boost.testaccelerometermap.domain.interactors.Interactor;
 import com.boost.testaccelerometermap.domain.interactors.location.UpdateLocationsInteractor;
 import com.boost.testaccelerometermap.presentation.model.LocationModel;
 
@@ -22,9 +24,9 @@ public class LocationService extends Service {
     private static final String TAG = "LocationService";
 
     @Inject
-    UpdateLocationsInteractor mUpdatesInteractor;
+    Interactor<SuccessResponse, Void> mUpdatesInteractor;
 
-    CompositeDisposable mDisposibles;
+    CompositeDisposable mDisposibles = new CompositeDisposable();
 
     @Override
     public void onCreate() {
@@ -33,7 +35,9 @@ public class LocationService extends Service {
     }
 
     private void initDI() {
-
+        MyApplication.getApp().getAppComponent()
+                .plusServiceComponent(new ServiceModule())
+                .inject(this);
     }
 
     @Override

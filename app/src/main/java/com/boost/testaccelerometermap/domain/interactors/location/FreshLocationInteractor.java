@@ -18,14 +18,14 @@ public class FreshLocationInteractor extends Interactor<List<LocationModel>,Long
 
     private Repository<LocationModel> mLocationModelRepository;
     private LocationSpecificationFactory mLocationSpecificationFactory;
-    private ObservableTransformer<List<LocationModel>, List<LocationModel>> mAsyncTransformer;
+    private ObservableTransformer<List<LocationModel>, List<LocationModel>> mOnUITransformer;
 
     public FreshLocationInteractor(Repository<LocationModel> locationModelRepository,
                                     LocationSpecificationFactory factory,
-                                    ObservableTransformer<List<LocationModel>, List<LocationModel>> asyncTransformer) {
+                                    ObservableTransformer<List<LocationModel>, List<LocationModel>> onUITransformer) {
         mLocationModelRepository = locationModelRepository;
         mLocationSpecificationFactory = factory;
-        mAsyncTransformer = asyncTransformer;
+        mOnUITransformer = onUITransformer;
     }
     @Override
     public Observable<List<LocationModel>> execute(Long requestModel) {

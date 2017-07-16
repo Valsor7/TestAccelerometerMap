@@ -133,8 +133,8 @@ public class MapFragment extends BaseFragment implements
                     @Override
                     public void onPermissionGranted(PermissionGrantedResponse response) {
                         Log.d(TAG, "onPermissionGranted: ");
-                        getActivity().startService(new Intent(getContext(), LocationService.class));
                         mMapPresenter.createLocationRequest();
+                        getActivity().startService(new Intent(getActivity(), LocationService.class));
                     }
 
                     @Override
@@ -151,8 +151,9 @@ public class MapFragment extends BaseFragment implements
     }
 
     @Override
-    public void onLocationTriggered(List<LocationModel> latLangDate) {
-       latLangDate.forEach(e ->  Log.d(TAG, "onLocationTriggered: " + e));
+    public void onLocationTriggered(List<LocationModel> locationModels) {
+        Log.d(TAG, "onLocationTriggered: size " + locationModels.size());
+       locationModels.forEach(e ->  Log.d(TAG, "onLocationTriggered: " + e));
 //        if (mGoogleMap != null) {
 //            mLatLngList.add(latLangDate.getLatLng());
 //            mMapPresenter.saveLocation(latLangDate);

@@ -1,5 +1,6 @@
 package com.boost.testaccelerometermap.dagger.interactors;
 
+import com.boost.testaccelerometermap.Constants;
 import com.boost.testaccelerometermap.dagger.scopes.DomainScope;
 import com.boost.testaccelerometermap.data.hardware.LocationHelper;
 import com.boost.testaccelerometermap.data.model.response.SuccessResponse;
@@ -8,6 +9,7 @@ import com.boost.testaccelerometermap.data.repository.specification.acceleromete
 import com.boost.testaccelerometermap.data.repository.specification.location.LocationSpecificationFactory;
 import com.boost.testaccelerometermap.domain.interactors.Interactor;
 import com.boost.testaccelerometermap.domain.interactors.accelerometer.AccelerometerGetInRangeInteractor;
+import com.boost.testaccelerometermap.domain.interactors.location.FreshLocationInteractor;
 import com.boost.testaccelerometermap.domain.interactors.location.LocationsByDayInteractor;
 import com.boost.testaccelerometermap.domain.interactors.location.ParseLocationInteractor;
 import com.boost.testaccelerometermap.domain.interactors.location.SaveLocationInteractor;
@@ -25,6 +27,9 @@ import com.google.android.gms.maps.model.LatLng;
 
 import java.util.List;
 
+import javax.inject.Named;
+import javax.inject.Qualifier;
+
 import dagger.Module;
 import dagger.Provides;
 
@@ -36,6 +41,7 @@ public class InteractorsModule {
 
     @DomainScope
     @Provides
+    @Named(Constants.QUALIFIER_BY_DAY)
     public Interactor<List<LocationModel>, Long> provideLocationsByDayInteractor(
             Repository<LocationModel> locationModelRepository,
             LocationSpecificationFactory locationSpecificationFactory){
@@ -72,7 +78,10 @@ public class InteractorsModule {
 
     @DomainScope
     @Provides
-    public Interactor<LatLangDate, Void> provideUpdateLocationsInteractor(LocationHelper helper) {
-        return new UpdateLocationsInteractor(helper, new LocationToLatLangDateMapper());
+    @Named(Constants.QUALIFIER_FRESH)
+    public Interactor<List<LocationModel>,Long> provideFreshLocationsInteractor(Repository<LocationModel> locationRepository,
+                                                                         LocationSpecificationFactory locationSpecificationFactory) {
+
+        return new FreshLocationInteractor(locationRepository, locationSpecificationFactory, RxUtils.onUI());
     }
 }

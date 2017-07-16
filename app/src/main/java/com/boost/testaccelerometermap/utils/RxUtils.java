@@ -13,6 +13,14 @@ public final class RxUtils {
     private RxUtils() {
     }
 
+
+    @NonNull
+    public static <T> ObservableTransformer<T, T> onUI() {
+        return upstream -> upstream
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
     @NonNull
     public static <T> ObservableTransformer<T, T> async() {
         return upstream -> upstream

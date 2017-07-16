@@ -1,5 +1,8 @@
 package com.boost.testaccelerometermap.dagger.app.module;
 
+import android.content.Context;
+
+import com.boost.testaccelerometermap.data.hardware.LocationHelper;
 import com.boost.testaccelerometermap.data.model.LocationDate;
 import com.boost.testaccelerometermap.data.repository.LocationRepositoryImpl;
 import com.boost.testaccelerometermap.domain.Mapper;
@@ -41,12 +44,5 @@ public class LocationModule {
     public LocationSpecificationFactory provideLocationSpecificationFactory(){
         return new LocationSpecificationFactoryImpl();
     }
-//
-//    @Singleton
-//    @Provides
-//    public LocationHelper provideLocationHelper(Context context){
-//        return new LocationHelper(context);
-//    }
-
 
 }

@@ -2,6 +2,7 @@ package com.boost.testaccelerometermap.presentation.presenter.statistics;
 
 import android.util.Log;
 
+import com.boost.testaccelerometermap.Constants;
 import com.boost.testaccelerometermap.domain.interactors.Interactor;
 import com.boost.testaccelerometermap.data.model.AccelerometerData;
 import com.boost.testaccelerometermap.presentation.model.LocationModel;
@@ -12,6 +13,7 @@ import com.boost.testaccelerometermap.presentation.view.statistics.StatisticView
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
@@ -31,7 +33,8 @@ public class StatisticPresenterImpl implements StatisticPresenter {
 
     @Inject
     public StatisticPresenterImpl(Interactor<List<AccelerometerData>, TimestampInRange> accelerometerInteractor,
-                                  Interactor<List<LocationModel>, Long> locationByDayInteractor,
+                                  @Named(Constants.QUALIFIER_BY_DAY)
+                                          Interactor<List<LocationModel>, Long> locationByDayInteractor,
                                   Interactor<List<LocationModel>, Void> uniqueLocationsInteractor) {
         mAccelerometerInteractor = accelerometerInteractor;
         mUniqueLocationInteractor = uniqueLocationsInteractor;

@@ -1,7 +1,9 @@
 package com.boost.testaccelerometermap.data.repository;
 
 import android.location.Location;
+import android.util.Log;
 
+import com.boost.testaccelerometermap.R;
 import com.boost.testaccelerometermap.data.model.LocationDate;
 import com.boost.testaccelerometermap.data.model.response.SuccessResponse;
 import com.boost.testaccelerometermap.data.repository.specification.RealmSpecification;
@@ -10,14 +12,19 @@ import com.boost.testaccelerometermap.domain.Mapper;
 import com.boost.testaccelerometermap.domain.Repository;
 import com.boost.testaccelerometermap.presentation.model.LocationModel;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.SingleSource;
+import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.Cancellable;
+import io.reactivex.functions.Function;
 import io.realm.Realm;
 import io.realm.RealmChangeListener;
 import io.realm.RealmObject;
@@ -76,11 +83,15 @@ public class LocationRepositoryImpl implements Repository<LocationModel> {
                 (RealmSpecification<RealmResults<LocationDate>>) specification;
         RealmResults<LocationDate> realmResults = realmSpecification.query(realm);
 
-        return Observable.create(new RealmResultsObservable<>(realmResults))
-                        .flatMap(Observable::fromIterable)
-                        .map(mLocationToLocationModelMapper::map)
-                        .toList()
-                        .toObservable();
+        return RealmResultsObservable.from(realmResults)
+                .flatMap(list -> {
+                    List<LocationModel> arrayList = new ArrayList<>();
+                    for (LocationDate locationDate : list) {
+                       arrayList.add(mLocationToLocationModelMapper.map(locationDate));
+                    }
+                    return Observable.just(arrayList);
+                });
+
     }
 
     public static class RealmResultsObservable<T extends RealmObject> implements ObservableOnSubscribe<RealmResults<T>> {
@@ -98,9 +109,13 @@ public class LocationRepositoryImpl implements Repository<LocationModel> {
         @Override
         public void subscribe(ObservableEmitter<RealmResults<T>> emitter) throws Exception {
             // Initial element
-            emitter.onNext(realmResults);
+            Log.d(TAG, "subscribe: query");
+//            emitter.onNext(realmResults);
 
-            RealmChangeListener<RealmResults<T>> changeListener = emitter::onNext;
+            RealmChangeListener<RealmResults<T>> changeListener = results -> {
+                Log.d(TAG, "on update: " + results.size());
+                emitter.onNext(results);
+            };
 
             realmResults.addChangeListener(changeListener);
 

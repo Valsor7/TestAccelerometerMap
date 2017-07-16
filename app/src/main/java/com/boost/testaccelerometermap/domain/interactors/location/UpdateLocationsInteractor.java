@@ -28,7 +28,6 @@ public class UpdateLocationsInteractor extends Interactor<SuccessResponse,Void> 
         mLocationRepositiory = locationRepositiory;
     }
 
-    // TODO: 09.07.17 add di
     @Override
     public Observable<SuccessResponse> execute(Void requestModel) {
         return mHelper.subscribeToLocationEmitter().map(mLocationToLocationModelMapper::map)

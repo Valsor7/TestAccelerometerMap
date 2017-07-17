@@ -45,11 +45,6 @@ public class StatisticPresenterImpl implements StatisticPresenter {
     }
 
     @Override
-    public void onAttachView(BaseView view) {
-        mStatisticView = (StatisticView) view;
-    }
-
-    @Override
     public void getAccelerometerDataInRange(TimestampInRange timestampInRange) {
         Log.d(TAG, "getAccelerometerDataInRange() called with: timestampInRange = [" + timestampInRange + "]");
         Disposable disposable = mAccelerometerInteractor.execute(timestampInRange)
@@ -71,6 +66,11 @@ public class StatisticPresenterImpl implements StatisticPresenter {
         Disposable disposable = mLocationByDayInteractor.execute(dayInMillis)
                 .subscribe(mStatisticView::onLocations, mStatisticView::onError);
         mDisposables.add(disposable);
+    }
+
+    @Override
+    public void onAttachView(StatisticView view) {
+        mStatisticView = view;
     }
 
     @Override

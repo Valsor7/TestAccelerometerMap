@@ -1,12 +1,10 @@
 package com.boost.testaccelerometermap.presentation.presenter.location;
 
-import com.boost.testaccelerometermap.data.model.Location;
 import com.boost.testaccelerometermap.data.model.response.SuccessResponse;
 import com.boost.testaccelerometermap.domain.interactors.Interactor;
 import com.boost.testaccelerometermap.presentation.model.LocationModel;
-import com.boost.testaccelerometermap.presentation.view.BaseView;
 import com.boost.testaccelerometermap.presentation.view.map.GoogleMapView;
-import com.boost.testaccelerometermap.data.hardware.LocationHelper;
+import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.List;
@@ -49,20 +47,19 @@ public class MapPresenterImpl implements MapPresenter {
     @Override
     public void saveLocation(LocationModel location) {
         Disposable disposable = mLocationInteractor.execute(location)
-                .subscribe(successResponse -> {});
+                .subscribe(successResponse -> mMapView.onError(successResponse));
         mDisposables.add(disposable);
-    }
-
-
-    @Override
-    public void onAttachView(BaseView view) {
-        mMapView = (GoogleMapView) view;
     }
 
     public void parseLocationsModel(List<LocationModel> locationModels) {
         Disposable disposable = mParseLocationInteractor.execute(locationModels)
                 .subscribe(mMapView::onLocationParsed);
         mDisposables.add(disposable);
+    }
+
+    @Override
+    public void onAttachView(GoogleMapView view) {
+        mMapView = view;
     }
 
     @Override

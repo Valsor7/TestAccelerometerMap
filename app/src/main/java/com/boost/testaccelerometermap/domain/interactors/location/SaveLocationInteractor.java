@@ -12,11 +12,11 @@ import io.reactivex.Observable;
  * Created by yaroslav on 28.06.17.
  */
 
-public class SaveLoactionInteractor extends Interactor<SuccessResponse, LocationModel> {
+public class SaveLocationInteractor extends Interactor<SuccessResponse, LocationModel> {
 
     private Repository<LocationModel> mLocationRepository;
 
-    public SaveLoactionInteractor(Repository<LocationModel> locationRepository) {
+    public SaveLocationInteractor(Repository<LocationModel> locationRepository) {
         mLocationRepository = locationRepository;
     }
 

@@ -6,7 +6,7 @@ import com.boost.testaccelerometermap.presentation.view.BaseView;
  * Created by yaroslav on 23.05.17.
  */
 
-public interface BasePresenter {
-    public void onAttachView(BaseView view);
+public interface BasePresenter<T> {
+    public void onAttachView(T view);
     public void onDetachView();
 }

@@ -30,7 +30,7 @@ public class LocationsByDayInteractor extends Interactor<List<LocationModel>, Lo
 
     @Override
     public Observable<List<LocationModel>> execute(Long requestModel) {
-        return mLocationModelRepository.query(mLocationSpecificationFactory.createGetUniqueLocations())
+        return mLocationModelRepository.query(mLocationSpecificationFactory.createGetLocationById(requestModel))
                 .compose(mAsyncTransformer);
     }
 }

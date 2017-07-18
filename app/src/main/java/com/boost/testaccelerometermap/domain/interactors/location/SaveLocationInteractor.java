@@ -12,7 +12,7 @@ import io.reactivex.Observable;
  * Created by yaroslav on 28.06.17.
  */
 
-public class SaveLocationInteractor extends Interactor<SuccessResponse, LocationModel> {
+public class SaveLocationInteractor extends Interactor<Object, LocationModel> {
 
     private Repository<LocationModel> mLocationRepository;
 
@@ -21,7 +21,7 @@ public class SaveLocationInteractor extends Interactor<SuccessResponse, Location
     }
 
     @Override
-    public Observable<SuccessResponse> execute(LocationModel requestModel) {
-        return mLocationRepository.add(requestModel);
+    public Observable<Object> execute(LocationModel requestModel) {
+        return mLocationRepository.add(requestModel).toObservable();
     }
 }

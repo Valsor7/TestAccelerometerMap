@@ -41,7 +41,7 @@ public class InteractorsModule {
 
     @DomainScope
     @Provides
-    public Interactor<SuccessResponse, LocationModel> provideSaveLocationInteractor(Repository<LocationModel> locationModelRepository){
+    public Interactor<Object, LocationModel> provideSaveLocationInteractor(Repository<LocationModel> locationModelRepository){
         return new SaveLocationInteractor(locationModelRepository);
     }
 

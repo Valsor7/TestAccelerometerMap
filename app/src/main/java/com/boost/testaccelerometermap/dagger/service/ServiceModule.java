@@ -18,7 +18,7 @@ public class ServiceModule {
 
     @ServiceScope
     @Provides
-    public Interactor<SuccessResponse, AccelerometerData> provideAccelerometerListInteractor(
+    public Interactor<Void, AccelerometerData> provideAccelerometerListInteractor(
             Repository<AccelerometerData> accelerometerRepository) {
         return new AddAccelerometerDataInteractor(accelerometerRepository);
     }

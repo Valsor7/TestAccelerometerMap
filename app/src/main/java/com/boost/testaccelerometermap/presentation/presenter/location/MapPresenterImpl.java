@@ -1,10 +1,8 @@
 package com.boost.testaccelerometermap.presentation.presenter.location;
 
-import com.boost.testaccelerometermap.data.model.response.SuccessResponse;
 import com.boost.testaccelerometermap.domain.interactors.Interactor;
 import com.boost.testaccelerometermap.presentation.model.LocationModel;
 import com.boost.testaccelerometermap.presentation.view.map.GoogleMapView;
-import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.List;
@@ -21,7 +19,7 @@ import io.reactivex.disposables.Disposable;
 public class MapPresenterImpl implements MapPresenter {
     private static final String TAG = "MapPresenterImpl";
 
-    private Interactor<SuccessResponse, LocationModel> mLocationInteractor;
+    private Interactor<Object, LocationModel> mSaveLocationInteractor;
 
     private Interactor<List<LatLng>, List<LocationModel>> mParseLocationInteractor;
     private Interactor<android.location.Location, Void> mLocationUpdatesInteractor;
@@ -29,12 +27,12 @@ public class MapPresenterImpl implements MapPresenter {
     private CompositeDisposable mDisposables = new CompositeDisposable();
 
     @Inject
-    public MapPresenterImpl(Interactor<SuccessResponse, LocationModel> interactor,
+    public MapPresenterImpl(Interactor<Object, LocationModel> interactor,
                             Interactor<List<LatLng>, List<LocationModel>> parseLocationInteractor,
                             Interactor<android.location.Location, Void> LocationUpdatesInteractor) {
         mParseLocationInteractor = parseLocationInteractor;
         mLocationUpdatesInteractor = LocationUpdatesInteractor;
-        mLocationInteractor = interactor;
+        mSaveLocationInteractor = interactor;
     }
 
     @Override
@@ -46,14 +44,14 @@ public class MapPresenterImpl implements MapPresenter {
 
     @Override
     public void saveLocation(LocationModel location) {
-        Disposable disposable = mLocationInteractor.execute(location)
-                .subscribe(successResponse -> mMapView.onError(successResponse));
+        Disposable disposable = mSaveLocationInteractor.execute(location)
+                .subscribe(empty -> mMapView.successfullySaved(), mMapView::onError);
         mDisposables.add(disposable);
     }
 
     public void parseLocationsModel(List<LocationModel> locationModels) {
         Disposable disposable = mParseLocationInteractor.execute(locationModels)
-                .subscribe(mMapView::onLocationParsed);
+                .subscribe(mMapView::onLocationParsed, mMapView::onError);
         mDisposables.add(disposable);
     }
 

@@ -3,8 +3,6 @@ package com.boost.testaccelerometermap;
 
 import android.location.Location;
 
-import com.boost.testaccelerometermap.data.model.AccelerometerData;
-import com.boost.testaccelerometermap.data.model.response.SuccessResponse;
 import com.boost.testaccelerometermap.domain.interactors.location.ParseLocationInteractor;
 import com.boost.testaccelerometermap.domain.interactors.location.SaveLocationInteractor;
 import com.boost.testaccelerometermap.domain.interactors.location.UpdateLocationsInteractor;
@@ -15,16 +13,18 @@ import com.google.android.gms.maps.model.LatLng;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.Observable;
 
-import static org.hamcrest.core.Is.is;
-
+@RunWith(JUnit4.class)
 public class TestMapPresenter {
 
     @Mock
@@ -35,50 +35,91 @@ public class TestMapPresenter {
 
     @Mock
     UpdateLocationsInteractor mUpdateLocationsInteractor;
-    private MapPresenterImpl mapPresenter;
+
+    @Mock
+    Location mLocation;
+
+    @Mock
+    GoogleMapView mGoogleMapView;
+
+    @Mock
+    LocationModel mLocationModel;
+
+    @Mock
+    Throwable mThrowable;
+
+    private MapPresenterImpl mMapPresenter;
+
 
     @Before
     public void initPresenter(){
         MockitoAnnotations.initMocks(this);
-
-        SuccessResponse response = new SuccessResponse();
-        response.message = "hi";
-        Mockito.when(mSaveLoactionInteractor.execute(new LocationModel())).thenReturn(Observable.just(new SuccessResponse()));
-        mapPresenter = new MapPresenterImpl(
+        mMapPresenter = new MapPresenterImpl(
                 mSaveLoactionInteractor,
                 mParseLocationInteractor,
                 mUpdateLocationsInteractor
         );
-        mapPresenter.onAttachView(new MyView());
+
+        mMapPresenter.onAttachView(mGoogleMapView);
     }
 
     @Test
     public void testCreateLocationRequest(){
-        mapPresenter.saveLocation(new LocationModel());
-        org.junit.Assert.assertThat(10.0 ,  is(10.0));
+        Mockito.when(mUpdateLocationsInteractor.execute(null))
+                .thenReturn(Observable.just(mLocation));
+
+        mMapPresenter.createLocationRequest();
+        Mockito.verify(mGoogleMapView).onLocationTriggered(mLocation);
     }
 
-    private class MyView implements GoogleMapView {
+    @Test
+    public void testCreateLocationRequestError(){
+        Mockito.when(mUpdateLocationsInteractor.execute(null))
+                .thenReturn(Observable.create(e -> e.onError(mThrowable)));
 
-        @Override
-        public void onError(Object error) {
-            System.out.println(error);
-        }
+        mMapPresenter.createLocationRequest();
+        Mockito.verify(mGoogleMapView).onError(mThrowable);
+    }
 
-        @Override
-        public void showAll(List<AccelerometerData> markers) {
+    @Test
+    public void testSaveLocation(){
+        Mockito.when(mSaveLoactionInteractor.execute(mLocationModel)).thenReturn(Observable.just(new Object()));
+        mMapPresenter.saveLocation(mLocationModel);
+        Mockito.verify(mGoogleMapView).successfullySaved();
+    }
 
-        }
-        @Test
-        @Override
-        public void onLocationTriggered(Location location) {
-            System.out.println("hi " + location.getLatitude());
-            org.junit.Assert.assertThat(location.getLatitude() , is(1023.0));
-        }
+    @Test
+    public void testSaveLocationError(){
+        Mockito.when(mSaveLoactionInteractor.execute(mLocationModel))
+                .thenReturn(Observable.create(e -> e.onError(mThrowable)));
 
-        @Override
-        public void onLocationParsed(List<LatLng> latLngList) {
+        mMapPresenter.saveLocation(mLocationModel);
+        Mockito.verify(mGoogleMapView).onError(mThrowable);
+    }
 
-        }
+    @Test
+    public void testParseLocationsModel(){
+        List<LocationModel> locationModelList = new ArrayList<>();
+        locationModelList.add(mLocationModel);
+
+        List<LatLng> latLngList = new ArrayList<>();
+        LatLng latLng = new LatLng(1, 1);
+        latLngList.add(latLng);
+
+        Mockito.when(mParseLocationInteractor.execute(locationModelList)).thenReturn(Observable.just(latLngList));
+        mMapPresenter.parseLocationsModel(locationModelList);
+        Mockito.verify(mGoogleMapView).onLocationParsed(latLngList);
+    }
+
+    @Test
+    public void testParseLocationError(){
+        List<LocationModel> locationModelList = new ArrayList<>();
+        locationModelList.add(mLocationModel);
+
+        Mockito.when(mParseLocationInteractor.execute(locationModelList))
+                .thenReturn(Observable.create(e -> e.onError(mThrowable)));
+
+        mMapPresenter.parseLocationsModel(locationModelList);
+        Mockito.verify(mGoogleMapView).onError(mThrowable);
     }
 }

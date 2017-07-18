@@ -18,4 +18,6 @@ public interface GoogleMapView extends BaseView {
     void onLocationTriggered(Location location);
 
     public void onLocationParsed(List<LatLng> latLngList);
+
+    public void successfullySaved();
 }

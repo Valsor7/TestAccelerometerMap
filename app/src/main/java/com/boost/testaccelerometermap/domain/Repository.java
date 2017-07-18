@@ -5,6 +5,7 @@ import com.boost.testaccelerometermap.data.repository.specification.Specificatio
 
 import java.util.List;
 
+import io.reactivex.Completable;
 import io.reactivex.Observable;
 
 
@@ -14,7 +15,7 @@ import io.reactivex.Observable;
 
 public interface Repository<T> {
 
-    public Observable<SuccessResponse> add(T item);
+    public Completable add(T item);
 
     public Observable<SuccessResponse> addAll(List<T> items);
 

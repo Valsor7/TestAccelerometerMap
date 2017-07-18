@@ -12,7 +12,11 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import io.reactivex.Completable;
+import io.reactivex.CompletableObserver;
 import io.reactivex.Observable;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.functions.Function;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
@@ -33,13 +37,14 @@ public class LocationRepositoryImpl implements Repository<LocationModel> {
     }
 
     @Override
-    public Observable<SuccessResponse> add(final LocationModel item) {
+    public Completable add(final LocationModel item) {
         return Observable.just(item)
                 .map(mLocationModelToLocationMapper::map)
-                .map(location -> {
-                    Realm.getDefaultInstance().executeTransaction(realm1 -> realm1.copyToRealm(location));
-                    return new SuccessResponse();
-                });
+                .flatMapCompletable(location -> {
+                            Realm.getDefaultInstance().executeTransaction(realm1 -> realm1.copyToRealm(location));
+                            return Completable.complete();
+                        }
+                );
     }
 
     @Override

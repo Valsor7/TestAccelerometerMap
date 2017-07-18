@@ -11,7 +11,11 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import io.reactivex.Completable;
+import io.reactivex.CompletableEmitter;
+import io.reactivex.CompletableOnSubscribe;
 import io.reactivex.Observable;
+import io.reactivex.annotations.NonNull;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
@@ -47,10 +51,11 @@ public class AccelerometerRealmRepositoryImpl implements Repository<Acceleromete
     }
 
     @Override
-    public Observable<SuccessResponse> add(final AccelerometerData item) {
-        return Observable.fromCallable(() -> {
+    public Completable add(final AccelerometerData item) {
+        return
+        Completable.create(e -> {
             Realm.getDefaultInstance().executeTransaction(realm1 -> realm1.copyToRealm(item));
-            return new SuccessResponse();
+            e.onComplete();
         });
     }
 

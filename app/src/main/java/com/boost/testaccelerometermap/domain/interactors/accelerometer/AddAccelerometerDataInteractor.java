@@ -11,7 +11,7 @@ import io.reactivex.Observable;
  * Created by yaroslav on 28.06.17.
  */
 
-public class AddAccelerometerDataInteractor extends Interactor<SuccessResponse, AccelerometerData> {
+public class AddAccelerometerDataInteractor extends Interactor<Void, AccelerometerData> {
 
     private Repository<AccelerometerData> mAccelerometerDataRepository;
 
@@ -20,7 +20,7 @@ public class AddAccelerometerDataInteractor extends Interactor<SuccessResponse, 
     }
 
     @Override
-    public Observable<SuccessResponse> execute(AccelerometerData requestModel) {
-        return mAccelerometerDataRepository.add(requestModel);
+    public Observable<Void> execute(AccelerometerData requestModel) {
+        return mAccelerometerDataRepository.add(requestModel).toObservable();
     }
 }

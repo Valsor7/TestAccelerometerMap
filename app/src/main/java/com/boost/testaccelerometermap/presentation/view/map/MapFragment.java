@@ -179,6 +179,11 @@ public class MapFragment extends BaseFragment implements
         drawTrackLine(latLngList);
     }
 
+    @Override
+    public void successfullySaved() {
+
+    }
+
     private boolean isSameDay() {
         return !mLocationModels.isEmpty() && mLocationModels.get(0).getDayInMillis() == TimeUtils.getResetedDayInMillis();
     }

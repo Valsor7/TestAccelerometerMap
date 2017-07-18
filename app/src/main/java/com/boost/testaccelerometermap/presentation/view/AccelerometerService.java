@@ -32,7 +32,7 @@ public class AccelerometerService extends Service implements SensorEventListener
     private static final int THRESHOLD_SIZE = 20;
     private SensorManager mSensorManager;
     @Inject
-    Interactor<SuccessResponse, AccelerometerData> mAddAccelerometerDataInteractor;
+    Interactor<Void, AccelerometerData> mAddAccelerometerDataInteractor;
 
     @Override
     public void onCreate() {
@@ -76,7 +76,7 @@ public class AccelerometerService extends Service implements SensorEventListener
         data.setZ(event.values[2]);
         data.setTimestamp(System.currentTimeMillis());
         // TODO: 06.07.17 remake add disposable
-        mAddAccelerometerDataInteractor.execute(data).subscribe();
+        mAddAccelerometerDataInteractor.execute(data).subscribe(empty -> {});
     }
 
     @Override

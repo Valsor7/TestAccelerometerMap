@@ -1,11 +1,11 @@
 package com.boost.testaccelerometermap.data.repository;
 
 import com.boost.testaccelerometermap.data.Network;
+import com.boost.testaccelerometermap.data.model.AccelerometerData;
 import com.boost.testaccelerometermap.data.model.response.SuccessResponse;
 import com.boost.testaccelerometermap.data.repository.specification.RealmSpecification;
 import com.boost.testaccelerometermap.data.repository.specification.Specification;
 import com.boost.testaccelerometermap.domain.Repository;
-import com.boost.testaccelerometermap.data.model.AccelerometerData;
 
 import java.util.List;
 
@@ -20,13 +20,9 @@ import io.realm.RealmResults;
  */
 public class AccelerometerRealmRepositoryImpl implements Repository<AccelerometerData> {
     private static final String TAG = "MapRepository";
-    private final Network mNetwork;
-    private final Realm mRealm;
 
     @Inject
     public AccelerometerRealmRepositoryImpl(Network network) {
-        mNetwork = network;
-        mRealm = Realm.getDefaultInstance();
     }
 
     @Override

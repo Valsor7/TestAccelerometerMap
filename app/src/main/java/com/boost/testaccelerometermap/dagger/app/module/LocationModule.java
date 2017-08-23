@@ -41,12 +41,4 @@ public class LocationModule {
     public LocationSpecificationFactory provideLocationSpecificationFactory(){
         return new LocationSpecificationFactoryImpl();
     }
-//
-//    @Singleton
-//    @Provides
-//    public LocationHelper provideLocationHelper(Context context){
-//        return new LocationHelper(context);
-//    }
-
-
 }

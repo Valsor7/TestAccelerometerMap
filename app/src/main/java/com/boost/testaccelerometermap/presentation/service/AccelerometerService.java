@@ -13,15 +13,11 @@ import android.util.Log;
 
 import com.boost.testaccelerometermap.MyApplication;
 import com.boost.testaccelerometermap.dagger.service.ServiceModule;
+import com.boost.testaccelerometermap.data.model.AccelerometerData;
 import com.boost.testaccelerometermap.data.model.response.SuccessResponse;
 import com.boost.testaccelerometermap.domain.interactors.Interactor;
-import com.boost.testaccelerometermap.data.model.AccelerometerData;
 
 import javax.inject.Inject;
-
-import io.reactivex.Observable;
-import io.reactivex.annotations.NonNull;
-import io.reactivex.observers.DisposableObserver;
 
 /**
  * Created by yaroslav on 24.05.17.

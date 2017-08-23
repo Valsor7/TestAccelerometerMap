@@ -1,7 +1,6 @@
 package com.boost.testaccelerometermap.dagger.app.module;
 
 import com.boost.testaccelerometermap.MyApplication;
-import com.boost.testaccelerometermap.dagger.scopes.PerActivityScope;
 import com.boost.testaccelerometermap.data.Network;
 import com.boost.testaccelerometermap.data.hardware.LocationHelper;
 

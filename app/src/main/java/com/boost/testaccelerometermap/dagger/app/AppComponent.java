@@ -1,12 +1,12 @@
 package com.boost.testaccelerometermap.dagger.app;
 
+import com.boost.testaccelerometermap.dagger.activity.ActivityComponent;
+import com.boost.testaccelerometermap.dagger.activity.ActivityModule;
 import com.boost.testaccelerometermap.dagger.app.module.AccelerometerModule;
 import com.boost.testaccelerometermap.dagger.app.module.AppModule;
 import com.boost.testaccelerometermap.dagger.app.module.LocationModule;
 import com.boost.testaccelerometermap.dagger.app.module.UtilsModule;
-import com.boost.testaccelerometermap.dagger.activity.ActivityComponent;
 import com.boost.testaccelerometermap.dagger.service.ServiceComponent;
-import com.boost.testaccelerometermap.dagger.activity.ActivityModule;
 import com.boost.testaccelerometermap.dagger.service.ServiceModule;
 
 import javax.inject.Singleton;
@@ -20,5 +20,5 @@ import dagger.Component;
 @Component(modules = {AppModule.class, UtilsModule.class, AccelerometerModule.class, LocationModule.class})
 public interface AppComponent {
     public ServiceComponent plusServiceComponent(ServiceModule serviceModule);
-    public ActivityComponent plusMapComponent(ActivityModule activityModule);
+    public ActivityComponent plusActivityComponent(ActivityModule activityModule);
 }

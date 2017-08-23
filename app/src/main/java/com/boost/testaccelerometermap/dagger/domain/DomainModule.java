@@ -1,18 +1,17 @@
-package com.boost.testaccelerometermap.dagger.interactors;
+package com.boost.testaccelerometermap.dagger.domain;
 
-import com.boost.testaccelerometermap.dagger.scopes.DomainScope;
 import com.boost.testaccelerometermap.data.hardware.LocationHelper;
+import com.boost.testaccelerometermap.data.model.AccelerometerData;
 import com.boost.testaccelerometermap.data.model.response.SuccessResponse;
-import com.boost.testaccelerometermap.domain.Repository;
 import com.boost.testaccelerometermap.data.repository.specification.accelerometer.AccelerometerSpecificationFactory;
 import com.boost.testaccelerometermap.data.repository.specification.location.LocationSpecificationFactory;
+import com.boost.testaccelerometermap.domain.Repository;
 import com.boost.testaccelerometermap.domain.interactors.Interactor;
 import com.boost.testaccelerometermap.domain.interactors.accelerometer.AccelerometerGetInRangeInteractor;
 import com.boost.testaccelerometermap.domain.interactors.location.LocationsByDayInteractor;
 import com.boost.testaccelerometermap.domain.interactors.location.ParseLocationInteractor;
 import com.boost.testaccelerometermap.domain.interactors.location.SaveLocationInteractor;
 import com.boost.testaccelerometermap.domain.interactors.location.UniqueLocationsInteractor;
-import com.boost.testaccelerometermap.data.model.AccelerometerData;
 import com.boost.testaccelerometermap.domain.interactors.location.UpdateLocationsInteractor;
 import com.boost.testaccelerometermap.domain.locationmappers.LatLangDateToLocationModel;
 import com.boost.testaccelerometermap.domain.locationmappers.LocationToLatLangDateMapper;
@@ -32,7 +31,7 @@ import dagger.Provides;
  * Created by yaroslav on 02.07.17.
  */
 @Module
-public class InteractorsModule {
+public class DomainModule {
 
     @DomainScope
     @Provides

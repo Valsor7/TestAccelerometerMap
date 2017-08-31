@@ -1,15 +1,11 @@
 package com.boost.testaccelerometermap.presentation.view.map;
 
-import android.content.ComponentName;
+import android.Manifest;
 import android.content.Context;
-import android.content.Intent;
-import android.content.ServiceConnection;
 import android.graphics.Color;
-import android.location.Location;
 import android.os.Bundle;
-import android.os.IBinder;
+import android.os.SystemClock;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,13 +13,12 @@ import android.view.ViewGroup;
 
 import com.boost.testaccelerometermap.MyApplication;
 import com.boost.testaccelerometermap.R;
-import com.boost.testaccelerometermap.dagger.map.DaggerMapComponent;
-import com.boost.testaccelerometermap.dagger.map.MapModule;
-import com.boost.testaccelerometermap.presentation.model.AccelerometerData;
-import com.boost.testaccelerometermap.presentation.model.LocationToLatLngMapper;
-import com.boost.testaccelerometermap.presentation.presenter.MapPresenter;
-import com.boost.testaccelerometermap.presentation.presenter.MapPresenterImpl;
-import com.boost.testaccelerometermap.presentation.view.AccelerometerService;
+import com.boost.testaccelerometermap.data.model.LocationDate;
+import com.boost.testaccelerometermap.presentation.model.LatLangDate;
+import com.boost.testaccelerometermap.presentation.model.LocationModel;
+import com.boost.testaccelerometermap.presentation.presenter.location.MapPresenterImpl;
+import com.boost.testaccelerometermap.presentation.utils.TimeUtils;
+import com.boost.testaccelerometermap.presentation.view.BaseFragment;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -31,6 +26,12 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionDeniedResponse;
+import com.karumi.dexter.listener.PermissionGrantedResponse;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.single.PermissionListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +42,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class MapFragment extends Fragment implements
+public class MapFragment extends BaseFragment implements
         GoogleMapView, OnMapReadyCallback {
     private static final String TAG = "MapFragment";
     private static final float STREET_ZOOM = 15;
@@ -55,12 +56,25 @@ public class MapFragment extends Fragment implements
     private OnFragmentMapCallback mListener;
     private GoogleMap mGoogleMap;
     private List<LatLng> mLatLngList = new ArrayList<>();
-    private Intent mAccelerometerIntent;
+    private List<LocationModel> mLocationModels = new ArrayList<>();
+    private PolylineOptions mPolylineOptions = new PolylineOptions();
 
     public static MapFragment newInstance() {
-        MapFragment fragment = new MapFragment();
+        return newInstance(new ArrayList<>());
+    }
+
+    public static MapFragment newInstance(ArrayList<LocationModel> locations){
+        if (locations == null){
+            locations = new ArrayList<>();
+        }
         Bundle args = new Bundle();
-        fragment.setArguments(args);
+        args.putParcelableArrayList(LocationDate.class.getSimpleName(), locations);
+        return newInstance(args);
+    }
+
+    public static MapFragment newInstance(Bundle data){
+        MapFragment fragment = new MapFragment();
+        fragment.setArguments(data);
         return fragment;
     }
 
@@ -76,13 +90,9 @@ public class MapFragment extends Fragment implements
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        DaggerMapComponent.builder()
-                .utilsComponent(MyApplication.getApp().getAppComponent())
-                .mapModule(new MapModule(this)).build()
-                .inject(this);
-
+        mDomainComponent.inject(this);
     }
 
     @Override
@@ -94,6 +104,7 @@ public class MapFragment extends Fragment implements
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         ButterKnife.bind(this, view);
+        Log.d(TAG, "onViewCreated: ");
         mMapPresenter.onAttachView(this);
     }
 
@@ -101,7 +112,6 @@ public class MapFragment extends Fragment implements
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         initMap(savedInstanceState);
-        mListener.onCallback();
     }
 
     private void initMap(Bundle savedInstanceState) {
@@ -112,50 +122,89 @@ public class MapFragment extends Fragment implements
     @Override
     public void onStart() {
         super.onStart();
-        mMapPresenter.createLocationRequest();
+        checkPermission(Manifest.permission.ACCESS_FINE_LOCATION);
+    }
+
+    public void checkPermission(String permission) {
+        Dexter.withActivity(getActivity()).withPermission(permission)
+                .withListener(new PermissionListener() {
+                    @Override
+                    public void onPermissionGranted(PermissionGrantedResponse response) {
+                        Log.d(TAG, "onPermissionGranted: ");
+                        mMapPresenter.createLocationRequest();
+                    }
+
+                    @Override
+                    public void onPermissionDenied(PermissionDeniedResponse response) {
+
+                    }
+
+                    @Override
+                    public void onPermissionRationaleShouldBeShown(PermissionRequest permission, PermissionToken token) {
+                        token.continuePermissionRequest();
+                    }
+                })
+                .check();
     }
 
     @Override
-    public void showAll(List<AccelerometerData> markers) {
-        Log.d(TAG, "showAll: " + markers.get(0));
-    }
-
-    @Override
-    public void onLocationTriggered(Location location) {
-        Log.d(TAG, "onLocationTriggered: " + location);
-        if (mGoogleMap != null){
-            mLatLngList.add(LocationToLatLngMapper.convertToLatLng(location));
-            PolylineOptions polylineOptions = new PolylineOptions();
-            polylineOptions.color(Color.RED);
-            polylineOptions.addAll(mLatLngList);
-            Polyline polyline = mGoogleMap.addPolyline(polylineOptions);
-            polyline.setWidth(12);
-            mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(mLatLngList.get(mLatLngList.size() - 1)));
+    public void onLocationTriggered(LatLangDate latLangDate) {
+        Log.d(TAG, "onLocationTriggered: " + latLangDate);
+        if (mGoogleMap != null) {
+            mLatLngList.add(latLangDate.getLatLng());
+            mMapPresenter.saveLocation(latLangDate);
+            if (isSameDay(latLangDate)) {
+//                Log.d(TAG, "onLocationTriggered: size " + mLatLngList.size());
+                drawTrackLine(mLatLngList);
+            }
         }
+    }
+
+    private boolean isSameDay(LatLangDate latLangDate) {
+        return latLangDate != null
+                && TimeUtils.getResetedDayInMillis(latLangDate.getTimeStamp())
+                == TimeUtils.getResetedDayInMillis();
+    }
+
+    private void drawTrackLine(List<LatLng> latLngList){
+        mPolylineOptions.color(Color.BLUE);
+        mPolylineOptions.addAll(latLngList);
+        Polyline polyline = mGoogleMap.addPolyline(mPolylineOptions);
+        polyline.setWidth(12);
+        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(latLngList.get(latLngList.size() - 1)));
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mGoogleMap = googleMap;
         mGoogleMap.moveCamera(CameraUpdateFactory.zoomTo(STREET_ZOOM));
+        if (getArguments() != null) {
+            showHistory();
+        }
+    }
+
+    private void showHistory() {
+        mLocationModels.clear();
+        mLocationModels = getArguments().getParcelableArrayList(LocationDate.class.getSimpleName());
+        if (mLocationModels != null && !mLocationModels.isEmpty()) {
+            Log.d(TAG, "showHistory: " + mLocationModels.size());
+            mMapPresenter.parseLocationsModel(mLocationModels);
+        }
+    }
+
+    @Override
+    public void onLocationParsed(List<LatLng> latLngList) {
+        drawTrackLine(latLngList);
     }
 
     @OnClick(R.id.btn_start_service)
     public void onClickStart(){
-        if (mAccelerometerIntent == null){
-            mAccelerometerIntent = new Intent(getActivity(), AccelerometerService.class);
-        }
-
-        if (!MyApplication.getApp().isServiceStarted()) {
-            getActivity().startService(mAccelerometerIntent);
-        }
+        MyApplication.getApp().startService();
     }
 
     @OnClick(R.id.btn_stop_service)
     public void onStopService(){
-        if (MyApplication.getApp().isServiceStarted()) {
-            getActivity().stopService(mAccelerometerIntent);
-        }
+        MyApplication.getApp().stopService();
     }
 
     @Override
@@ -176,10 +225,16 @@ public class MapFragment extends Fragment implements
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-        // TODO: 29.05.17 stop location updates
-        mGoogleMapView.onDestroy();
+    public void onStop() {
+        super.onStop();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        Log.d(TAG, "onDestroyView: ");
+        mMapPresenter.onDetachView();
+        mListener = null;
     }
 
     @Override
@@ -189,17 +244,21 @@ public class MapFragment extends Fragment implements
     }
 
     @Override
-    public void onDetach() {
-        super.onDetach();
-        mMapPresenter.onDetachView();
-        mListener = null;
+    public void onDestroy() {
+        super.onDestroy();
+        mGoogleMapView.onDestroy();
     }
 
     public void onSettingsAccepted() {
         mMapPresenter.createLocationRequest();
     }
 
+    @Override
+    public void onError(Object error) {
+        Log.d(TAG, "onError: " + error);
+    }
+
     public interface OnFragmentMapCallback {
-        void onCallback();
+        void onMapCallback();
     }
 }

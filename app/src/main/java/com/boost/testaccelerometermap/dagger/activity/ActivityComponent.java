@@ -1,9 +1,7 @@
 package com.boost.testaccelerometermap.dagger.activity;
 
-import com.boost.testaccelerometermap.dagger.interactors.DomainComponent;
-import com.boost.testaccelerometermap.dagger.interactors.InteractorsModule;
-import com.boost.testaccelerometermap.dagger.scopes.PerActivityScope;
-import com.boost.testaccelerometermap.presentation.view.HomeActivity;
+import com.boost.testaccelerometermap.dagger.domain.DomainComponent;
+import com.boost.testaccelerometermap.dagger.domain.DomainModule;
 
 import dagger.Subcomponent;
 
@@ -13,6 +11,5 @@ import dagger.Subcomponent;
 @PerActivityScope
 @Subcomponent(modules = ActivityModule.class)
 public interface ActivityComponent {
-    public void inject(HomeActivity activity);
-    DomainComponent plusDomain(InteractorsModule interactorsModule);
+    DomainComponent plusDomain(DomainModule domainModule);
 }

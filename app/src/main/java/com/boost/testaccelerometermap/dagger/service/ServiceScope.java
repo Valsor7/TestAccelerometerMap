@@ -1,4 +1,4 @@
-package com.boost.testaccelerometermap.dagger.scopes;
+package com.boost.testaccelerometermap.dagger.service;
 
 /**
  * Created by yaroslav on 03.07.17.

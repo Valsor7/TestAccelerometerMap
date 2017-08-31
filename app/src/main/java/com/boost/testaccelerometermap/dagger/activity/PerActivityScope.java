@@ -1,4 +1,4 @@
-package com.boost.testaccelerometermap.dagger.scopes;
+package com.boost.testaccelerometermap.dagger.activity;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;

@@ -1,11 +1,10 @@
 package com.boost.testaccelerometermap.dagger.service;
 
-import com.boost.testaccelerometermap.dagger.scopes.ServiceScope;
+import com.boost.testaccelerometermap.data.model.AccelerometerData;
 import com.boost.testaccelerometermap.data.model.response.SuccessResponse;
 import com.boost.testaccelerometermap.domain.Repository;
 import com.boost.testaccelerometermap.domain.interactors.Interactor;
 import com.boost.testaccelerometermap.domain.interactors.accelerometer.AddAccelerometerDataInteractor;
-import com.boost.testaccelerometermap.data.model.AccelerometerData;
 
 import dagger.Module;
 import dagger.Provides;
